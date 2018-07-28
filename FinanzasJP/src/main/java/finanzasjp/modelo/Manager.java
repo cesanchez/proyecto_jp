@@ -47,6 +47,14 @@ public class Manager {
 	    System.out.println("Nombre: " + clientevip.getNombre());
 	    System.out.println("Apellido: " + clientevip.getApellido());
 	    System.out.println(clientevip.getClientes().size());
+	    
+	    for(Cliente cl : clientevip.getClientes()){
+	    	System.out.println(cl.getNombre() +"  " + cl.getRecibos().size());
+	    	
+	    	for(Recibo rec:cl.getRecibos()) {
+	    		System.out.println("Cuotas"+rec.getCuotas().size());
+	    	}
+	    }
 	    session.close();
     }
  

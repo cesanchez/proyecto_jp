@@ -1,12 +1,16 @@
 package finanzasjp.modelo;
 
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -21,13 +25,14 @@ public class Cliente {
 	private String telefono; 
 	
 	private Cliente_VIP cliente_vip;
+	private Set<Recibo> recibos;	
 	
 	public Cliente() {
 		
 	}
-
-	public Cliente(String id, String nombre, String apellido, String direccion, String telefono,
-			Cliente_VIP cliente_vip) {
+		
+    public Cliente(String id, String nombre, String apellido, String direccion, String telefono,
+			Cliente_VIP cliente_vip, Set<Recibo> recibos) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -35,9 +40,10 @@ public class Cliente {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.cliente_vip = cliente_vip;
+		this.recibos = recibos;
 	}
-	
-    @Id
+
+	@Id
     @Column(name = "id")
 	public String getId() {
 		return id;
@@ -87,6 +93,15 @@ public class Cliente {
 
 	public void setCliente_vip(Cliente_VIP cliente_vip) {
 		this.cliente_vip = cliente_vip;
+	}
+	
+	@OneToMany(mappedBy = "id_cliente", targetEntity=Recibo.class, cascade = CascadeType.ALL)
+	public Set<Recibo> getRecibos() {
+		return recibos;
+	}
+
+	public void setRecibos(Set<Recibo> recibos) {
+		this.recibos = recibos;
 	}
 	
 		

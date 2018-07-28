@@ -2,6 +2,19 @@ package finanzasjp.modelo;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "recibo")
 public class Recibo {
 	
 	private int id_recibo;
@@ -20,15 +33,6 @@ public class Recibo {
 	public Recibo() {
 		
 	}
-	
-	//autogenerado
-	public int getId_recibo() {
-		return id_recibo;
-	}
-
-	public void setId_recibo(int id_recibo) {
-		this.id_recibo = id_recibo;
-	}
 
 	public Recibo(double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total, double interes,
 			Cliente id_cliente, boolean diario) {
@@ -41,6 +45,17 @@ public class Recibo {
 		this.interes = interes;
 		this.id_cliente = id_cliente;
 		this.diario = diario;
+	}
+	
+	@Id
+    @Column(name = "id_recibo")
+	@GeneratedValue
+	public int getId_recibo() {
+		return id_recibo;
+	}
+
+	public void setId_recibo(int id_recibo) {
+		this.id_recibo = id_recibo;
 	}
 
 	public double getSaldo() {
@@ -91,6 +106,8 @@ public class Recibo {
 		this.interes = interes;
 	}
 
+	@ManyToOne
+    @JoinColumn(name = "id_cliente")
 	public Cliente getId_cliente() {
 		return id_cliente;
 	}
@@ -106,7 +123,8 @@ public class Recibo {
 	public void setDiario(boolean diario) {
 		this.diario = diario;
 	}
-
+	
+	@OneToMany(mappedBy = "id_recibo", targetEntity=Cuota.class, cascade = CascadeType.ALL)
 	public Set<Cuota> getCuotas() {
 		return cuotas;
 	}

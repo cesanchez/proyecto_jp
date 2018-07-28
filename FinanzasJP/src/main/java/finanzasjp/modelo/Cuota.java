@@ -2,6 +2,19 @@ package finanzasjp.modelo;
 
 import java.sql.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "cuota")
 public class Cuota {
 	
 	private int id_cuota; 
@@ -24,6 +37,8 @@ public class Cuota {
 		this.id_recibo = id_recibo;
 	}
 
+	@Id
+    @Column(name = "id_cuota")
 	public int getId_cuota() {
 		return id_cuota;
 	}
@@ -56,6 +71,8 @@ public class Cuota {
 		this.mora = mora;
 	}
 
+	@ManyToOne
+    @JoinColumn(name = "id_recibo")
 	public Recibo getId_recibo() {
 		return id_recibo;
 	}
