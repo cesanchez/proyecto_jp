@@ -12,28 +12,39 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "CLIENTE_VIP")
+@Table(name = "cliente_vip")
 public class Cliente_VIP {
 	
-	private long id;
+	private String id_cl;
 	private String nombre;
 	private String apellido;
 	private String telefono;
 	
-	private Set<Cliente> clientes;
+	private Set<Cliente> clientes;	
 	
 	public Cliente_VIP() {
 		
 	}
-
-	@Id
-	@Column(name = "ID")
-	public long getId() {
-		return id;
+	
+	public Cliente_VIP(String id_cl, String nombre, String apellido, String telefono, Set<Cliente> clientes) {
+		super();
+		this.id_cl = id_cl;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.telefono = telefono;
+		this.clientes = clientes;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	//create aqui el constructor
+
+	@Id
+	@Column(name = "id")
+	public String getId() {
+		return id_cl;
+	}
+
+	public void setId(String id) {
+		this.id_cl = id;
 	}
 
 	public String getNombre() {
@@ -60,9 +71,13 @@ public class Cliente_VIP {
 		this.telefono = telefono;
 	}
 
-	//@OneToMany(mappedBy = "CLIENTE_VIP", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "cliente_vip", targetEntity=Cliente.class, cascade = CascadeType.ALL)
 	public Set<Cliente> getClientes() {
 		return clientes;
+	}
+
+	public void setClientes(Set<Cliente> clientes) {
+		this.clientes = clientes;
 	}
 
 
