@@ -1,3 +1,5 @@
+
+//Las llaves foraneas se deben modificar: delete, update --> cascade
 create table cliente_vip (id varchar(30) not null, nombre varchar(50), apellido varchar(50), telefono varchar(50), monto_inicial double default null, fecha_ingreso date default null, saldo double default null, primary key(id));
 
 create table cliente (id varchar(30) not null, nombre varchar(50), apellido varchar(50), direccion varchar(50), telefono varchar(50), id_cliente_vip varchar(30), primary key (id), foreign key (id_cliente_vip) references cliente_vip(id));
