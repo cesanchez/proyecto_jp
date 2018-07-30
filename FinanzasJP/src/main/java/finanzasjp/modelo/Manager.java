@@ -221,28 +221,28 @@ public class Manager {
 		return listaCuota;
 	}
 	
-	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha) {
+	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha) throws ParseException {
 		
+		// null, fec
+		// dia, null
+		// dia, fec
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
-		
-		listaCuota.addAll(generarListadoCobroDia(dia));
-		
-		if(fecha != null) {
-			try {
-				ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha);
-				
-				for(Cuota c:cuotasFecha) {
-					if(!listaCuota.contains(c)) {
-						listaCuota.add(c);
-					}
+
+		if (dia == 0 && fecha != null) {
+			listaCuota.addAll(generarListadoCobroFecha(fecha));
+		} else if (dia != 0 && fecha == null) {
+			listaCuota.addAll(generarListadoCobroDia(dia));
+		} else if (dia != 0 && fecha != null) {
+			listaCuota.addAll(generarListadoCobroDia(dia));
+			ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha);
+
+			for (Cuota c : cuotasFecha) {
+				if (!listaCuota.contains(c)) {
+					listaCuota.add(c);
 				}
-				
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
-		
+
 		return listaCuota;
 		
 	}
@@ -347,9 +347,15 @@ public class Manager {
 		//ArrayList<Cuota> cuotas = manager.generarListadoCobroDia(5);
 		ArrayList<Cuota> cuotas;
 		
-			cuotas = manager.generarListadoCobro(5,"2018-01-01");
+			try {
+				cuotas = manager.generarListadoCobro(5,"2018-01-01");
+				manager.genListadoCsvCobro(cuotas);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			manager.genListadoCsvCobro(cuotas);
+			
 		
 
 		manager.exit();

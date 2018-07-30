@@ -1,5 +1,6 @@
 package finanzasjp.vista;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 
 import javafx.fxml.FXML;
@@ -24,8 +25,17 @@ public class GenListadosController {
 	private void generarListado() {
 		
 		LocalDate value = datePicker.getValue();
-				
-		main.generarListadoCobro(Integer.parseInt(txDia.getText()), value.toString());
+		String strFecha = value!=null ? value.toString():null;	
+		
+		try {
+			main.generarListadoCobro(Integer.parseInt(txDia.getText()),strFecha);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

@@ -1,6 +1,7 @@
 package finanzasjp.vista;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import finanzasjp.modelo.*;
 import javafx.application.Application;
@@ -48,8 +49,9 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
-	public static void generarListadoCobro(int dia, String fecha) {
-		manager.generarListadoCobro(dia, fecha);
+	public static void generarListadoCobro(int dia, String fecha) throws ParseException {
+		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha);
+		manager.genListadoCsvCobro(cuotas);
 	}
 	
 	public static void verInfoClientes() throws IOException {
@@ -70,7 +72,8 @@ public class Main extends Application {
 	
 	public static void verGenListados() throws IOException{
 		FXMLLoader loader =  new FXMLLoader();
-		loader.setLocation(Main.class.getResource("GenListados.fxml"));
+		//loader.setLocation(Main.class.getResource("GenListados.fxml"));
+		loader.setLocation(Main.class.getResource("ListadoCuota.fxml"));
 		BorderPane listado = loader.load();
 		
 		Stage listadoStage = new Stage();

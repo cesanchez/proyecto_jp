@@ -47,7 +47,7 @@
                         <Font name="System Bold Italic" size="14.0" />
                      </font>
                   </Label>
-                  <TextField GridPane.columnIndex="1" />
+                  <TextField fx:id="txDia" GridPane.columnIndex="1" />
                   <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button mnemonicParsing="false" onAction="#generarListado" prefHeight="30.0" prefWidth="143.0" text="Generar Lista" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
