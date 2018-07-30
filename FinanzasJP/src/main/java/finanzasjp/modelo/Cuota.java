@@ -20,6 +20,7 @@ public class Cuota {
 	private int id_cuota; 
 	private Date fecha_cobro; 
 	private double valor; 
+	private double valor_pagado; 
 	private boolean mora; 
 	
 	private Recibo id_recibo;
@@ -28,13 +29,14 @@ public class Cuota {
 		
 	}
 
-	public Cuota(int id_cuota, Date fecha_cobro, double valor, boolean mora, Recibo id_recibo) {
+	public Cuota(int id_cuota, Date fecha_cobro, double valor, double valor_pagado, boolean mora, Recibo id_recibo) {
 		super();
 		this.id_cuota = id_cuota;
 		this.fecha_cobro = fecha_cobro;
 		this.valor = valor;
 		this.mora = mora;
 		this.id_recibo = id_recibo;
+		this.valor_pagado = valor_pagado;
 	}
 
 	@Id
@@ -79,6 +81,14 @@ public class Cuota {
 
 	public void setId_recibo(Recibo id_recibo) {
 		this.id_recibo = id_recibo;
+	}
+
+	public double getValor_pagado() {
+		return valor_pagado;
+	}
+
+	public void setValor_pagado(double valor_pagado) {
+		this.valor_pagado = valor_pagado;
 	}
 	
 	

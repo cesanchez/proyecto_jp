@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="724.0" prefWidth="735.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.InfoClientesController">
+   <top>
+      <Label text="Clientes" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Calibri Bold Italic" size="36.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.3010033444816054" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <ListView fx:id="listaClientes" layoutX="6.0" layoutY="66.0" prefHeight="356.8" prefWidth="177.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <TabPane layoutX="61.0" layoutY="27.0" prefHeight="356.8" prefWidth="415.2" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab text="Información general">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutX="140.0" layoutY="54.0" prefHeight="605.6" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <TitledPane text="Datos de contacto">
+                                             <content>
+                                                <GridPane vgap="1.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="203.20001220703125" minWidth="10.0" prefWidth="101.60001220703126" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="407.2000366210938" minWidth="10.0" prefWidth="356.79998779296875" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="28.799993896484374" minHeight="10.0" prefHeight="28.000006103515624" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label text="Nombre:">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                         <opaqueInsets>
+                                                            <Insets />
+                                                         </opaqueInsets>
+                                                         <padding>
+                                                            <Insets left="10.0" right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <Label text="Cédula:" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                         <opaqueInsets>
+                                                            <Insets />
+                                                         </opaqueInsets>
+                                                         <padding>
+                                                            <Insets left="10.0" right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <Label text="Teléfono:" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                         <opaqueInsets>
+                                                            <Insets />
+                                                         </opaqueInsets>
+                                                         <padding>
+                                                            <Insets left="10.0" right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <Label text="Dirección:" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                         <opaqueInsets>
+                                                            <Insets />
+                                                         </opaqueInsets>
+                                                         <padding>
+                                                            <Insets left="10.0" right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <TextField fx:id="txNombre" disable="true" GridPane.columnIndex="1" />
+                                                      <TextField fx:id="txCedula" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="txTelefono" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="txDireccion" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="2.0" left="25.0" right="25.0" top="2.0" />
+                                                   </padding>
+                                                </GridPane>
+                                             </content>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </TitledPane>
+                                          <TitledPane text="Recibo">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                             <content>
+                                                <VBox>
+                                                   <children>
+                                                      <GridPane hgap="2.0" vgap="1.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.20001220703125" minWidth="10.0" prefWidth="103.4000244140625" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.5999755859375" minWidth="10.0" prefWidth="130.5999755859375" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="107.199951171875" minWidth="10.0" prefWidth="103.199951171875" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.800048828125" minWidth="10.0" prefWidth="120.800048828125" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label text="No. Recibo:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Prestamo:" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Fecha Prest.:" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Fecha Fin:" GridPane.rowIndex="3">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Interés:" GridPane.columnIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Pago Total:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Activo:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label text="Mora:" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets left="10.0" right="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextField fx:id="txPrestamo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="txFechaPres" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="txFechaFin" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="txInteres" disable="true" GridPane.columnIndex="3" />
+                                                            <TextField fx:id="txPagoTotal" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="txRecibo" disable="true" layoutX="120.0" layoutY="45.0" GridPane.columnIndex="1" />
+                                                            <TextField fx:id="txActivo" disable="true" layoutX="362.0" layoutY="45.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="txMora" disable="true" layoutX="362.0" layoutY="76.0" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="2.0" top="2.0" />
+                                                         </padding>
+                                                      </GridPane>
+                                                      <HBox spacing="12.0">
+                                                         <children>
+                                                            <Label text="Días de pago:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                            </Label>
+                                                            <TextField fx:id="txDias" disable="true" prefHeight="27.0" prefWidth="128.0" />
+                                                         </children>
+                                                         <opaqueInsets>
+                                                            <Insets />
+                                                         </opaqueInsets>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                         <padding>
+                                                            <Insets left="10.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                             </content>
+                                          </TitledPane>
+                                          <TitledPane prefHeight="200.0" prefWidth="200.0" text="Cuotas">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                             <content>
+                                                <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                                  </content>
+                                                </ScrollPane>
+                                             </content>
+                                          </TitledPane>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="Admin">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <HBox prefHeight="35.0" prefWidth="556.0" spacing="50.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#verGenListado" text="Generar Listados" />
+            <Separator prefHeight="6.0" prefWidth="195.0" />
+            <Button mnemonicParsing="false" text="Regresar al inicio" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets left="25.0" right="25.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
+</BorderPane>

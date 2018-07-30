@@ -1,5 +1,6 @@
 package finanzasjp.modelo;
 
+import java.sql.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
 
 @Entity
 @Table(name = "recibo")
@@ -26,27 +29,38 @@ public class Recibo {
 	private double pago_total; 
 	private double interes; 
 	private boolean diario;
+	private Date fecha_prestamo;
+	private Date fecha_fin;
 	
 	private Cliente id_cliente; 
-	private Set<Cuota> cuotas;	
+	private Set<Cuota> cuotas;
+	private Set<Dia> dias;
 		
 	public Recibo() {
 		
 	}
 
-	public Recibo(double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total, double interes,
-			Cliente id_cliente, boolean diario) {
+	public Recibo(int id_recibo, double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total,
+			double interes, boolean diario, Date fecha_prestamo, Date fecha_fin, Cliente id_cliente, Set<Cuota> cuotas,
+			Set<Dia> dias) {
 		super();
+		this.id_recibo = id_recibo;
 		this.saldo = saldo;
 		this.monto_prestamo = monto_prestamo;
 		this.activo = activo;
 		this.mora = mora;
 		this.pago_total = pago_total;
 		this.interes = interes;
-		this.id_cliente = id_cliente;
 		this.diario = diario;
+		this.fecha_prestamo = fecha_prestamo;
+		this.fecha_fin = fecha_fin;
+		this.id_cliente = id_cliente;
+		this.cuotas = cuotas;
+		this.dias = dias;
 	}
-	
+
+
+
 	@Id
     @Column(name = "id_recibo")
 	@GeneratedValue
@@ -131,6 +145,35 @@ public class Recibo {
 
 	public void setCuotas(Set<Cuota> cuotas) {
 		this.cuotas = cuotas;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "dia_recibo", joinColumns = { 
+			@JoinColumn(name = "id_recibo", nullable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "id_dia", 
+					nullable = false) })
+	public Set<Dia> getDias() {
+		return dias;
+	}
+
+	public void setDias(Set<Dia> dias) {
+		this.dias = dias;
+	}
+
+	public Date getFecha_prestamo() {
+		return fecha_prestamo;
+	}
+
+	public void setFecha_prestamo(Date fecha_prestamo) {
+		this.fecha_prestamo = fecha_prestamo;
+	}
+
+	public Date getFecha_fin() {
+		return fecha_fin;
+	}
+
+	public void setFecha_fin(Date fecha_fin) {
+		this.fecha_fin = fecha_fin;
 	}
 	
 	
