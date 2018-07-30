@@ -19,11 +19,14 @@ public class GenListadosController {
 	public GenListadosController() {
 		
 	}
+	
 	@FXML
 	private void generarListado() {
 		
 		LocalDate value = datePicker.getValue();
-		System.out.println("fecha: " + value.toString());
+				
+		main.generarListadoCobro(Integer.parseInt(txDia.getText()), value.toString());
+		
 	}
 
 }

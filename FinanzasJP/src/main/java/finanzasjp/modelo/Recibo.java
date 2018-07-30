@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
 import javax.persistence.ManyToMany;
 import javax.persistence.JoinTable;
 
@@ -24,10 +27,16 @@ public class Recibo {
 	
 	private double saldo; 
 	private double monto_prestamo; 
+	@Column(columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean activo; 
+	@Column(columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean mora; 
 	private double pago_total; 
 	private double interes; 
+	@Column(columnDefinition = "TINYINT")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean diario;
 	private Date fecha_prestamo;
 	private Date fecha_fin;
@@ -59,7 +68,20 @@ public class Recibo {
 		this.dias = dias;
 	}
 
-
+	public boolean contieneDia(int dia) {
+		
+		boolean ret = false;
+		for(Dia d : this.getDias()) {
+			
+			if(d.getDia() == dia) {
+				ret = true;
+				break;
+			}
+		}
+		
+		return ret;
+		
+	}
 
 	@Id
     @Column(name = "id_recibo")

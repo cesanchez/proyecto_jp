@@ -1,5 +1,6 @@
 package finanzasjp.modelo;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.CascadeType;
@@ -13,14 +14,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "cuota")
-public class Cuota {
+public class Cuota implements Serializable{
 	
 	private int id_cuota; 
 	private Date fecha_cobro; 
 	private double valor; 
 	private double valor_pagado; 
+	
+	@Column(columnDefinition = "TINYINT(1)")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean mora; 
 	
 	private Recibo id_recibo;
@@ -64,7 +70,7 @@ public class Cuota {
 	public void setValor(double valor) {
 		this.valor = valor;
 	}
-
+	
 	public boolean isMora() {
 		return mora;
 	}
@@ -73,6 +79,7 @@ public class Cuota {
 		this.mora = mora;
 	}
 
+	@Id
 	@ManyToOne
     @JoinColumn(name = "id_recibo")
 	public Recibo getId_recibo() {

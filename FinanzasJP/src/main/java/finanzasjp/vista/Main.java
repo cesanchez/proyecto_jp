@@ -48,6 +48,10 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
+	public static void generarListadoCobro(int dia, String fecha) {
+		manager.generarListadoCobro(dia, fecha);
+	}
+	
 	public static void verInfoClientes() throws IOException {
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
