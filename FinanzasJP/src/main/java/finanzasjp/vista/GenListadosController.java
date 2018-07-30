@@ -1,5 +1,7 @@
 package finanzasjp.vista;
 
+import java.time.LocalDate;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -12,7 +14,7 @@ public class GenListadosController {
 	private TextField txDia;
 	
 	@FXML
-	private DatePicker date;
+	private DatePicker datePicker;
 	
 	public GenListadosController() {
 		
@@ -20,7 +22,8 @@ public class GenListadosController {
 	@FXML
 	private void generarListado() {
 		
-		System.out.println("fecha: ");
+		LocalDate value = datePicker.getValue();
+		System.out.println("fecha: " + value.toString());
 	}
 
 }

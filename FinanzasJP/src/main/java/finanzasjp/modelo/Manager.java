@@ -135,6 +135,28 @@ public class Manager {
 		clientesVip = session.createCriteria(Cliente_VIP.class).list();	
 		System.out.println("Info:"+clientesVip.size());
 	}
+	
+	public void generarListadoCobro(int dia, String fecha) {
+		
+		String hql = "select c.valor, c.fecha_cobro, c.id_cuota, c.mora, c.valor_pagado, c.id_recibo from Cuota as c, Recibo as r " + 
+				"join r.dias rd "+
+				"where c.id_recibo = r.id_recibo " + 
+				"and rd.dia = :dia " + 
+				"and c.mora = FALSE " + 
+				"and r.activo = true ";
+		
+		Query q = session.createQuery(hql);
+		q.setParameter("dia", 5);
+		//q.setParameter("fecha", "2018-02-01");
+		List<Cuota> list = (List<Cuota>) q.list();
+		
+		System.out.println(list.size());
+		
+		for(Cuota c : list) {
+			System.out.println(c.getId_cuota() + " " + c.getValor());
+		}
+		
+	}
 
 	protected void readRecibos() {
 
@@ -163,20 +185,20 @@ public class Manager {
 		session = sessionFactory.openSession();
 	}
 
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		
 		Manager manager = new Manager();
 		
 		manager.setup();
-		manager.readRecibos();
-		
-		manager.read();
+		//manager.readRecibos();
+		manager.generarListadoCobro(2, "");
+		//manager.read();
 		// manager.create(session);
 		// manager.update(session);
 		// manager.delete(session);
 
 		manager.exit();
 
-	}*/
+	}
 
 }
