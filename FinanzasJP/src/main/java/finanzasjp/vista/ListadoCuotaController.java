@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cuota;
+import finanzasjp.modelo.Dia;
 import finanzasjp.modelo.Recibo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -46,6 +47,42 @@ public class ListadoCuotaController {
 	@FXML
 	private TextField txValorPagado;
 		
+	@FXML
+	private TextField txMora;
+	
+	@FXML
+	private Label lbCliente;
+	
+	@FXML
+	private TextField txRecibo;
+
+	@FXML
+	private TextField txPrestamo;
+
+	@FXML
+	private TextField txFechaPres;
+
+	@FXML
+	private TextField txFechaFin;
+
+	@FXML
+	private TextField txInteres;
+
+	@FXML
+	private TextField txPagoTotal;
+
+	@FXML
+	private TextField txActivo;
+
+	@FXML
+	private TextField txMoraRecibo;
+
+	@FXML
+	private TextField txDias;
+	
+	@FXML
+	private TextField txSaldo;
+	
 	private ObservableList<String> listDataCliente = FXCollections.observableArrayList();
 	private ObservableList<String> listDataCuota= FXCollections.observableArrayList();
 	
@@ -83,7 +120,27 @@ public class ListadoCuotaController {
 					String ced = data[0].trim();
 					
 					//Se asigna el cliente seleccionado desde la lista de clientes
-					cl = darCliente(ced);	
+					cl = darCliente(ced);
+					
+					lbCliente.setText(nombre);
+					Recibo reciboCl = main.darReciboCliente(cl);
+					txRecibo.setText(""+reciboCl.getId_recibo());
+					txPrestamo.setText(""+reciboCl.getMonto_prestamo());
+					txInteres.setText(""+reciboCl.getInteres());
+					txFechaPres.setText(""+reciboCl.getFecha_prestamo());
+					txSaldo.setText(""+reciboCl.getSaldo());
+					boolean moraRec = reciboCl.isMora();							
+					txMora.setText(!moraRec ? "No":"Sí");
+					txFechaFin.setText(""+reciboCl.getFecha_fin());
+					txPagoTotal.setText(""+reciboCl.getPago_total());
+					
+					ArrayList<Dia> dias = main.darDias(reciboCl);
+					String sdias = "";
+					for (Dia d : dias) {
+						sdias += d.getDia() + ",";
+					}
+					sdias = sdias.substring(0, sdias.length() - 1);
+					txDias.setText(sdias);
 					
 					listDataCuota.addAll(darStrCuotas(cl));
 					listaCuotas.setItems(listDataCuota);
@@ -92,7 +149,12 @@ public class ListadoCuotaController {
 
 						public void changed(ObservableValue arg0, Object arg1, Object arg2) {
 							// TODO Auto-generated method stub
-
+							
+							txCuota.setText("");
+							txFechaCobro.setText("");
+							txValorCuota.setText("");
+							txValorPagado.setText("");
+							
 							String[] dataCu = arg2.toString().split(":");
 							String noCuota = dataCu[0];
 							String strFecha = dataCu[1];
@@ -104,6 +166,8 @@ public class ListadoCuotaController {
 							
 							txValorCuota.setText(""+cut.getValor());
 							txValorPagado.setText(""+cut.getValor_pagado());
+							boolean mora = cut.isMora();							
+							txMora.setText(!mora ? "No":"Sí");
 						}
 					});
 				}

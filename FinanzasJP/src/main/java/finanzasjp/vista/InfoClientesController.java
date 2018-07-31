@@ -68,6 +68,9 @@ public class InfoClientesController {
 
 	@FXML
 	private TextField txDias;
+	
+	@FXML
+	private TextField txSaldo;
 
 	private ObservableList<String> listViewData = FXCollections.observableArrayList();
 
