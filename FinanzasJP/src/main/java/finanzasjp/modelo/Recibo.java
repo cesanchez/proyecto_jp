@@ -22,31 +22,31 @@ import javax.persistence.JoinTable;
 @Entity
 @Table(name = "recibo")
 public class Recibo {
-	
+
 	private int id_recibo;
-	
-	private double saldo; 
-	private double monto_prestamo; 
+
+	private double saldo;
+	private double monto_prestamo;
 	@Column(columnDefinition = "TINYINT")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
-	private boolean activo; 
+	private boolean activo;
 	@Column(columnDefinition = "TINYINT")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
-	private boolean mora; 
-	private double pago_total; 
-	private double interes; 
+	private boolean mora;
+	private double pago_total;
+	private double interes;
 	@Column(columnDefinition = "TINYINT")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean diario;
 	private Date fecha_prestamo;
 	private Date fecha_fin;
-	
-	private Cliente id_cliente; 
+
+	private Cliente id_cliente;
 	private Set<Cuota> cuotas;
 	private Set<Dia> dias;
-		
+
 	public Recibo() {
-		
+
 	}
 
 	public Recibo(int id_recibo, double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total,
@@ -69,22 +69,22 @@ public class Recibo {
 	}
 
 	public boolean contieneDia(int dia) {
-		
+
 		boolean ret = false;
-		for(Dia d : this.getDias()) {
-			
-			if(d.getDia() == dia) {
+		for (Dia d : this.getDias()) {
+
+			if (d.getDia() == dia) {
 				ret = true;
 				break;
 			}
 		}
-		
+
 		return ret;
-		
+
 	}
 
 	@Id
-    @Column(name = "id_recibo")
+	@Column(name = "id_recibo")
 	@GeneratedValue
 	public int getId_recibo() {
 		return id_recibo;
@@ -143,7 +143,7 @@ public class Recibo {
 	}
 
 	@ManyToOne
-    @JoinColumn(name = "id_cliente")
+	@JoinColumn(name = "id_cliente")
 	public Cliente getId_cliente() {
 		return id_cliente;
 	}
@@ -159,8 +159,8 @@ public class Recibo {
 	public void setDiario(boolean diario) {
 		this.diario = diario;
 	}
-	
-	@OneToMany(mappedBy = "id_recibo", targetEntity=Cuota.class, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "id_recibo", targetEntity = Cuota.class, cascade = CascadeType.ALL)
 	public Set<Cuota> getCuotas() {
 		return cuotas;
 	}
@@ -170,10 +170,9 @@ public class Recibo {
 	}
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "dia_recibo", joinColumns = { 
-			@JoinColumn(name = "id_recibo", nullable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "id_dia", 
-					nullable = false) })
+	@JoinTable(name = "dia_recibo", joinColumns = {
+			@JoinColumn(name = "id_recibo", nullable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "id_dia", nullable = false) })
 	public Set<Dia> getDias() {
 		return dias;
 	}
@@ -197,9 +196,18 @@ public class Recibo {
 	public void setFecha_fin(Date fecha_fin) {
 		this.fecha_fin = fecha_fin;
 	}
-	
-	
-	
-	
+
+	public Cuota darCuotaId(int id) {
+
+		Cuota cRet = null;
+
+		for (Cuota c : cuotas) {
+			if (c.getId_cuota() == id) {
+				cRet = c;
+				break;
+			}
+		}
+		return cRet;
+	}
 
 }

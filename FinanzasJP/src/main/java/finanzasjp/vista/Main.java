@@ -49,9 +49,14 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
-	public static void generarListadoCobro(int dia, String fecha) throws ParseException {
+	public static void generarArchivoListaCobro(int dia, String fecha) throws ParseException {
 		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha);
 		manager.genListadoCsvCobro(cuotas);
+	}
+	
+	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha) throws ParseException {
+		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha);
+		return clientes;		
 	}
 	
 	public static void verInfoClientes() throws IOException {
@@ -84,6 +89,21 @@ public class Main extends Application {
 		Scene scene = new Scene(listado);
 		listadoStage.setScene(scene);		
 		listadoStage.showAndWait();
+	}
+	
+	public Cliente darCliente(String id) {
+
+		Cliente elCl = null;
+		for (Cliente cl : darClientes()) {
+			if (cl.getId().equals(id)) {
+				elCl = cl;
+			}
+		}
+		return elCl;
+	}
+	
+	public static ArrayList<Cuota> darCuotasCliente(Cliente cliente){
+		return manager.darCuotasCliente(cliente);
 	}
 	
 	public static void main(String[] args) {

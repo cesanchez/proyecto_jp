@@ -242,9 +242,22 @@ public class Manager {
 				}
 			}
 		}
-
-		return listaCuota;
+		return listaCuota;		
+	}
+	
+	public ArrayList<Cliente> darListaClientesCobro(int dia, String fecha) throws ParseException {
 		
+		ArrayList<Cliente> listaClientes = new ArrayList<Cliente>();		
+		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha);
+		
+		for(Cuota c :listaCuota) {
+			
+			Recibo rec = c.getId_recibo();			
+			Cliente cl = rec.getId_cliente();
+			listaClientes.add(cl);			
+		}
+		
+		return listaClientes;
 	}
 	
 	public void genListadoCsvCobro(ArrayList<Cuota> lista) {
@@ -329,6 +342,25 @@ public class Manager {
 
 		// obtains the session
 		session = sessionFactory.openSession();
+	}
+	
+	public ArrayList<Cuota> darCuotasCliente(Cliente cliente){
+		
+		ArrayList<Cuota> cuotasCliente = new ArrayList<Cuota>();		
+		Recibo rec = darReciboCliente(cliente);		
+		cuotasCliente  = darCuotasRecibo(rec);
+		
+		return cuotasCliente;
+	}
+	
+	public ArrayList<Cuota> darCuotasRecibo(Recibo rec){
+		
+		ArrayList<Cuota> cuotas = new ArrayList<Cuota>();		
+		for(Cuota c: rec.getCuotas()) {
+			cuotas.add(c);
+		}
+		
+		return cuotas;
 	}
 
 	/*public static void main(String[] args) {

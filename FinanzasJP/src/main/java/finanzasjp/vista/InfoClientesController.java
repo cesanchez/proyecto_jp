@@ -26,6 +26,9 @@ public class InfoClientesController {
 
 	@FXML
 	private ListView listaClientes;
+	
+	@FXML
+	private ListView listaCuotas;
 
 	@FXML
 	private GridPane grid;
@@ -73,42 +76,6 @@ public class InfoClientesController {
 		listViewData.addAll(darNomClientes());
 	}
 
-	public ArrayList<String> darNomClientes() {
-		ArrayList<String> nombresCl = new ArrayList<String>();
-		for (Cliente cl : main.darClientes()) {
-
-			nombresCl.add(cl.getId() + ": " + cl.getNombre() + " " + cl.getApellido());
-		}
-
-		return nombresCl;
-	}
-
-	public Cliente darCliente(String id) {
-
-		Cliente elCl = null;
-		for (Cliente cl : main.darClientes()) {
-
-			if (cl.getId().equals(id)) {
-				elCl = cl;
-			}
-		}
-
-		return elCl;
-	}
-	
-	@FXML
-	private void verGenListado() {
-
-		try {
-			main.verGenListados();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-
-	}
-
 	public void initialize() {
 
 		// Init ListView and listen for selection changes
@@ -151,5 +118,39 @@ public class InfoClientesController {
 
 			}
 		});
+	}
+	
+	public ArrayList<String> darNomClientes() {
+		ArrayList<String> nombresCl = new ArrayList<String>();
+		for (Cliente cl : main.darClientes()) {
+
+			nombresCl.add(cl.getId() + ": " + cl.getNombre() + " " + cl.getApellido());
+		}
+
+		return nombresCl;
+	}
+
+	public Cliente darCliente(String id) {
+
+		Cliente elCl = null;
+		for (Cliente cl : main.darClientes()) {
+
+			if (cl.getId().equals(id)) {
+				elCl = cl;
+			}
+		}
+
+		return elCl;
+	}
+	
+	@FXML
+	private void verGenListado() {
+
+		try {
+			main.verGenListados();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
