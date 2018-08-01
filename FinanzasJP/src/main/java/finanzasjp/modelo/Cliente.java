@@ -42,6 +42,17 @@ public class Cliente {
 		this.cliente_vip = cliente_vip;
 		this.recibos = recibos;
 	}
+    
+    public Cliente(String id, String nombre, String apellido, String direccion, String telefono,
+			Cliente_VIP cliente_vip) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.direccion = direccion;
+		this.telefono = telefono;
+		this.cliente_vip = cliente_vip;
+	}
 
 	@Id
     @Column(name = "id")
@@ -102,6 +113,19 @@ public class Cliente {
 
 	public void setRecibos(Set<Recibo> recibos) {
 		this.recibos = recibos;
+	}
+		
+	public Recibo darRecibo(int id_recibo) {
+		Recibo ret = null;
+		
+		for(Recibo re : recibos) {
+			if(re.getId_recibo() == id_recibo) {
+				ret = re;
+				break;
+			}
+		}
+		
+		return ret;
 	}
 	
 		

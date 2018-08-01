@@ -13,11 +13,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 
 public class ListadoCuotaController {
@@ -95,7 +97,47 @@ public class ListadoCuotaController {
 
 	public void initialize() {
 		
+		//Agregar patron al campo valor pagado
+		
+		txDia.focusedProperty().addListener(new ChangeListener() {
+
+			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+				// TODO Auto-generated method stub
+		        if (newValue != null) { //when focus lost
+		            if(!txDia.getText().matches("([0-9]|[12][0-9]|3[01])")){
+		                //when it not matches the pattern (1.0 - 6.0)
+		                //set the textField empty
+		            	txDia.setText("");
+		            }
+		        }
+			}
+		});
 	
+	}
+	
+	public void generarArchivoListaCobro() {
+		
+		try {
+			
+			LocalDate value = datePicker.getValue();
+			String strFecha = value!=null ? value.toString():null;
+			String strDia = !txDia.getText().equals("") ? txDia.getText():"0";
+			
+			if(strFecha == null && strDia.equals("0")) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Información");
+				alert.setHeaderText(null);
+				alert.setContentText("Seleccione una fecha o un día de pago");
+				alert.showAndWait();
+				
+			}else {
+				main.generarArchivoListaCobro(Integer.parseInt(strDia),strFecha);
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void generarListadoClientes() {
@@ -104,74 +146,85 @@ public class ListadoCuotaController {
 		String strDia = !txDia.getText().equals("") ? txDia.getText():"0";
 		
 		try {
-			ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia),strFecha);			
-			ArrayList<String> strClientes = darNombreClientes(lClientes);
 			
-			listDataCliente.addAll(strClientes);
-			listaClientes.setItems(listDataCliente);
-			listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+			if(strFecha == null && strDia.equals("0")) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Información");
+				alert.setHeaderText(null);
+				alert.setContentText("Seleccione una fecha o un día de pago");
+				alert.showAndWait();
+				
+			}else {
+				
+				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia),strFecha);			
+				ArrayList<String> strClientes = darNombreClientes(lClientes);
+				
+				listDataCliente.addAll(strClientes);
+				listaClientes.setItems(listDataCliente);
+				listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
-				public void changed(ObservableValue observable, Object arg1, Object arg2) {
-					// TODO Auto-generated method stub				
-					listDataCuota.clear();
-					
-					String[] data = arg2.toString().split(":");
-					String nombre = data[1];				
-					String ced = data[0].trim();
-					
-					//Se asigna el cliente seleccionado desde la lista de clientes
-					cl = darCliente(ced);
-					
-					lbCliente.setText(nombre);
-					Recibo reciboCl = main.darReciboCliente(cl);
-					txRecibo.setText(""+reciboCl.getId_recibo());
-					txPrestamo.setText(""+reciboCl.getMonto_prestamo());
-					txInteres.setText(""+reciboCl.getInteres());
-					txFechaPres.setText(""+reciboCl.getFecha_prestamo());
-					txSaldo.setText(""+reciboCl.getSaldo());
-					boolean moraRec = reciboCl.isMora();							
-					txMora.setText(!moraRec ? "No":"Sí");
-					txFechaFin.setText(""+reciboCl.getFecha_fin());
-					txPagoTotal.setText(""+reciboCl.getPago_total());
-					
-					ArrayList<Dia> dias = main.darDias(reciboCl);
-					String sdias = "";
-					for (Dia d : dias) {
-						sdias += d.getDia() + ",";
-					}
-					sdias = sdias.substring(0, sdias.length() - 1);
-					txDias.setText(sdias);
-					
-					listDataCuota.addAll(darStrCuotas(cl));
-					listaCuotas.setItems(listDataCuota);
-					
-					listaCuotas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-
-						public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-							// TODO Auto-generated method stub
-							
-							txCuota.setText("");
-							txFechaCobro.setText("");
-							txValorCuota.setText("");
-							txValorPagado.setText("");
-							
-							String[] dataCu = arg2.toString().split(":");
-							String noCuota = dataCu[0];
-							String strFecha = dataCu[1];
-							txCuota.setText(noCuota);
-							txFechaCobro.setText(strFecha);
-							
-							Recibo reciboCl = main.darReciboCliente(cl);							
-							Cuota cut = reciboCl.darCuotaId(Integer.parseInt(noCuota));
-							
-							txValorCuota.setText(""+cut.getValor());
-							txValorPagado.setText(""+cut.getValor_pagado());
-							boolean mora = cut.isMora();							
-							txMora.setText(!mora ? "No":"Sí");
+					public void changed(ObservableValue observable, Object arg1, Object arg2) {
+						// TODO Auto-generated method stub				
+						listDataCuota.clear();
+						
+						String[] data = arg2.toString().split(":");
+						String nombre = data[1];				
+						String ced = data[0].trim();
+						
+						//Se asigna el cliente seleccionado desde la lista de clientes
+						cl = darCliente(ced);
+						
+						lbCliente.setText(nombre);
+						Recibo reciboCl = main.darReciboCliente(cl);
+						txRecibo.setText(""+reciboCl.getId_recibo());
+						txPrestamo.setText(""+reciboCl.getMonto_prestamo());
+						txInteres.setText(""+reciboCl.getInteres());
+						txFechaPres.setText(""+reciboCl.getFecha_prestamo());
+						txSaldo.setText(""+reciboCl.getSaldo());
+						boolean moraRec = reciboCl.isMora();							
+						txMoraRecibo.setText(!moraRec ? "No":"Sí");
+						txFechaFin.setText(""+reciboCl.getFecha_fin());
+						txPagoTotal.setText(""+reciboCl.getPago_total());
+						
+						ArrayList<Dia> dias = main.darDias(reciboCl);
+						String sdias = "";
+						for (Dia d : dias) {
+							sdias += d.getDia() + ",";
 						}
-					});
-				}
-			});	
+						sdias = sdias.substring(0, sdias.length() - 1);
+						txDias.setText(sdias);
+						
+						listDataCuota.addAll(darStrCuotas(cl));
+						listaCuotas.setItems(listDataCuota);
+						
+						listaCuotas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+							public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+								// TODO Auto-generated method stub
+								
+								txCuota.setText("");
+								txFechaCobro.setText("");
+								txValorCuota.setText("");
+								txValorPagado.setText("");
+								
+								String[] dataCu = arg2.toString().split(":");
+								String noCuota = dataCu[0];
+								String strFecha = dataCu[1];
+								txCuota.setText(noCuota);
+								txFechaCobro.setText(strFecha);
+								
+								Recibo reciboCl = main.darReciboCliente(cl);							
+								Cuota cut = reciboCl.darCuotaId(Integer.parseInt(noCuota));
+								
+								txValorCuota.setText(""+cut.getValor());
+								txValorPagado.setText(""+cut.getValor_pagado());
+								boolean mora = cut.isMora();							
+								txMora.setText(!mora ? "No":"Sí");
+							}
+						});
+					}
+				});	
+			}		
 			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
@@ -179,6 +232,7 @@ public class ListadoCuotaController {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		}
 	}
 	
@@ -195,6 +249,12 @@ public class ListadoCuotaController {
 		return elCl;
 	}
 
+	public void guardarPago() {
+		
+		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Integer.parseInt(txCuota.getText()), Integer.parseInt(txRecibo.getText()));
+		System.out.println("Pago re");
+	}
+	
 	public ArrayList<String> darNombreClientes(ArrayList<Cliente> lClientes) {
 		ArrayList<String> nombresCl = new ArrayList<String>();
 		for (Cliente cl : lClientes) {

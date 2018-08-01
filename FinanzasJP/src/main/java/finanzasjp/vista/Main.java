@@ -1,6 +1,7 @@
 package finanzasjp.vista;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.text.ParseException;
 
 import finanzasjp.modelo.*;
@@ -8,6 +9,7 @@ import javafx.application.Application;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -57,6 +59,12 @@ public class Main extends Application {
 	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha) throws ParseException {
 		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha);
 		return clientes;		
+	}
+	
+	public static void desactivarRecibo(String id_recibo) {
+		
+		int id = Integer.parseInt(id_recibo);
+		manager.desactivarRecibo(id);
 	}
 	
 	public static void verInfoClientes() throws IOException {
@@ -115,6 +123,28 @@ public class Main extends Application {
 		launch(args);
 		
 		manager.exit();
+	}
+
+	public static void guardarPago(double valor, int id_cuota, int id_recibo) {
+		// TODO Auto-generated method stub
+		manager.guardarPago(valor, id_cuota, id_recibo);
+	}
+
+	public static ArrayList<Cliente_VIP> darClientesVip() {
+		// TODO Auto-generated method stub
+		return manager.darClientesVip();
+	}
+
+	public static boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel,
+			String dir) {
+		
+		return manager.guardarCliente(cedCliVip, ced, nombre, apellido, tel, dir);
+		
+	}
+
+	public static void guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF, double pagoTotal) throws ParseException {
+		// TODO Auto-generated method stub
+		manager.guardarRecibo(id_rec, ced, prestamo, interes, fechaI, fechaF, pagoTotal);
 	}
 
 }

@@ -18,16 +18,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="643.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaController">
+<BorderPane prefHeight="465.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaController">
    <top>
-      <Label text="Listado de cuotas" BorderPane.alignment="CENTER">
+      <Label text="Listado de Cobro" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="36.0" />
          </font>
       </Label>
    </top>
    <center>
-      <VBox prefHeight="312.0" prefWidth="814.0" spacing="6.0" BorderPane.alignment="CENTER">
+      <VBox spacing="6.0" BorderPane.alignment="CENTER">
          <children>
             <HBox spacing="5.0">
                <children>
@@ -50,7 +50,7 @@
                         <Insets top="10.0" />
                      </HBox.margin>
                   </Separator>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="139.0" text="Generar Archivo" />
+                  <Button mnemonicParsing="false" onAction="#generarArchivoListaCobro" prefHeight="26.0" prefWidth="139.0" text="Generar Archivo" />
                </children>
             </HBox>
             <TitledPane prefHeight="227.0" prefWidth="814.0" text="Listado">
@@ -135,7 +135,7 @@
                                                             <Font size="14.0" />
                                                          </font>
                                                       </TextField>
-                                                      <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="118.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                      <Button mnemonicParsing="false" onAction="#guardarPago" prefHeight="38.0" prefWidth="118.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                                          <font>
                                                             <Font name="System Bold" size="14.0" />
                                                          </font>
@@ -177,7 +177,7 @@
       </VBox>
    </center>
    <bottom>
-      <VBox prefHeight="324.0" prefWidth="814.0" BorderPane.alignment="CENTER">
+      <VBox BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="lbCliente" text="Cliente">
                <font>
@@ -307,7 +307,7 @@
             </HBox>
          </children>
          <BorderPane.margin>
-            <Insets left="5.0" right="5.0" top="5.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
       </VBox>
    </bottom>

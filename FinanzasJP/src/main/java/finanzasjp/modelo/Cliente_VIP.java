@@ -79,6 +79,20 @@ public class Cliente_VIP {
 	public void setClientes(Set<Cliente> clientes) {
 		this.clientes = clientes;
 	}
-
-
+	
+	public void addCliente(Cliente cl) {
+		this.clientes.add(cl);
+	}
+	
+	public boolean containsCliente(Cliente myCl) {
+		boolean ret = false;
+		for(Cliente cl : clientes) {
+			
+			if(cl.getId().equals(myCl.getId())) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
 }

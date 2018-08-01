@@ -67,6 +67,22 @@ public class Recibo {
 		this.cuotas = cuotas;
 		this.dias = dias;
 	}
+	
+	public Recibo(int id_recibo, double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total,
+			double interes, boolean diario, Date fecha_prestamo, Date fecha_fin, Cliente id_cliente) {
+		super();
+		this.id_recibo = id_recibo;
+		this.saldo = saldo;
+		this.monto_prestamo = monto_prestamo;
+		this.activo = activo;
+		this.mora = mora;
+		this.pago_total = pago_total;
+		this.interes = interes;
+		this.diario = diario;
+		this.fecha_prestamo = fecha_prestamo;
+		this.fecha_fin = fecha_fin;
+		this.id_cliente = id_cliente;
+	}
 
 	public boolean contieneDia(int dia) {
 

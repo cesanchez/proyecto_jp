@@ -51,8 +51,12 @@ public class Manager {
 
 	protected void read() {
 
-		String id = "1130";
+		String id = "11304564";
 		Cliente_VIP clientevip = (Cliente_VIP) session.get(Cliente_VIP.class, id);
+		
+		if(clientevip == null) {
+			System.out.println("null papá");
+		}else {
 
 		System.out.println("Nombre: " + clientevip.getNombre());
 		System.out.println("Apellido: " + clientevip.getApellido());
@@ -70,6 +74,7 @@ public class Manager {
 
 			}
 		}
+		}
 
 	}
 
@@ -86,6 +91,40 @@ public class Manager {
 
 		session.update(cliente);
 
+		session.getTransaction().commit();
+	}
+	
+	public void guardarPago(double valor, int id_cuota, int id_recibo) {
+		// TODO Auto-generated method stub
+		Recibo recibo = (Recibo) session.get(Recibo.class,id_recibo);
+		Cuota cu = recibo.darCuotaId(id_cuota);
+		
+		//Actualizar cuota
+		cu.setValor_pagado(valor);
+		double valorCuota = cu.getValor();
+		if(valor >= valorCuota) {
+			cu.setMora(false);
+		}
+		
+		//Actualizar saldo recibo
+		double saldo = recibo.getSaldo();
+		saldo = saldo - valor;
+		recibo.setSaldo(saldo);
+		
+		session.beginTransaction();
+		session.update(cu);
+		session.update(recibo);
+		session.getTransaction().commit();
+	}
+	
+	
+	public void desactivarRecibo(int id_recibo) {
+		
+		Recibo recibo = (Recibo) session.get(Recibo.class, id_recibo);
+		
+		recibo.setActivo(false);
+		session.beginTransaction();
+		session.update(recibo);
 		session.getTransaction().commit();
 	}
 
@@ -110,6 +149,11 @@ public class Manager {
 		}
 		
 		return clientes;		
+	}
+	
+	public ArrayList<Cliente_VIP> darClientesVip() {
+		
+		return (ArrayList<Cliente_VIP>) clientesVip;		
 	}
 	
 	public Recibo darReciboCliente(Cliente miCliente){
@@ -146,7 +190,6 @@ public class Manager {
 	public void cargarInformacion() {
 		
 		clientesVip = session.createCriteria(Cliente_VIP.class).list();	
-		System.out.println("Info:"+clientesVip.size());
 	}
 	
 	public ArrayList<Cuota> generarListadoCobroDia(int dia) {
@@ -167,20 +210,21 @@ public class Manager {
 			
 				for(Recibo rec : recibos) {
 					
-					Set<Cuota> cuotas = rec.getCuotas();
-					
-					if(rec.contieneDia(dia)) {
-						
-						for(Cuota cu : cuotas) {
+					if(rec.isActivo()) {
+						Set<Cuota> cuotas = rec.getCuotas();					
+						if(rec.contieneDia(dia)) {
 							
-							Date fechaCob = cu.getFecha_cobro();
-							int mesCob = fechaCob.getMonth()+1;
-							
-							if(mesActual == mesCob) {
-								listaCuota.add(cu);
-							}							
-						}						
-					}						
+							for(Cuota cu : cuotas) {
+								
+								Date fechaCob = cu.getFecha_cobro();
+								int mesCob = fechaCob.getMonth()+1;
+								
+								if(mesActual == mesCob) {
+									listaCuota.add(cu);
+								}							
+							}						
+						}
+					}											
 				}
 			}			
 		}
@@ -195,9 +239,7 @@ public class Manager {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = sdf1.parse(startDate);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime()); 
-		
-		//int mesFecha = sqlStartDate.getMonth() +1 ;
-				
+						
 		for(Cliente_VIP clVi : clientesVip) {
 			
 			Set<Cliente> clientes = clVi.getClientes();
@@ -208,11 +250,13 @@ public class Manager {
 			
 				for(Recibo rec : recibos) {
 					
-					Set<Cuota> cuotas = rec.getCuotas();
-					for(Cuota cu : cuotas) {
-						
-						if(cu.getFecha_cobro().equals(sqlStartDate)) {
-							listaCuota.add(cu);
+					if(rec.isActivo()){
+						Set<Cuota> cuotas = rec.getCuotas();
+						for(Cuota cu : cuotas) {
+							
+							if(cu.getFecha_cobro().equals(sqlStartDate)) {
+								listaCuota.add(cu);
+							}
 						}
 					}
 				}
@@ -363,6 +407,65 @@ public class Manager {
 		return cuotas;
 	}
 
+	public boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel, String dir) {
+		// TODO Auto-generated method stub
+		boolean ret = false;
+		Cliente_VIP clVip = (Cliente_VIP) session.get(Cliente_VIP.class, cedCliVip);
+		Cliente elCliente = (Cliente) session.get(Cliente.class, ced);
+		
+		session.beginTransaction();
+		//Si el cliente no existe en la db
+		if(elCliente == null) {
+			elCliente = new Cliente(ced, nombre, apellido, dir, tel, clVip);
+			session.save(elCliente);			
+			ret = true;
+		}else {
+			ret = false;
+		}	
+		session.getTransaction().commit();
+		return ret;
+
+	}
+
+	public void guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF,
+			double pagoTotal) throws ParseException {
+		
+		String startDate= fechaI;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateI = sdf1.parse(startDate);
+		java.sql.Date sqlStartDate = new java.sql.Date(dateI.getTime()); 
+		
+		String endtDate= fechaF;
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateF = sdf2.parse(endtDate);
+		java.sql.Date sqlEndDate = new java.sql.Date(dateF.getTime()); 
+		
+		Cliente cl = (Cliente) session.get(Cliente.class, ced);
+		
+		session.beginTransaction();
+		
+		if(!cl.darRecibo(id_rec).equals(null)) {
+			//create
+			Recibo nuevoRecibo = new Recibo(id_rec, pagoTotal, prestamo, true, false, pagoTotal, interes, false, sqlStartDate, sqlEndDate, cl);
+			session.save(nuevoRecibo);
+			session.getTransaction().commit();
+		}else {
+			//update
+			Recibo elRecibo = (Recibo) session.get(Recibo.class, id_rec);
+			elRecibo.setMonto_prestamo(prestamo);
+			elRecibo.setSaldo(pagoTotal);
+			elRecibo.setPago_total(pagoTotal);
+			elRecibo.setInteres(interes);
+			elRecibo.setFecha_prestamo(sqlStartDate);
+			elRecibo.setFecha_fin(sqlEndDate);
+			
+			session.update(elRecibo);
+		}
+		
+		session.getTransaction().commit();
+	}
+
+
 	/*public static void main(String[] args) {
 		
 		Manager manager = new Manager();
@@ -377,15 +480,15 @@ public class Manager {
 		// manager.delete(session);
 		
 		//ArrayList<Cuota> cuotas = manager.generarListadoCobroDia(5);
-		ArrayList<Cuota> cuotas;
-		
-			try {
-				cuotas = manager.generarListadoCobro(5,"2018-01-01");
-				manager.genListadoCsvCobro(cuotas);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		ArrayList<Cuota> cuotas;
+//		
+//			try {
+//				cuotas = manager.generarListadoCobro(5,"2018-01-01");
+//				manager.genListadoCsvCobro(cuotas);
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 			
 		
