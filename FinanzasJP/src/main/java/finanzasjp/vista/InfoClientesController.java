@@ -342,10 +342,10 @@ public class InfoClientesController {
 			alertConf.setHeaderText("¿Confirma que desea almacenar los siguientes datos?");
 			alertConf.setContentText(" Nombre: " + txNombreAdmin.getText() + "\n Apellido: " + txApellidoAdmin.getText()+"\n Cédula: " + txCedulaAdmin.getText()+"\n Teléfono: " + txTelefonoAdmin.getText()+"\n Dirección: " + txDireccionAdmin.getText());
 
-			Optional<ButtonType> result = alertConf.showAndWait();
-			
+			Optional<ButtonType> result = alertConf.showAndWait();			
 			boolean resp = false;
-			boolean flagOk = false;
+			boolean flagOk = false; //flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo mensaje
+			
 			if (result.get() == ButtonType.OK){
 				resp = main.guardarCliente(cedulaClienteVip, txCedulaAdmin.getText(), txNombreAdmin.getText(), 
 						txApellidoAdmin.getText(),txTelefonoAdmin.getText(), txDireccionAdmin.getText());
@@ -355,13 +355,15 @@ public class InfoClientesController {
 			}
 					
 			if(resp && flagOk) {
-				Alert alert = new Alert(AlertType.CONFIRMATION);
+				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Confirmación");
 				alert.setHeaderText(null);
 				alert.setContentText("Datos guardados exitosamente");
 				alert.showAndWait();
 				
-				gridRecibo_admin.setDisable(false);				
+				//Se habilita el grid del recibo
+				gridRecibo_admin.setDisable(false);
+				lbRecibo.setText(Integer.toString(main.darNumUltRecibo()));
 			}else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Información");
@@ -378,8 +380,41 @@ public class InfoClientesController {
 		//String ds = txDias_admin.getText();
 		
 		try {
-			main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(), Double.parseDouble(txPrestamo_admin.getText()), Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(), txFechaFin_admin.getValue().toString(),
-								Double.parseDouble(lbPagoTotal_admin.getText()));
+			
+			Alert alertConf = new Alert(AlertType.CONFIRMATION);
+			alertConf.setTitle("Confirmación");
+			alertConf.setHeaderText(null);
+			alertConf.setContentText("¿Confirma que desea almacenar el recibo?");
+			Optional<ButtonType> result = alertConf.showAndWait();			
+			boolean resp = false;
+			boolean flagOk = false; //flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo mensaje
+			
+			if (result.get() == ButtonType.OK){
+				String[] losDias = txDias_admin.getText().split(",");
+				
+				resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(), Double.parseDouble(txPrestamo_admin.getText()), Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(), txFechaFin_admin.getValue().toString(),
+						Double.parseDouble(lbPagoTotal_admin.getText()), losDias);
+				flagOk = true;
+			} else {
+			    // ... user chose CANCEL or closed the dialog
+			}
+			
+			if(resp && flagOk) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Confirmación");
+				alert.setHeaderText(null);
+				alert.setContentText("Datos guardados exitosamente");
+				alert.showAndWait();
+				
+			}else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Información");
+				alert.setHeaderText(null);
+				alert.setContentText("El recibo No. " + lbRecibo.getText()+ " ya existe");
+				alert.showAndWait();
+			}
+			
+			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

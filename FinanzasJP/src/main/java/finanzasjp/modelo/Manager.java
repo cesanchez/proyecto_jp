@@ -414,7 +414,7 @@ public class Manager {
 		Cliente elCliente = (Cliente) session.get(Cliente.class, ced);
 		
 		session.beginTransaction();
-		//Si el cliente no existe en la db
+		//Si el cliente no existe en la db, entonces se crea uno nuevo y guarda. 
 		if(elCliente == null) {
 			elCliente = new Cliente(ced, nombre, apellido, dir, tel, clVip);
 			session.save(elCliente);			
@@ -427,8 +427,11 @@ public class Manager {
 
 	}
 
-	public void guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF,
-			double pagoTotal) throws ParseException {
+	public boolean guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF,
+			double pagoTotal, ArrayList<Integer> dias) throws ParseException {
+		
+		boolean ret = false;
+		Recibo elRecibo = (Recibo) session.get(Recibo.class, id_rec);
 		
 		String startDate= fechaI;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -438,31 +441,39 @@ public class Manager {
 		String endtDate= fechaF;
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date dateF = sdf2.parse(endtDate);
-		java.sql.Date sqlEndDate = new java.sql.Date(dateF.getTime()); 
-		
-		Cliente cl = (Cliente) session.get(Cliente.class, ced);
+		java.sql.Date sqlEndDate = new java.sql.Date(dateF.getTime());
 		
 		session.beginTransaction();
-		
-		if(!cl.darRecibo(id_rec).equals(null)) {
-			//create
-			Recibo nuevoRecibo = new Recibo(id_rec, pagoTotal, prestamo, true, false, pagoTotal, interes, false, sqlStartDate, sqlEndDate, cl);
-			session.save(nuevoRecibo);
-			session.getTransaction().commit();
+		//Si el recibo no existe en la bd, se crea uno nuevo y se guarda. 
+		if(elRecibo == null) {
+			//create			
+			Cliente cl = (Cliente) session.get(Cliente.class, ced);
+			Set<Dia> losDias = new HashSet<Dia>();
+			for(Integer d : dias) {
+				Dia elDia = new Dia (d.intValue());
+				losDias.add(elDia);
+			}
+			elRecibo = new Recibo(id_rec, pagoTotal, prestamo, true, false, pagoTotal, interes, false, sqlStartDate, sqlEndDate, cl, losDias);
+			session.save(elRecibo);
+			ret = true;
 		}else {
-			//update
-			Recibo elRecibo = (Recibo) session.get(Recibo.class, id_rec);
-			elRecibo.setMonto_prestamo(prestamo);
-			elRecibo.setSaldo(pagoTotal);
-			elRecibo.setPago_total(pagoTotal);
-			elRecibo.setInteres(interes);
-			elRecibo.setFecha_prestamo(sqlStartDate);
-			elRecibo.setFecha_fin(sqlEndDate);
-			
-			session.update(elRecibo);
-		}
+			ret = false;
+		}			
+		session.getTransaction().commit();		
+		return ret;
+	}
+	
+	public int darNumUltimoRecibo() {
+		int num = 0;
 		
-		session.getTransaction().commit();
+		List<Recibo> losRecibos = session.createCriteria(Recibo.class).list();	
+		ComparadorRecibo compa = new ComparadorRecibo();
+		losRecibos.sort(compa);
+		int index = losRecibos.size();
+		System.out.println(index);
+		Recibo elRecibo = losRecibos.get(index-1);
+		num = elRecibo.getId_recibo();
+		return num;
 	}
 
 

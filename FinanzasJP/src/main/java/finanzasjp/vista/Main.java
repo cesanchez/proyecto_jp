@@ -142,9 +142,19 @@ public class Main extends Application {
 		
 	}
 
-	public static void guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF, double pagoTotal) throws ParseException {
+	public static boolean guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, 
+			String fechaF, double pagoTotal, String[] losDias) throws ParseException {
 		// TODO Auto-generated method stub
-		manager.guardarRecibo(id_rec, ced, prestamo, interes, fechaI, fechaF, pagoTotal);
+		ArrayList dias = new ArrayList();
+		for(int i = 0; i< losDias.length; i++) {
+			dias.add(Integer.parseInt(losDias[i].trim()));
+		}
+		return manager.guardarRecibo(id_rec, ced, prestamo, interes, fechaI, fechaF, pagoTotal, dias);
+	}
+
+	public static int darNumUltRecibo() {
+		// TODO Auto-generated method stub
+		return manager.darNumUltimoRecibo() + 1;
 	}
 
 }

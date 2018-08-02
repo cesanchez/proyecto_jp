@@ -1,6 +1,7 @@
 package finanzasjp.modelo;
 
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Cliente {
 	private String telefono; 
 	
 	private Cliente_VIP cliente_vip;
-	private Set<Recibo> recibos;	
+	private Set<Recibo> recibos ;
 	
 	public Cliente() {
 		
@@ -118,13 +119,14 @@ public class Cliente {
 	public Recibo darRecibo(int id_recibo) {
 		Recibo ret = null;
 		
-		for(Recibo re : recibos) {
-			if(re.getId_recibo() == id_recibo) {
-				ret = re;
-				break;
+		if (recibos != null) {
+			for(Recibo re : recibos) {
+				if(re.getId_recibo() == id_recibo) {
+					ret = re;
+					break;
+				}
 			}
-		}
-		
+		}		
 		return ret;
 	}
 	

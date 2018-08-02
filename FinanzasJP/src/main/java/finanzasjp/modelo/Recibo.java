@@ -69,7 +69,7 @@ public class Recibo {
 	}
 	
 	public Recibo(int id_recibo, double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total,
-			double interes, boolean diario, Date fecha_prestamo, Date fecha_fin, Cliente id_cliente) {
+			double interes, boolean diario, Date fecha_prestamo, Date fecha_fin, Cliente id_cliente, Set<Dia> dias) {
 		super();
 		this.id_recibo = id_recibo;
 		this.saldo = saldo;
@@ -82,6 +82,7 @@ public class Recibo {
 		this.fecha_prestamo = fecha_prestamo;
 		this.fecha_fin = fecha_fin;
 		this.id_cliente = id_cliente;
+		this.dias = dias;
 	}
 
 	public boolean contieneDia(int dia) {
@@ -101,7 +102,6 @@ public class Recibo {
 
 	@Id
 	@Column(name = "id_recibo")
-	@GeneratedValue
 	public int getId_recibo() {
 		return id_recibo;
 	}
