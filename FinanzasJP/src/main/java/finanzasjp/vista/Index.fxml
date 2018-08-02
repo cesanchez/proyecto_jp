@@ -19,7 +19,7 @@
       <HBox prefHeight="160.0" prefWidth="280.0" spacing="70.0" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#verClientes" prefHeight="26.0" prefWidth="101.0" text="Clientes" />
-            <Button layoutX="20.0" layoutY="30.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="101.0" text="Clientes VIP" />
+            <Button layoutX="20.0" layoutY="30.0" mnemonicParsing="false" onAction="#verClientesVip" prefHeight="26.0" prefWidth="101.0" text="Clientes VIP" />
          </children>
          <padding>
             <Insets bottom="15.0" left="10.0" right="10.0" top="20.0" />

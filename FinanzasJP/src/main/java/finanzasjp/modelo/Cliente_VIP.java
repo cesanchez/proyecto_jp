@@ -19,6 +19,7 @@ public class Cliente_VIP {
 	private String nombre;
 	private String apellido;
 	private String telefono;
+	private double monto_inicial;
 	
 	private Set<Cliente> clientes;	
 	
@@ -26,16 +27,15 @@ public class Cliente_VIP {
 		
 	}
 	
-	public Cliente_VIP(String id_cl, String nombre, String apellido, String telefono, Set<Cliente> clientes) {
+	public Cliente_VIP(String id_cl, String nombre, String apellido, String telefono, double capital, Set<Cliente> clientes) {
 		super();
 		this.id_cl = id_cl;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.telefono = telefono;
 		this.clientes = clientes;
+		this.monto_inicial = capital;
 	}
-
-	//create aqui el constructor
 
 	@Id
 	@Column(name = "id")
@@ -94,5 +94,13 @@ public class Cliente_VIP {
 			}
 		}
 		return ret;
+	}
+
+	public double getMonto_inicial() {
+		return monto_inicial;
+	}
+
+	public void setMonto_inicial(double monto_inicial) {
+		this.monto_inicial = monto_inicial;
 	}
 }

@@ -79,8 +79,22 @@ public class Main extends Application {
 		
 		Scene scene = new Scene(clienteVip);
 		clientVipDiaStage.setScene(scene);		
-		clientVipDiaStage.showAndWait();
+		clientVipDiaStage.showAndWait();		
+	}
+	
+	public static void verInfoClientesVip() throws IOException {
+		FXMLLoader loader =  new FXMLLoader();
+		loader.setLocation(Main.class.getResource("InfoClientesVip.fxml"));
+		BorderPane clienteVip = loader.load();
 		
+		Stage clientVipDiaStage = new Stage();
+		clientVipDiaStage.setTitle("Créditos JP");
+		clientVipDiaStage.initModality(Modality.WINDOW_MODAL);
+		clientVipDiaStage.initOwner(primaryStage);
+		
+		Scene scene = new Scene(clienteVip);
+		clientVipDiaStage.setScene(scene);		
+		clientVipDiaStage.showAndWait();		
 	}
 	
 	public static void verGenListados() throws IOException{
@@ -156,5 +170,11 @@ public class Main extends Application {
 		// TODO Auto-generated method stub
 		return manager.darNumUltimoRecibo() + 1;
 	}
+
+	public static ArrayList<Cliente> darClientes(String id_clVip) {
+		// TODO Auto-generated method stub
+		return manager.darClientes(id_clVip);
+	}
+
 
 }

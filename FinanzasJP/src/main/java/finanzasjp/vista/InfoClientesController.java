@@ -111,6 +111,9 @@ public class InfoClientesController {
 	@FXML
 	private TextField txDireccionAdmin;
 	
+	@FXML
+	private Label lbSinRecibo;
+	
 	//Admin nuevo recibo
 	
 	@FXML
@@ -172,8 +175,7 @@ public class InfoClientesController {
 		});
 		
 		// Init ListView and listen for selection changes
-		listaClientes.setItems(listViewData);
-		
+		listaClientes.setItems(listViewData);		
 		listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
 
 			public ListCell<Cliente> call(ListView<Cliente> param) {
@@ -185,13 +187,10 @@ public class InfoClientesController {
                         if (t != null) {
                             setText(t.getNombre() + " " + t.getApellido());
                         }
-                    }
- 
-                };
-                 
+                    } 
+                };                 
                 return cell;
 			}
-
 		});
 				
 		listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
@@ -247,11 +246,8 @@ public class InfoClientesController {
 					txPagoTotal.setText("");
 					txDias.setText("");
 					
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Información");
-					alert.setHeaderText(null);
-					alert.setContentText("El cliente seleccionado no tiene recibo activo");
-					alert.showAndWait();
+					lbSinRecibo.setText("El cliente seleccionado no tiene recibo activo");
+					
 				}
 
 			}

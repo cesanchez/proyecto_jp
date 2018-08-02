@@ -17,10 +17,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 
 public class ListadoCuotaController {
 
@@ -85,7 +87,7 @@ public class ListadoCuotaController {
 	@FXML
 	private TextField txSaldo;
 	
-	private ObservableList<String> listDataCliente = FXCollections.observableArrayList();
+	private ObservableList<Cliente> listDataCliente = FXCollections.observableArrayList();
 	private ObservableList<String> listDataCuota= FXCollections.observableArrayList();
 	
 	private Cliente cl;
@@ -156,25 +158,40 @@ public class ListadoCuotaController {
 				
 			}else {
 				
-				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia),strFecha);			
-				ArrayList<String> strClientes = darNombreClientes(lClientes);
-				
-				listDataCliente.addAll(strClientes);
+				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia),strFecha);					
+				listDataCliente.addAll(lClientes);
 				listaClientes.setItems(listDataCliente);
+				
+				listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
+
+					public ListCell<Cliente> call(ListView<Cliente> param) {
+						// TODO Auto-generated method stub
+						ListCell<Cliente> cell = new ListCell<Cliente>(){ 
+		                    @Override
+		                    protected void updateItem(Cliente t, boolean bln) {
+		                        super.updateItem(t, bln);
+		                        if (t != null) {
+		                            setText(t.getNombre() + " " + t.getApellido());
+		                        }
+		                    } 
+		                };                 
+		                return cell;
+					}
+				});
+				
 				listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
 					public void changed(ObservableValue observable, Object arg1, Object arg2) {
 						// TODO Auto-generated method stub				
 						listDataCuota.clear();
 						
-						String[] data = arg2.toString().split(":");
-						String nombre = data[1];				
-						String ced = data[0].trim();
-						
 						//Se asigna el cliente seleccionado desde la lista de clientes
-						cl = darCliente(ced);
+						cl = (Cliente) arg2;
 						
-						lbCliente.setText(nombre);
+						String nombre = cl.getNombre();				
+						String ced = cl.getId();
+												
+						lbCliente.setText(nombre + " " +cl.getApellido());
 						Recibo reciboCl = main.darReciboCliente(cl);
 						txRecibo.setText(""+reciboCl.getId_recibo());
 						txPrestamo.setText(""+reciboCl.getMonto_prestamo());
