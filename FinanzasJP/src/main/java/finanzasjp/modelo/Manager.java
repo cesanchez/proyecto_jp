@@ -450,13 +450,18 @@ public class Manager {
 		if (elRecibo == null) {
 			// create
 			Cliente cl = (Cliente) session.get(Cliente.class, ced);
-			Set<Dia> losDias = new HashSet<Dia>();
-			for (Integer d : dias) {
-				Dia elDia = new Dia(d.intValue());
-				losDias.add(elDia);
-			}
 			elRecibo = new Recibo(id_rec, pagoTotal, prestamo, true, false, pagoTotal, interes, false, sqlStartDate,
-					sqlEndDate, cl, losDias);
+					sqlEndDate, cl);
+			
+			//Verificar si el arraylist dias no está vacío
+			if(!dias.isEmpty()) {
+				Set<Dia> losDias = new HashSet<Dia>();
+				for (Integer d : dias) {
+					Dia elDia = new Dia(d.intValue());
+					losDias.add(elDia);
+				}
+				elRecibo.setDias(losDias);
+			}						
 			session.save(elRecibo);
 			ret = true;
 		} else {
@@ -488,6 +493,25 @@ public class Manager {
 		}
 		
 		return clientes;
+	}
+
+	public boolean guardarClienteVip(String id, String nombre, String tel, double capital) {
+		// TODO Auto-generated method stub
+		boolean ret = false;
+		Cliente_VIP elCliente = (Cliente_VIP) session.get(Cliente_VIP.class, id);
+
+		session.beginTransaction();
+		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
+		if (elCliente == null) {
+			String [] dat = nombre.split(" ");
+			elCliente = new Cliente_VIP(id, dat[0], dat[1], tel, capital);
+			session.save(elCliente);
+			ret = true;
+		} else {
+			ret = false;
+		}
+		session.getTransaction().commit();
+		return ret;
 	}
 
 	/*

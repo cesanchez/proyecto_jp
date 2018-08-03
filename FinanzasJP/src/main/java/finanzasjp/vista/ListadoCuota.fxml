@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="465.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaController">
+<BorderPane prefHeight="446.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaController">
    <top>
       <Label text="Listado de Cobro" BorderPane.alignment="CENTER">
          <font>
@@ -69,7 +69,7 @@
                                     <HBox layoutX="43.0" layoutY="29.0" prefHeight="210.4" prefWidth="458.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <ListView fx:id="listaCuotas" prefHeight="158.0" prefWidth="118.0" />
-                                          <VBox prefHeight="210.0" prefWidth="450.0">
+                                          <VBox>
                                              <children>
                                                 <GridPane hgap="1.0" prefHeight="141.0" prefWidth="448.0" vgap="1.0">
                                                   <columnConstraints>

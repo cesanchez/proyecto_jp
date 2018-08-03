@@ -198,6 +198,7 @@ public class InfoClientesController {
 			public void changed(ObservableValue arg0, Object arg1, Object arg2) {
 				// TODO Auto-generated method stub
 				
+				lbSinRecibo.setText("");
 				Cliente cl = (Cliente) arg2;
 				
 				//String[] data = arg2.toString().split(":");
@@ -386,7 +387,10 @@ public class InfoClientesController {
 			boolean flagOk = false; //flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo mensaje
 			
 			if (result.get() == ButtonType.OK){
-				String[] losDias = txDias_admin.getText().split(",");
+				String[] losDias = null;
+				if(txDias_admin.getText() != "") {
+					losDias = txDias_admin.getText().split(",");
+				}				
 				
 				resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(), Double.parseDouble(txPrestamo_admin.getText()), Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(), txFechaFin_admin.getValue().toString(),
 						Double.parseDouble(lbPagoTotal_admin.getText()), losDias);

@@ -1,6 +1,7 @@
 package finanzasjp.vista;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import antlr.debug.NewLineListener;
 import finanzasjp.modelo.Cliente;
@@ -10,9 +11,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.util.Callback;
 
 public class InfoClientesVipController {
@@ -33,6 +37,14 @@ public class InfoClientesVipController {
 	private TextField txTelefono;
 	@FXML
 	private TextField txCapital;
+	@FXML
+	private TextField txNombreAdmin;
+	@FXML
+	private TextField txCedulaAdmin;
+	@FXML
+	private TextField txTelefonoAdmin;
+	@FXML
+	private TextField txCapitalAdmin;
 
 	private ObservableList<Cliente_VIP> dataClienteVip = FXCollections.observableArrayList();
 	private ObservableList<Cliente> dataCliente = FXCollections.observableArrayList();
@@ -108,5 +120,54 @@ public class InfoClientesVipController {
 	public ArrayList<Cliente_VIP> darNomClientesVip() {
 		return main.darClientesVip();
 	}
+	
+	@FXML
+	private void guardarClienteVip() {
+		
+
+		String cedCl = "";
+		cedCl = txCedulaAdmin.getText();
+		if(cedCl.equals("")) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Debes escribir la cédula del nuevo cliente vip");
+			alert.showAndWait();
+		}else {	
+			
+			Alert alertConf = new Alert(AlertType.CONFIRMATION);
+			alertConf.setTitle("Confirmación");
+			alertConf.setHeaderText("¿Confirma que desea almacenar los siguientes datos?");
+			alertConf.setContentText(" Nombre: " + txNombreAdmin.getText() + "\n Cédula: " + txCedulaAdmin.getText()+"\n Teléfono: " + txTelefonoAdmin.getText()+"\n Capital: " + txCapitalAdmin.getText());
+
+			Optional<ButtonType> result = alertConf.showAndWait();			
+			boolean resp = false;
+			boolean flagOk = false; //flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo mensaje
+			
+			if (result.get() == ButtonType.OK){
+				resp = main.guardarClienteVip(txCedulaAdmin.getText(), txNombreAdmin.getText(), txTelefonoAdmin.getText(), Double.parseDouble(txCapitalAdmin.getText()));
+				flagOk = true;
+			} else {
+			    // ... user chose CANCEL or closed the dialog
+			}
+					
+			if(resp && flagOk) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Confirmación");
+				alert.setHeaderText(null);
+				alert.setContentText("Datos guardados exitosamente");
+				alert.showAndWait();
+				
+			}else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Información");
+				alert.setHeaderText(null);
+				alert.setContentText("Ya existe un cliente con cédula: " + cedCl);
+				alert.showAndWait();
+			}
+		}		
+	
+	}
+	
 
 }

@@ -36,6 +36,15 @@ public class Cliente_VIP {
 		this.clientes = clientes;
 		this.monto_inicial = capital;
 	}
+	
+	public Cliente_VIP(String id_cl, String nombre, String apellido, String telefono, double capital) {
+		super();
+		this.id_cl = id_cl;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.telefono = telefono;
+		this.monto_inicial = capital;
+	}
 
 	@Id
 	@Column(name = "id")

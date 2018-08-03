@@ -160,9 +160,12 @@ public class Main extends Application {
 			String fechaF, double pagoTotal, String[] losDias) throws ParseException {
 		// TODO Auto-generated method stub
 		ArrayList dias = new ArrayList();
-		for(int i = 0; i< losDias.length; i++) {
-			dias.add(Integer.parseInt(losDias[i].trim()));
+		if(losDias.length<1) {
+			for(int i = 0; i< losDias.length; i++) {
+				dias.add(Integer.parseInt(losDias[i].trim()));
+			}
 		}
+		
 		return manager.guardarRecibo(id_rec, ced, prestamo, interes, fechaI, fechaF, pagoTotal, dias);
 	}
 
@@ -174,6 +177,16 @@ public class Main extends Application {
 	public static ArrayList<Cliente> darClientes(String id_clVip) {
 		// TODO Auto-generated method stub
 		return manager.darClientes(id_clVip);
+	}
+
+	public static boolean guardarClienteVip(String id, String nombre, String telefono, double capital) {
+		// TODO Auto-generated method stub
+		boolean ret = false;
+		
+		ret = manager.guardarClienteVip(id, nombre, telefono, capital);
+		
+		return ret;
+		
 	}
 
 
