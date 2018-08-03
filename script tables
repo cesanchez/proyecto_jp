@@ -1,0 +1,15 @@
+
+//Las llaves foraneas se deben modificar: delete, update --> cascade
+create table cliente_vip (id varchar(30) not null, nombre varchar(50), apellido varchar(50), telefono varchar(50), monto_inicial double default null, fecha_ingreso date default null, saldo double default null, primary key(id));
+
+create table cliente (id varchar(30) not null, nombre varchar(50), apellido varchar(50), direccion varchar(50), telefono varchar(50), id_cliente_vip varchar(30), primary key (id), foreign key (id_cliente_vip) references cliente_vip(id));
+
+create table codeudor (id_codeudor varchar(30) not null, nombre varchar(50), apellido varchar(50), direccion varchar(50), telefono varchar(50), id_cliente varchar(30), primary key (id_codeudor), foreign key(id_cliente) references cliente (id));
+
+create table recibo(id_recibo int not null auto_increment, saldo double, monto_prestamo double, fecha_prestamo date default null, activo boolean, mora boolean, fecha_fin date default null, pago_total double, interes double, id_cliente varchar(30), primary key(id_recibo), foreign key (id_cliente) references cliente (id));
+
+create table cuota (id_cuota int not null, fecha_cobro date default null, valor double, mora boolean, id_recibo int, primary key(id_cuota), foreign key (id_recibo) references recibo (id_recibo));
+
+create table dia (dia int not null primary key);
+
+create table dia_recibo (id_recibo int not null, id_dia int not null, primary key(id_recibo, id_dia), foreign key (id_recibo) references recibo (id_recibo), foreign key (id_dia) references dia(dia));

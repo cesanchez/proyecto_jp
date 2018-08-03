@@ -1,0 +1,101 @@
+//CLIENTES VIP
+INSERT INTO cliente_vip (id, nombre, apellido, telefono)
+VALUES ('1130', 'Tom B. Erichsen', 'Skagen', '123456');
+
+INSERT INTO cliente_vip (id, nombre, apellido, telefono)
+VALUES ('1131', 'Carl', 'Sagan', '123456');
+
+INSERT INTO cliente_vip (id, nombre, apellido, telefono)
+VALUES ('1132', 'Tomas', 'Edison', '123456');
+
+
+//CLIENTES
+INSERT INTO cliente (id, nombre, apellido, direccion, telefono, id_cliente_vip)
+VALUES ('1101', 'Yoreli', 'Garcia', 'call2', '123', '1130');
+
+INSERT INTO cliente (id, nombre, apellido, direccion, telefono, id_cliente_vip)
+VALUES ('1102', 'Falcao', 'Garcia', 'call2', '123', '1130');
+
+INSERT INTO cliente (id, nombre, apellido, direccion, telefono, id_cliente_vip)
+VALUES ('1103', 'Anita', 'Garcia', 'call2', '123', '1130');
+
+INSERT INTO cliente (id, nombre, apellido, direccion, telefono, id_cliente_vip)
+VALUES ('1104', 'Yulitza', 'Garcia', 'call2', '123', '1131');
+
+INSERT INTO cliente (id, nombre, apellido, direccion, telefono, id_cliente_vip)
+VALUES ('1105', 'Cristobal', 'Colon', 'call2', '123', '1131');
+
+
+//RECIBOS
+
+INSERT INTO recibo(saldo, monto_prestamo, activo, mora, pago_total, interes, id_cliente, diario)
+VALUES ('50', '100', TRUE, FALSE, '110', '10', '1101', false);
+
+INSERT INTO recibo(saldo, monto_prestamo, activo, mora, pago_total, interes, id_cliente, diario)
+VALUES ('50', '100', TRUE, FALSE, '110', '10', '1102', false);
+
+INSERT INTO recibo(saldo, monto_prestamo, activo, mora, pago_total, interes, id_cliente, diario)
+VALUES ('50', '100', TRUE, FALSE, '110', '10', '1103', false);
+
+
+//CUOTAS
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('1', '2018-01-01', '25', FALSE, 1);
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('2', '2018-02-01', '25', FALSE, 1);
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('3', '2018-03-01', '25', FALSE, 1);
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('1', '2018-01-01', '25', FALSE, 2);
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('2', '2018-02-01', '25', FALSE, 2);
+
+INSERT INTO cuota (id_cuota, fecha_cobro, valor, mora, id_recibo)
+VALUES ('3', '2018-02-01', '25', FALSE, 2);
+
+
+//DIA_RECIBO
+
+INSERT INTO DIA_RECIBO(id_recibo, id_dia) VALUES('1', '5');
+INSERT INTO DIA_RECIBO(id_recibo, id_dia) VALUES('1', '15');
+INSERT INTO DIA_RECIBO(id_recibo, id_dia) VALUES('2', '10');
+INSERT INTO DIA_RECIBO(id_recibo, id_dia) VALUES('2', '30');
+
+//DIAS
+
+INSERT INTO DIA (dia) VALUES (1);
+INSERT INTO DIA (dia) VALUES (2);
+INSERT INTO DIA (dia) VALUES (3);
+INSERT INTO DIA (dia) VALUES (4);
+INSERT INTO DIA (dia) VALUES (5);
+INSERT INTO DIA (dia) VALUES (6);
+INSERT INTO DIA (dia) VALUES (7);
+INSERT INTO DIA (dia) VALUES (8);
+INSERT INTO DIA (dia) VALUES (9);
+INSERT INTO DIA (dia) VALUES (10);
+INSERT INTO DIA (dia) VALUES (11);
+INSERT INTO DIA (dia) VALUES (12);
+INSERT INTO DIA (dia) VALUES (13);
+INSERT INTO DIA (dia) VALUES (14);
+INSERT INTO DIA (dia) VALUES (15);
+INSERT INTO DIA (dia) VALUES (16);
+INSERT INTO DIA (dia) VALUES (17);
+INSERT INTO DIA (dia) VALUES (18);
+INSERT INTO DIA (dia) VALUES (19);
+INSERT INTO DIA (dia) VALUES (20);
+INSERT INTO DIA (dia) VALUES (21);
+INSERT INTO DIA (dia) VALUES (22);
+INSERT INTO DIA (dia) VALUES (23);
+INSERT INTO DIA (dia) VALUES (24);
+INSERT INTO DIA (dia) VALUES (25);
+INSERT INTO DIA (dia) VALUES (26);
+INSERT INTO DIA (dia) VALUES (27);
+INSERT INTO DIA (dia) VALUES (28);
+INSERT INTO DIA (dia) VALUES (29);
+INSERT INTO DIA (dia) VALUES (30);
+INSERT INTO DIA (dia) VALUES (31);
