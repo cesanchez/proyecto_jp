@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
@@ -147,6 +148,61 @@
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
+                                             <content>
+                                                <VBox prefHeight="200.0" prefWidth="100.0">
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.39996337890625" minWidth="10.0" prefWidth="68.60001220703126" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="122.19998779296876" minWidth="10.0" prefWidth="122.19998779296876" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.20001220703125" minWidth="10.0" prefWidth="80.59999999999997" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="112.60000000000002" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label text="Nombre:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label layoutX="10.0" layoutY="15.0" text="Cédula:" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label layoutX="10.0" layoutY="45.0" text="Teléfono:" GridPane.columnIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <GridPane.margin>
+                                                                  <Insets left="10.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <Label layoutX="202.0" layoutY="15.0" text="Capital:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="14.0" />
+                                                               </font>
+                                                               <GridPane.margin>
+                                                                  <Insets left="10.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <TextField GridPane.columnIndex="1" />
+                                                            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <TextField GridPane.columnIndex="3" />
+                                                            <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                            <Button mnemonicParsing="false" prefHeight="98.0" prefWidth="180.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                         </children>
+                                                         <padding>
+                                                            <Insets left="10.0" right="10.0" />
+                                                         </padding>
+                                                      </GridPane>
+                                                   </children>
+                                                </VBox>
+                                             </content>
                                         </TitledPane>
                                         <TitledPane animated="false" text="Modificar">
                                              <font>
