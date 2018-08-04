@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane prefHeight="241.0" prefWidth="528.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+   <top>
+      <Label text="Cuotas a pagar" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox spacing="10.0">
+               <children>
+                  <Label text="Cliente: ">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label prefWidth="115.0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Separator prefHeight="0.0" prefWidth="122.0" visible="false">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Separator>
+                  <Label text="Recibo No.:">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox spacing="2.0">
+               <children>
+                  <Label text="Prestamo: ">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField prefHeight="26.0" prefWidth="106.0" />
+                  <Label text="Interés: ">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
+                  <TextField prefHeight="26.0" prefWidth="45.0" />
+                  <Label text="Pago total: ">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
+                  <TextField prefHeight="26.0" prefWidth="106.0" />
+               </children>
+               <VBox.margin>
+                  <Insets left="2.0" right="2.0" top="6.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+            <Pane>
+               <children>
+                  <SplitPane dividerPositions="0.18363636363636363" prefHeight="148.0" prefWidth="528.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                              <ListView layoutX="-16.0" prefHeight="146.4" prefWidth="153.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="146.0" prefWidth="401.0">
+                           <children>
+                              <GridPane layoutX="6.0" layoutY="15.0" prefHeight="82.0" prefWidth="384.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.20001220703125" minWidth="10.0" prefWidth="90.59996337890625" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="81.00003662109377" minWidth="10.0" prefWidth="81.00003662109377" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.59997558593753" minWidth="10.0" prefWidth="110.40001220703127" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.20001220703125" minWidth="10.0" prefWidth="92.79998779296875" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="No. cuota: ">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="Fecha cobro: " GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="Valor cuota: " GridPane.columnIndex="2">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label text="Valor Pagado: " GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <TextField GridPane.columnIndex="1" />
+                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField GridPane.columnIndex="3" />
+                                    <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>
