@@ -29,6 +29,7 @@ import antlr.Token;
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cliente_VIP;
 import finanzasjp.modelo.Dia;
+import finanzasjp.modelo.OpcionPrestamo;
 import finanzasjp.modelo.Recibo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,6 +39,7 @@ public class InfoClientesController {
 	private Main main;
 	
 	private String cedulaClienteVip = "";
+	private String modoPago = "";
 
 	@FXML
 	private ListView listaClientes;
@@ -89,6 +91,8 @@ public class InfoClientesController {
 	
 	@FXML
 	private ComboBox pertenece_admin;
+	@FXML
+	private ComboBox modoPago_admin;
 	
 	@FXML
 	private TextField txDias_admin;
@@ -97,9 +101,10 @@ public class InfoClientesController {
 	
 	private ObservableList<Cliente> listViewData = FXCollections.observableArrayList();
 	private ObservableList<Cliente_VIP> dataPert_admin = FXCollections.observableArrayList();
+	private ObservableList<String> dataModoPago_admin = FXCollections.observableArrayList();
 	
-	//Admin nuevo cliente
 	
+	//Admin nuevo cliente	
 	@FXML
 	private TextField txNombreAdmin;
 	@FXML
@@ -109,13 +114,11 @@ public class InfoClientesController {
 	@FXML
 	private TextField txTelefonoAdmin;
 	@FXML
-	private TextField txDireccionAdmin;
-	
+	private TextField txDireccionAdmin;	
 	@FXML
 	private Label lbSinRecibo;
 	
-	//Admin nuevo recibo
-	
+	//Admin nuevo recibo	
 	@FXML
 	private TextField txRecibo_admin;
 
@@ -144,12 +147,24 @@ public class InfoClientesController {
 
 		listViewData.addAll(darNomClientes());
 		dataPert_admin.addAll(darNomClientesVip());
+		dataModoPago_admin.addAll(darModosPago());
 	}
 
 	public void initialize() {
 		
 		tooltip.setText("Agregue los días separados por coma (ej: 5, 20)");
 		txDias_admin.setTooltip(tooltip);
+		
+		
+		modoPago_admin.setItems(dataModoPago_admin);
+		modoPago_admin.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+			public void changed(ObservableValue observable, String oldValue, String newValue) {
+				// TODO Auto-generated method stub
+				modoPago = newValue;
+			}
+			
+		});
 
 		pertenece_admin.setItems(dataPert_admin);		
 		pertenece_admin.setConverter(new javafx.util.StringConverter<Cliente_VIP>() {
@@ -258,19 +273,20 @@ public class InfoClientesController {
 	public ArrayList<Cliente> darNomClientes() {
 		return main.darClientes();
 	}
-	
-	/*public ArrayList<String> darNomClientes() {
-		ArrayList<String> nombresCl = new ArrayList<String>();
-		for (Cliente cl : main.darClientes()) {
-
-			nombresCl.add(cl.getId() + ": " + cl.getNombre() + " " + cl.getApellido());
-		}
-
-		return nombresCl;
-	}*/
-	
+		
 	public ArrayList<Cliente_VIP> darNomClientesVip() {
 		return main.darClientesVip();
+	}
+	
+	public ArrayList<String > darModosPago(){
+		
+		ArrayList<String> modos = new ArrayList<String>();
+		modos.add("Mensual");
+		modos.add("Quincenal");
+		modos.add("Semanal");
+		modos.add("Diario");
+		
+		return modos;
 	}
 
 	public Cliente darCliente(String id) {
@@ -423,4 +439,27 @@ public class InfoClientesController {
 			e.printStackTrace();
 		}
 	}
+	
+	@FXML
+	private void generarCuotas() {
+		
+		System.out.println("Entró");
+		boolean res = main.generarCuotas(txPrestamo_admin.getText(), txInteres_admin.getText(), modoPago, txCuotas_admin.getText(), lbRecibo.getText());
+		
+		if(!res) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Error al generar las cuotas");
+			alert.showAndWait();
+		}else {
+			try {
+				main.verInfoCuotas();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }

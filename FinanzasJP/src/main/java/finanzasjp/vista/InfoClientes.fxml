@@ -463,30 +463,17 @@
                                                                         <Insets left="5.0" />
                                                                      </padding>
                                                                   </Label>
-                                                                  <Label text="Días de pago:" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                                     <font>
-                                                                        <Font name="System Bold" size="14.0" />
-                                                                     </font>
-                                                                     <padding>
-                                                                        <Insets left="5.0" />
-                                                                     </padding>
-                                                                  </Label>
-                                                                  <Label text="Pago Total:" GridPane.rowIndex="3">
-                                                                     <font>
-                                                                        <Font name="System Bold" size="14.0" />
-                                                                     </font>
-                                                                  </Label>
                                                                   <TextField fx:id="txPrestamo_admin" prefHeight="27.0" prefWidth="129.0" GridPane.columnIndex="1" />
                                                                   <TextField fx:id="txInteres_admin" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="txCuotas_admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="txDias_admin" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="txDias_admin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <Button mnemonicParsing="false" onAction="#guardarRecibo" prefHeight="58.0" prefWidth="161.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                                   <Label text="Cuotas:" GridPane.rowIndex="2">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <Label fx:id="lbPagoTotal_admin" prefHeight="20.0" prefWidth="94.0" text="110" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                  <Label fx:id="lbPagoTotal_admin" prefHeight="20.0" prefWidth="94.0" text="110" GridPane.columnIndex="2" GridPane.rowIndex="3">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
@@ -496,6 +483,20 @@
                                                                   </Label>
                                                                   <DatePicker fx:id="txFechaPres_admin" GridPane.columnIndex="3" />
                                                                   <DatePicker fx:id="txFechaFin_admin" layoutX="370.0" layoutY="12.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <ComboBox fx:id="modoPago_admin" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <Label text="Días de pago:" GridPane.rowIndex="3">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label text="Modo de Pago: " GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="6.0" right="6.0" />
@@ -511,7 +512,7 @@
                                                                   <Font size="24.0" />
                                                                </font>
                                                             </Label>
-                                                            <Button mnemonicParsing="false" text="Ver cuotas" />
+                                                            <Button mnemonicParsing="false" onAction="#generarCuotas" text="Ver cuotas" />
                                                          </children>
                                                       </VBox>
                                                    </children>

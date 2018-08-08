@@ -452,16 +452,16 @@ public class Manager {
 			Cliente cl = (Cliente) session.get(Cliente.class, ced);
 			elRecibo = new Recibo(id_rec, pagoTotal, prestamo, true, false, pagoTotal, interes, false, sqlStartDate,
 					sqlEndDate, cl);
-			
-			//Verificar si el arraylist dias no está vacío
-			if(!dias.isEmpty()) {
+
+			// Verificar si el arraylist dias no está vacío
+			if (!dias.isEmpty()) {
 				Set<Dia> losDias = new HashSet<Dia>();
 				for (Integer d : dias) {
 					Dia elDia = new Dia(d.intValue());
 					losDias.add(elDia);
 				}
 				elRecibo.setDias(losDias);
-			}						
+			}
 			session.save(elRecibo);
 			ret = true;
 		} else {
@@ -488,10 +488,10 @@ public class Manager {
 
 		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
 		Cliente_VIP clVip = (Cliente_VIP) session.get(Cliente_VIP.class, id_clVip);
-		for(Cliente c : clVip.getClientes()) {
+		for (Cliente c : clVip.getClientes()) {
 			clientes.add(c);
 		}
-		
+
 		return clientes;
 	}
 
@@ -503,7 +503,7 @@ public class Manager {
 		session.beginTransaction();
 		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
 		if (elCliente == null) {
-			String [] dat = nombre.split(" ");
+			String[] dat = nombre.split(" ");
 			elCliente = new Cliente_VIP(id, dat[0], dat[1], tel, capital);
 			session.save(elCliente);
 			ret = true;
@@ -513,6 +513,71 @@ public class Manager {
 		session.getTransaction().commit();
 		return ret;
 	}
+	
+	public double calcularInteresTotal(int cuotas, double interes, int modo) {
+		double interesTotal = 0;	
+		int numMeses = 0;
+		
+		switch (modo) {
+		// 1. Modo de pago Mensual
+		case 1:
+			numMeses = cuotas;			
+			break;
+			// 2. Modo de pago Quincenal
+		case 2:
+			numMeses = cuotas / 2;
+			break;
+			// 3. Modo de pago Semanal
+		case 3:
+			numMeses = cuotas / 4;
+			break;
+			// 4. Modo de pago Diario
+		default:
+			break;
+		}
+		
+		interesTotal = numMeses * interes;		
+		return interesTotal;
+	}
+
+	public double calcularPagoTotal(double valorPrestamo, double interes, int modo, int numCuotas) {
+		double pagoTotal = 0;		
+		double valorInteres = 0;
+		
+		double interesTotal = calcularInteresTotal(numCuotas, interes, modo);		
+		valorInteres = interesTotal * valorPrestamo;
+		pagoTotal = valorInteres + valorPrestamo;
+		return pagoTotal;
+	}
+
+	public double calcularValorCuota(double valorPrestamo, double interes, int modo, int numCuotas) {
+
+		double pagoTotal = calcularPagoTotal(valorPrestamo, interes, modo, numCuotas);
+		double valorPagoCuota = pagoTotal / numCuotas;
+
+		return valorPagoCuota;
+	}
+
+	public boolean generarCuotas(double valorPrestamo, double interes, int modo, int numCuotas, int idRecibo) {
+		
+		boolean res = false;
+		Recibo recibo = (Recibo) session.get(Recibo.class, idRecibo);
+		double valor = calcularValorCuota(valorPrestamo, interes, modo, numCuotas);
+		double valorInteres = calcularInteresTotal(numCuotas, interes, modo) / numCuotas;
+		double valorCapital = valor - valorInteres;
+		
+		session.beginTransaction();
+		
+		for (int i = 1; i <= numCuotas; i++) {
+			Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo);			
+			session.save(cuota);			
+		}
+		session.getTransaction().commit();
+		
+		res = true;	
+		return res;				
+	}
+
 
 	/*
 	 * public static void main(String[] args) {

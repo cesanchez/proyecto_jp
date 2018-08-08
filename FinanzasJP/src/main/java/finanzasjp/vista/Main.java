@@ -97,6 +97,24 @@ public class Main extends Application {
 		clientVipDiaStage.showAndWait();		
 	}
 	
+	public static void verInfoCuotas() throws IOException {
+		FXMLLoader loader =  new FXMLLoader();
+		loader.setLocation(Main.class.getResource("CuotasCliente.fxml"));
+		BorderPane clienteVip = loader.load();
+		
+		
+		
+		
+		Stage clientVipDiaStage = new Stage();
+		clientVipDiaStage.setTitle("Créditos JP");
+		clientVipDiaStage.initModality(Modality.WINDOW_MODAL);
+		clientVipDiaStage.initOwner(primaryStage);
+		
+		Scene scene = new Scene(clienteVip);
+		clientVipDiaStage.setScene(scene);		
+		clientVipDiaStage.showAndWait();		
+	}
+	
 	public static void verGenListados() throws IOException{
 		FXMLLoader loader =  new FXMLLoader();
 		//loader.setLocation(Main.class.getResource("GenListados.fxml"));
@@ -186,6 +204,23 @@ public class Main extends Application {
 		ret = manager.guardarClienteVip(id, nombre, telefono, capital);
 		
 		return ret;
+		
+	}
+
+	public static boolean generarCuotas(String prestamo, String interes, String modoPago, String cuotas, String idRecibo) {
+		// TODO Auto-generated method stub
+		int modo = 0;
+		if(modoPago.equalsIgnoreCase("Mensual")) {
+			modo = 1;
+		}else if(modoPago.equalsIgnoreCase("Quincenal")) {
+			modo = 2;
+		}else if(modoPago.equalsIgnoreCase("Semanal")) {
+			modo = 3;
+		}else {
+			modo = 4;
+		}
+		
+		return manager.generarCuotas(Double.parseDouble(prestamo), Double.parseDouble(interes), modo, Integer.parseInt(cuotas), Integer.parseInt(idRecibo));
 		
 	}
 
