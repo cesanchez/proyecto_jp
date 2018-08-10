@@ -389,8 +389,6 @@ public class InfoClientesController {
 	
 	@FXML
 	private void guardarRecibo() {
-		//int cuotas = Integer.parseInt(txCuotas_admin.getText());
-		//String ds = txDias_admin.getText();
 		
 		try {
 			
@@ -454,7 +452,7 @@ public class InfoClientesController {
 			alert.showAndWait();
 		}else {
 			try {
-				main.verInfoCuotas();
+				main.verInfoCuotas(txNombreAdmin.getText(), lbRecibo.getText(), txPrestamo_admin.getText(), txInteres_admin.getText(), lbPagoTotal_admin.getText(), txCedulaAdmin.getText());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

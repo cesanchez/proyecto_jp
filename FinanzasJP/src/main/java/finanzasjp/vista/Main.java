@@ -97,13 +97,14 @@ public class Main extends Application {
 		clientVipDiaStage.showAndWait();		
 	}
 	
-	public static void verInfoCuotas() throws IOException {
+	public static void verInfoCuotas(String nombre, String idRecibo, String prestamo, String interes, String pagototal, String idCliente) throws IOException {
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("CuotasCliente.fxml"));
 		BorderPane clienteVip = loader.load();
 		
-		
-		
+		CuotasClienteController cuotasCli = loader.getController();
+		cuotasCli.setCampos(nombre, idRecibo, prestamo, interes, pagototal, idCliente);
+		cuotasCli.inicializarCuotas(idCliente);
 		
 		Stage clientVipDiaStage = new Stage();
 		clientVipDiaStage.setTitle("Créditos JP");
@@ -142,7 +143,7 @@ public class Main extends Application {
 		return elCl;
 	}
 	
-	public static ArrayList<Cuota> darCuotasCliente(Cliente cliente){
+	public static ArrayList<Cuota> darCuotasCliente(String cliente){
 		return manager.darCuotasCliente(cliente);
 	}
 	

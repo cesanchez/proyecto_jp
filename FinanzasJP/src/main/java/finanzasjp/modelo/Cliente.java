@@ -2,6 +2,7 @@ package finanzasjp.modelo;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -53,6 +54,8 @@ public class Cliente {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.cliente_vip = cliente_vip;
+		
+		this.recibos = new HashSet<Recibo>();
 	}
 
 	@Id
@@ -115,7 +118,11 @@ public class Cliente {
 	public void setRecibos(Set<Recibo> recibos) {
 		this.recibos = recibos;
 	}
-		
+	
+	public void addRecibo(Recibo rec) {
+		this.recibos.add(rec);
+	}
+	
 	public Recibo darRecibo(int id_recibo) {
 		Recibo ret = null;
 		

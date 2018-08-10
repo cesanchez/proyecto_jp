@@ -141,12 +141,7 @@ public class Manager {
 
 	public ArrayList<Cliente> darClientes() {
 
-		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
-
-		for (Cliente_VIP cl : clientesVip) {
-			clientes.addAll(cl.getClientes());
-		}
-
+		ArrayList<Cliente> clientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
 		return clientes;
 	}
 
@@ -170,6 +165,7 @@ public class Manager {
 						break;
 					}
 				}
+
 			}
 		}
 		return reciboCliente;
@@ -389,10 +385,22 @@ public class Manager {
 		session = sessionFactory.openSession();
 	}
 
-	public ArrayList<Cuota> darCuotasCliente(Cliente cliente) {
+	public ArrayList<Cuota> darCuotasCliente(String cliente) {
 
 		ArrayList<Cuota> cuotasCliente = new ArrayList<Cuota>();
-		Recibo rec = darReciboCliente(cliente);
+		//Cliente miCliente = (Cliente) session.get(Cliente.class, cliente);
+		
+		//Buscar el cliente, dentro de todos los clientes
+		
+		Cliente miCliente = null;
+		for(Cliente_VIP clVip : clientesVip) {
+			miCliente = clVip.buscarCliente(cliente);
+			if(miCliente != null) {
+				break;
+			}
+		}
+		
+		Recibo rec = darReciboCliente(miCliente);
 		cuotasCliente = darCuotasRecibo(rec);
 
 		return cuotasCliente;
@@ -419,6 +427,7 @@ public class Manager {
 		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
 		if (elCliente == null) {
 			elCliente = new Cliente(ced, nombre, apellido, dir, tel, clVip);
+			clVip.addCliente(elCliente);
 			session.save(elCliente);
 			ret = true;
 		} else {
@@ -462,6 +471,8 @@ public class Manager {
 				}
 				elRecibo.setDias(losDias);
 			}
+			cl.addRecibo(elRecibo);
+			//session.update(cl);
 			session.save(elRecibo);
 			ret = true;
 		} else {
@@ -513,38 +524,38 @@ public class Manager {
 		session.getTransaction().commit();
 		return ret;
 	}
-	
+
 	public double calcularInteresTotal(int cuotas, double interes, int modo) {
-		double interesTotal = 0;	
+		double interesTotal = 0;
 		int numMeses = 0;
-		
+
 		switch (modo) {
 		// 1. Modo de pago Mensual
 		case 1:
-			numMeses = cuotas;			
+			numMeses = cuotas;
 			break;
-			// 2. Modo de pago Quincenal
+		// 2. Modo de pago Quincenal
 		case 2:
 			numMeses = cuotas / 2;
 			break;
-			// 3. Modo de pago Semanal
+		// 3. Modo de pago Semanal
 		case 3:
 			numMeses = cuotas / 4;
 			break;
-			// 4. Modo de pago Diario
+		// 4. Modo de pago Diario
 		default:
 			break;
 		}
-		
-		interesTotal = numMeses * interes;		
+
+		interesTotal = numMeses * interes;
 		return interesTotal;
 	}
 
 	public double calcularPagoTotal(double valorPrestamo, double interes, int modo, int numCuotas) {
-		double pagoTotal = 0;		
+		double pagoTotal = 0;
 		double valorInteres = 0;
-		
-		double interesTotal = calcularInteresTotal(numCuotas, interes, modo);		
+
+		double interesTotal = calcularInteresTotal(numCuotas, interes, modo);
 		valorInteres = interesTotal * valorPrestamo;
 		pagoTotal = valorInteres + valorPrestamo;
 		return pagoTotal;
@@ -559,25 +570,32 @@ public class Manager {
 	}
 
 	public boolean generarCuotas(double valorPrestamo, double interes, int modo, int numCuotas, int idRecibo) {
-		
+
 		boolean res = false;
 		Recibo recibo = (Recibo) session.get(Recibo.class, idRecibo);
 		double valor = calcularValorCuota(valorPrestamo, interes, modo, numCuotas);
-		double valorInteres = calcularInteresTotal(numCuotas, interes, modo) / numCuotas;
+		double valorInteresTotal = calcularInteresTotal(numCuotas, interes, modo) * valorPrestamo;
+
+		double valorInteres = valorInteresTotal / numCuotas;
 		double valorCapital = valor - valorInteres;
-		
+
 		session.beginTransaction();
-		
-		for (int i = 1; i <= numCuotas; i++) {
-			Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo);			
-			session.save(cuota);			
+
+		try {
+
+			for (int i = 1; i <= numCuotas; i++) {
+				Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo);
+				recibo.addCuota(cuota);
+				session.save(cuota);
+			}
+		} catch (Exception e) {
+			System.out.println("Excepcion: Cuotas ya guardadas");
 		}
 		session.getTransaction().commit();
-		
-		res = true;	
-		return res;				
-	}
 
+		res = true;
+		return res;
+	}
 
 	/*
 	 * public static void main(String[] args) {

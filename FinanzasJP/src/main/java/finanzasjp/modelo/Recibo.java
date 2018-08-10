@@ -1,6 +1,7 @@
 package finanzasjp.modelo;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -82,6 +83,7 @@ public class Recibo {
 		this.fecha_prestamo = fecha_prestamo;
 		this.fecha_fin = fecha_fin;
 		this.id_cliente = id_cliente;
+		this.cuotas = new HashSet<Cuota>();
 	}
 
 	public boolean contieneDia(int dia) {
@@ -210,6 +212,10 @@ public class Recibo {
 
 	public void setFecha_fin(Date fecha_fin) {
 		this.fecha_fin = fecha_fin;
+	}
+	
+	public void addCuota(Cuota cu) {
+		this.cuotas.add(cu);
 	}
 
 	public Cuota darCuotaId(int id) {

@@ -282,7 +282,8 @@ public class ListadoCuotaController {
 	
 	public ArrayList<String> darStrCuotas(Cliente cl){
 		ArrayList<String> strCuotas = new ArrayList<String>();
-		ArrayList<Cuota> cuotas = main.darCuotasCliente(cl);
+		String idCliente = cl.getId();
+		ArrayList<Cuota> cuotas = main.darCuotasCliente(idCliente);
 		
 		for(Cuota cu : cuotas) {			
 			strCuotas.add(cu.getId_cuota() + ": " + cu.getFecha_cobro());

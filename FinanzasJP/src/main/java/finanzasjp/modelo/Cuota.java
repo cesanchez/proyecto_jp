@@ -24,8 +24,8 @@ public class Cuota implements Serializable{
 	private Date fecha_cobro; 
 	private double valor; 
 	private double valor_pagado; 
-	private double valorInteres;
-	private double valorCapital;
+	private double valor_interes;
+	private double valor_capital;
 	
 	@Column(columnDefinition = "TINYINT(1)")
 	@Type(type = "org.hibernate.type.NumericBooleanType")
@@ -54,8 +54,8 @@ public class Cuota implements Serializable{
 		this.mora = mora;
 		this.id_recibo = id_recibo;
 		this.valor_pagado = valor_pagado;
-		this.valorInteres = valorInteres;
-		this.valorCapital = valorCapital;
+		this.valor_interes = valorInteres;
+		this.valor_capital = valorCapital;
 	}
 
 	@Id
@@ -111,22 +111,22 @@ public class Cuota implements Serializable{
 		this.valor_pagado = valor_pagado;
 	}
 
-	public double getValorInteres() {
-		return valorInteres;
+	public double getValor_interes() {
+		return valor_interes;
 	}
 
-	public void setValorInteres(double valorInteres) {
-		this.valorInteres = valorInteres;
+	public void setValor_interes(double valor_interes) {
+		this.valor_interes = valor_interes;
 	}
 
-	public double getValorCapital() {
-		return valorCapital;
+	public double getValor_capital() {
+		return valor_capital;
 	}
 
-	public void setValorCapital(double valorCapital) {
-		this.valorCapital = valorCapital;
+	public void setValor_capital(double valor_capital) {
+		this.valor_capital = valor_capital;
 	}
-	
+
 	
 
 }

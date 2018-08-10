@@ -104,6 +104,18 @@ public class Cliente_VIP {
 		}
 		return ret;
 	}
+	
+	public Cliente buscarCliente(String myCl) {
+		Cliente elCl = null;
+		for(Cliente cl : clientes) {
+			
+			if(cl.getId().equals(myCl)) {
+				elCl = cl;
+				break;
+			}
+		}
+		return elCl;
+	}
 
 	public double getMonto_inicial() {
 		return monto_inicial;
