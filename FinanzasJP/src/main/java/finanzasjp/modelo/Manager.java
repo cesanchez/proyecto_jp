@@ -2,6 +2,8 @@ package finanzasjp.modelo;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
@@ -14,6 +16,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -142,6 +152,8 @@ public class Manager {
 	public ArrayList<Cliente> darClientes() {
 
 		ArrayList<Cliente> clientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
+		ComparadorCliente c = new ComparadorCliente();
+		clientes.sort(c);
 		return clientes;
 	}
 
@@ -307,38 +319,103 @@ public class Manager {
 		return listaClientes;
 	}
 
-	public void genListadoCsvCobro(ArrayList<Cuota> lista) {
-
+	public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
+		
+		Workbook workbook = new XSSFWorkbook();
+		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
+		
+		Font headerFont = workbook.createFont();
+		headerFont.setBold(true);
+		headerFont.setFontHeightInPoints((short)14);
+		headerFont.setColor(IndexedColors.BLACK.getIndex());
+		
+		CellStyle headerCellStyle = workbook.createCellStyle();
+		headerCellStyle.setFont(headerFont);
+		
+		Row headerRow = sheet.createRow(0);
+		
+		String[] headerValues = {"Nombre", "Valor Cuota", "Valor Pagado","Teléfono","Dirección","Id Cuota","Fecha"};
+		
+		for(int i = 0; i < headerValues.length; i++) {
+			Cell cell = headerRow.createCell(i);
+			cell.setCellValue(headerValues[i]);
+			cell.setCellStyle(headerCellStyle);
+		}
+				
+		
+		int numRow = 1;
+		for (Cuota c : lista) {
+			
+			Row row = sheet.createRow(numRow);
+			
+			Recibo rec = c.getId_recibo();
+			Cliente cl = rec.getId_cliente();
+			String nom = cl.getNombre() + " " + cl.getApellido();
+			String tel = cl.getTelefono();
+			String dir = cl.getDireccion();			
+			
+			row.createCell(0).setCellValue(nom);
+			row.createCell(1).setCellValue(c.getValor());
+			row.createCell(2).setCellValue(c.getValor_pagado());
+			row.createCell(3).setCellValue(tel);
+			row.createCell(4).setCellValue(dir);
+			row.createCell(5).setCellValue(c.getId_cuota());
+			row.createCell(6).setCellValue(c.getFecha_cobro());
+			
+			numRow++;
+		}
+		
+		FileOutputStream fileout = null;
 		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
-		;
-		File file = new File(userHomeFolder, "Hola Mundo.txt");// Creación del archivo
+		File file = new File(userHomeFolder, "ListaDeCobro.xlsx");
 		try {
-			FileWriter fw = new FileWriter(file); // Lo cargamos para su escritura
-			BufferedWriter bw = new BufferedWriter(fw); // Lo pasamos por buffer para su manipulación
-			bw.write("Nombre;Valor Cuota; Valor Pagado; Teléfono; Dirección; Id Cuota; Fecha \n");
-
-			for (Cuota c : lista) {
-
-				Recibo rec = c.getId_recibo();
-				int numRec = rec.getId_recibo();
-
-				Cliente cl = rec.getId_cliente();
-				String nom = cl.getNombre() + " " + cl.getApellido();
-				String tel = cl.getTelefono();
-				String dir = cl.getDireccion();
-
-				bw.write(nom + ";" + c.getValor() + ";" + c.getValor_pagado() + ";" + tel + ";" + dir + ";"
-						+ c.getId_cuota() + ";" + c.getFecha_cobro() + "\n");
-			}
-
-			bw.close();
-
-		} catch (IOException e) {
+			fileout = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println(e.getMessage());
 		}
+		workbook.write(fileout);
+		fileout.close();
+		workbook.close();
+		
 	}
+	
+	/*public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
+		
+		Workbook workbook = new XSSFWorkbook();
+		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
+		
+		Font headerFont = workbook.createFont();
+		headerFont.setBold(true);
+		headerFont.setFontHeightInPoints((short)17);
+		headerFont.setColor(IndexedColors.RED.getIndex());
+		
+		CellStyle headerCellStyle = workbook.createCellStyle();
+		headerCellStyle.setFont(headerFont);
+		
+		Row headerRow = sheet.createRow(0);
+		
+		Cell cell = headerRow.createCell(4);
+		cell.setCellValue("HellomyFriend");
+		cell.setCellStyle(headerCellStyle);
+		
+		Row row = sheet.createRow(1);
+		
+		row.createCell(0).setCellValue("toobntos");
+		
+		FileOutputStream fileout = null;
+		try {
+			fileout = new FileOutputStream("myFisrt.xlsx");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		workbook.write(fileout);
+		fileout.close();
+		workbook.close();
+	
+		
+	}*/
 
 	public void generarListadoCobro_hql(int dia, String fecha) {
 
@@ -409,7 +486,9 @@ public class Manager {
 
 		Recibo rec = darReciboCliente(miCliente);
 		cuotasCliente = darCuotasRecibo(rec);
-
+		ComparadorCuota c = new ComparadorCuota();
+		cuotasCliente.sort(c);
+		
 		return cuotasCliente;
 	}
 

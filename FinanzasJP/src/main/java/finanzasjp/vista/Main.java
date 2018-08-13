@@ -52,7 +52,7 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
-	public static void generarArchivoListaCobro(int dia, String fecha) throws ParseException {
+	public static void generarArchivoListaCobro(int dia, String fecha) throws ParseException, IOException {
 		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha);
 		manager.genListadoCsvCobro(cuotas);
 	}
