@@ -137,5 +137,16 @@ public class Cliente {
 		return ret;
 	}
 	
+	public String reciboActivo() {
+		
+		String res = "";
+		for(Recibo r : recibos) {
+			if(r.isActivo()) {
+				res += r.getId_recibo()+ ", ";
+			}			
+		}		
+		return res;
+	}
+	
 		
 }

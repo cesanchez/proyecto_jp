@@ -205,10 +205,13 @@ public class ListadoCuotaController {
 						
 						ArrayList<Dia> dias = main.darDias(reciboCl);
 						String sdias = "";
-						for (Dia d : dias) {
-							sdias += d.getDia() + ",";
+						if(!dias.isEmpty()) {
+							for (Dia d : dias) {
+								sdias += d.getDia() + ",";
+							}
+							sdias = sdias.substring(0, sdias.length() - 1);
 						}
-						sdias = sdias.substring(0, sdias.length() - 1);
+						
 						txDias.setText(sdias);
 						
 						listDataCuota.addAll(darStrCuotas(cl));

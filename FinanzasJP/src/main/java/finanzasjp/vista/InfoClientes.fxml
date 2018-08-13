@@ -31,7 +31,7 @@
       </Label>
    </top>
    <center>
-      <SplitPane dividerPositions="0.3010033444816054" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.2608929532006455" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -304,7 +304,7 @@
                                  <children>
                                     <Accordion layoutX="7.0" layoutY="7.0" prefHeight="529.6" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <panes>
-                                        <TitledPane animated="false" prefHeight="207.0" prefWidth="261.0" text="Agregar Nuevo Cliente">
+                                        <TitledPane animated="false" expanded="false" prefHeight="207.0" prefWidth="261.0" text="Agregar Nuevo Cliente">
                                           <content>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
@@ -335,7 +335,7 @@
                                                                   <TextField fx:id="txCedulaAdmin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="txTelefonoAdmin" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="txDireccionAdmin" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#guardarCliente" prefHeight="60.0" prefWidth="156.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <Button fx:id="btGuardarCliente" mnemonicParsing="false" onAction="#guardarCliente" prefHeight="60.0" prefWidth="156.0" text="Guardar" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <Label text="Nombre:" GridPane.rowIndex="1">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
@@ -387,6 +387,7 @@
                                                                         <Insets left="10.0" />
                                                                      </padding>
                                                                   </Label>
+                                                                  <Button mnemonicParsing="false" onAction="#limpiarDatos" prefHeight="60.0" prefWidth="156.0" text="Crear Nuevo" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="6.0" right="6.0" />
@@ -413,7 +414,7 @@
                                                                         <Insets top="5.0" />
                                                                      </HBox.margin>
                                                                   </Label>
-                                                                  <Label fx:id="lbRecibo" layoutX="289.0" layoutY="20.0" text="528">
+                                                                  <Label fx:id="lbRecibo" layoutX="289.0" layoutY="20.0">
                                                                      <font>
                                                                         <Font name="System Bold" size="18.0" />
                                                                      </font>
@@ -464,7 +465,6 @@
                                                                      </padding>
                                                                   </Label>
                                                                   <TextField fx:id="txPrestamo_admin" prefHeight="27.0" prefWidth="129.0" GridPane.columnIndex="1" />
-                                                                  <TextField fx:id="txInteres_admin" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="txCuotas_admin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <TextField fx:id="txDias_admin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <Button mnemonicParsing="false" onAction="#guardarRecibo" prefHeight="58.0" prefWidth="161.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="3" />
@@ -472,14 +472,6 @@
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
-                                                                  </Label>
-                                                                  <Label fx:id="lbPagoTotal_admin" prefHeight="20.0" prefWidth="94.0" text="110" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                                                     <font>
-                                                                        <Font name="System Bold" size="14.0" />
-                                                                     </font>
-                                                                     <GridPane.margin>
-                                                                        <Insets />
-                                                                     </GridPane.margin>
                                                                   </Label>
                                                                   <DatePicker fx:id="txFechaPres_admin" GridPane.columnIndex="3" />
                                                                   <DatePicker fx:id="txFechaFin_admin" layoutX="370.0" layoutY="12.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -497,11 +489,41 @@
                                                                         <Insets left="5.0" />
                                                                      </padding>
                                                                   </Label>
+                                                                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                     <children>
+                                                                        <TextField fx:id="txInteres_admin" prefHeight="27.0" prefWidth="97.0" />
+                                                                        <Label prefHeight="29.0" prefWidth="26.0" text="\%">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="14.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </HBox>
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="6.0" right="6.0" />
                                                                </VBox.margin>
                                                             </GridPane>
+                                                            <HBox>
+                                                               <children>
+                                                                  <Label prefHeight="20.0" prefWidth="114.0" text="Pago total:">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <HBox.margin>
+                                                                        <Insets left="8.0" />
+                                                                     </HBox.margin>
+                                                                  </Label>
+                                                                  <Label fx:id="lbPagoTotal_admin" prefHeight="20.0" prefWidth="58.0">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets top="4.0" />
+                                                               </VBox.margin>
+                                                            </HBox>
                                                             <Separator layoutX="10.0" layoutY="176.0" prefWidth="200.0">
                                                                <VBox.margin>
                                                                   <Insets top="2.0" />
@@ -522,9 +544,191 @@
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                         </TitledPane>
-                                        <TitledPane animated="false" text="Modificar">
+                                        <TitledPane animated="false" text="Agregar Nuevo Prestamo a Cliente Existente">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <VBox layoutX="232.0" layoutY="14.0" prefHeight="473.6" prefWidth="536.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <HBox>
+                                                               <children>
+                                                                  <Label prefHeight="20.0" prefWidth="94.0" text="Nombre:">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <opaqueInsets>
+                                                                        <Insets />
+                                                                     </opaqueInsets>
+                                                                     <padding>
+                                                                        <Insets left="10.0" right="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <TextField fx:id="txNombre_mod" disable="true" prefHeight="27.0" prefWidth="130.0" />
+                                                                  <Separator prefHeight="0.0" prefWidth="56.0" visible="false" />
+                                                                  <Label prefHeight="20.0" prefWidth="92.0" text="Cédula:">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <opaqueInsets>
+                                                                        <Insets />
+                                                                     </opaqueInsets>
+                                                                     <padding>
+                                                                        <Insets left="10.0" right="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <TextField fx:id="txCedula_mod" disable="true" />
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets top="5.0" />
+                                                               </padding>
+                                                            </HBox>
+                                                            <Button mnemonicParsing="false" onAction="#crearPrestamoClienteExistente" text="Crear un nuevo prestamo">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <VBox.margin>
+                                                                  <Insets left="160.0" top="10.0" />
+                                                               </VBox.margin>
+                                                            </Button>
+                                                            <HBox spacing="6.0">
+                                                               <children>
+                                                                  <Label text="Datos del prestamo">
+                                                                     <font>
+                                                                        <Font size="24.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Separator prefHeight="11.0" prefWidth="110.0" visible="false" />
+                                                                  <Label text="No. Recibo:">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                     <HBox.margin>
+                                                                        <Insets top="5.0" />
+                                                                     </HBox.margin>
+                                                                  </Label>
+                                                                  <Label fx:id="lbRecibo_mod" layoutX="289.0" layoutY="20.0">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="18.0" />
+                                                                     </font>
+                                                                     <HBox.margin>
+                                                                        <Insets top="5.0" />
+                                                                     </HBox.margin>
+                                                                  </Label>
+                                                               </children>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </HBox>
+                                                            <GridPane fx:id="gridRecibo_mod" disable="true" hgap="4.0" vgap="1.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.8" minWidth="10.0" prefWidth="108.8" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.20001220703125" minWidth="10.0" prefWidth="91.19998474121094" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.59999084472656" minWidth="10.0" prefWidth="116.80000000000001" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="132.8" minWidth="10.0" prefWidth="132.8" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="Valor prestamo:">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label text="Interés:" GridPane.rowIndex="1">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label text="Fecha prestamo:" GridPane.columnIndex="2">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label text="Fecha final:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <TextField fx:id="txPrestamo_mod" prefHeight="27.0" prefWidth="129.0" GridPane.columnIndex="1" />
+                                                                  <TextField fx:id="txCuotas_mod" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="txDias_mod" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <Button mnemonicParsing="false" onAction="#guardarReciboMod" prefHeight="58.0" prefWidth="161.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <Label text="Cuotas:" GridPane.rowIndex="2">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <DatePicker fx:id="txFechaPres_mod" GridPane.columnIndex="3" />
+                                                                  <DatePicker fx:id="txFechaFin_mod" layoutX="370.0" layoutY="12.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <ComboBox fx:id="modoPago_mod" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <Label text="Días de pago:" GridPane.rowIndex="3">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label text="Modo de Pago: " GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                     <children>
+                                                                        <TextField fx:id="txInteres_mod" prefHeight="27.0" prefWidth="98.0" />
+                                                                        <Label prefHeight="28.0" prefWidth="22.0" text="\%">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="14.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets top="2.0" />
+                                                               </padding>
+                                                            </GridPane>
+                                                            <HBox>
+                                                               <children>
+                                                                  <Label prefHeight="20.0" prefWidth="114.0" text="Pago total: ">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <HBox.margin>
+                                                                        <Insets top="4.0" />
+                                                                     </HBox.margin>
+                                                                  </Label>
+                                                                  <Label fx:id="lbPagoTotal_mod">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                               </children>
+                                                            </HBox>
+                                                            <Separator prefWidth="200.0" />
+                                                            <Label text="Cuotas">
+                                                               <font>
+                                                                  <Font size="24.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Button mnemonicParsing="false" onAction="#generarCuotasMod" text="Ver cuotas" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children></AnchorPane>
                                           </content>
                                              <font>
                                                 <Font name="System Bold" size="14.0" />
@@ -605,6 +809,50 @@
                                     </VBox>
                                  </children></AnchorPane>
                           </content>
+                        </Tab>
+                        <Tab text="Admin">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutY="-6.0" prefHeight="565.6" prefWidth="507.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <Label text="Estados de cuotas">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox prefHeight="99.0" prefWidth="507.0">
+                                             <children>
+                                                <Label prefHeight="86.0" prefWidth="303.0" text="Actualizar el estado de las cuotas de los clientes. Este proceso debe hacerse diariamente " textAlignment="JUSTIFY" wrapText="true">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button mnemonicParsing="false" onAction="#actualizarEstadoCuotas" text="Actualizar Estado">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="30.0" top="8.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Fecha Actual: " textAlignment="JUSTIFY" wrapText="true">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <DatePicker fx:id="dtCurrentDate" prefHeight="26.0" prefWidth="136.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
                         </Tab>
                     </tabs>
                      <padding>

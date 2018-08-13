@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Main extends Application {
 	
@@ -179,7 +180,7 @@ public class Main extends Application {
 			String fechaF, double pagoTotal, String[] losDias) throws ParseException {
 		// TODO Auto-generated method stub
 		ArrayList dias = new ArrayList();
-		if(losDias.length<1) {
+		if(losDias.length>=1) {
 			for(int i = 0; i< losDias.length; i++) {
 				dias.add(Integer.parseInt(losDias[i].trim()));
 			}
@@ -223,6 +224,48 @@ public class Main extends Application {
 		
 		return manager.generarCuotas(Double.parseDouble(prestamo), Double.parseDouble(interes), modo, Integer.parseInt(cuotas), Integer.parseInt(idRecibo));
 		
+	}
+
+	public static void guardarFechaCuota(String fecha, String idRecibo, String idCuota) {
+		// TODO Auto-generated method stub
+		try {
+			manager.guardarFechaCuota(fecha, Integer.parseInt(idRecibo), Integer.parseInt(idCuota));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void actualizarEstadoCuotas(String fechaActual) {
+		// TODO Auto-generated method stub
+		try {
+			manager.actualizarEstadoCuota(fechaActual);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static double calcularPagoTotal(double prestamo, double interes, String modoPago, int cuotas) {
+		// TODO Auto-generated method stub
+		int modo = 0;
+		if(modoPago.equalsIgnoreCase("Mensual")) {
+			modo = 1;
+		}else if(modoPago.equalsIgnoreCase("Quincenal")) {
+			modo = 2;
+		}else if(modoPago.equalsIgnoreCase("Semanal")) {
+			modo = 3;
+		}else {
+			modo = 4;
+		}
+		return manager.calcularPagoTotal(prestamo, interes, modo, cuotas);
+	}
+	
+	public static String validarReciboActivoCliente(String idCliente) {
+		return manager.validarReciboActivoCliente(idCliente);
 	}
 
 

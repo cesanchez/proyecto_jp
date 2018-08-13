@@ -218,6 +218,9 @@ public class Manager {
 								if (mesActual == mesCob) {
 									listaCuota.add(cu);
 								}
+								if(cu.isMora()) {
+									listaCuota.add(cu);
+								}
 							}
 						}
 					}
@@ -251,6 +254,10 @@ public class Manager {
 						for (Cuota cu : cuotas) {
 
 							if (cu.getFecha_cobro().equals(sqlStartDate)) {
+								listaCuota.add(cu);
+							}
+							
+							if(cu.isMora()) {
 								listaCuota.add(cu);
 							}
 						}
@@ -388,18 +395,18 @@ public class Manager {
 	public ArrayList<Cuota> darCuotasCliente(String cliente) {
 
 		ArrayList<Cuota> cuotasCliente = new ArrayList<Cuota>();
-		//Cliente miCliente = (Cliente) session.get(Cliente.class, cliente);
-		
-		//Buscar el cliente, dentro de todos los clientes
-		
+		// Cliente miCliente = (Cliente) session.get(Cliente.class, cliente);
+
+		// Buscar el cliente, dentro de todos los clientes
+
 		Cliente miCliente = null;
-		for(Cliente_VIP clVip : clientesVip) {
+		for (Cliente_VIP clVip : clientesVip) {
 			miCliente = clVip.buscarCliente(cliente);
-			if(miCliente != null) {
+			if (miCliente != null) {
 				break;
 			}
 		}
-		
+
 		Recibo rec = darReciboCliente(miCliente);
 		cuotasCliente = darCuotasRecibo(rec);
 
@@ -472,7 +479,7 @@ public class Manager {
 				elRecibo.setDias(losDias);
 			}
 			cl.addRecibo(elRecibo);
-			//session.update(cl);
+			// session.update(cl);
 			session.save(elRecibo);
 			ret = true;
 		} else {
@@ -597,6 +604,60 @@ public class Manager {
 		return res;
 	}
 
+	public void guardarFechaCuota(String fecha, int idRecibo, int idCuota) throws ParseException {
+		// TODO Auto-generated method stub
+		String startDate = fecha;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateI = sdf1.parse(startDate);
+		java.sql.Date sqlStartDate = new java.sql.Date(dateI.getTime());
+
+		Recibo elRecibo = (Recibo) session.get(Recibo.class, idRecibo);
+		Cuota laCuota = elRecibo.darCuotaId(idCuota);
+		laCuota.setFecha_cobro(sqlStartDate);
+		session.beginTransaction();
+
+		session.update(laCuota);
+
+		session.getTransaction().commit();
+
+	}
+
+	public void actualizarEstadoCuota(String fechaActual) throws ParseException {
+		// TODO Auto-generated method stub
+		List<Cuota> cuotas = session.createCriteria(Cuota.class).list();
+
+		String startDate = fechaActual;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateI = sdf1.parse(startDate);
+		java.sql.Date sqlStartDate = new java.sql.Date(dateI.getTime());
+
+		session.beginTransaction();
+		for (Cuota c : cuotas) {
+			java.sql.Date fechaCobro = c.getFecha_cobro();
+			if(fechaCobro != null) {
+				int com = fechaCobro.compareTo(sqlStartDate);
+				double valor = c.getValor();
+				if (com < 0) {
+					double valPagado = c.getValor_pagado();
+					if (valPagado < valor) {
+						c.setMora(true);
+						session.update(c);
+					}
+				}
+			}			
+		}
+
+		session.getTransaction().commit();
+	}
+	
+	public String validarReciboActivoCliente(String idCliente) {
+				
+		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
+		String recActivo = miCliente.reciboActivo();
+		
+		return recActivo;
+	}
+
 	/*
 	 * public static void main(String[] args) {
 	 * 
@@ -612,9 +673,6 @@ public class Manager {
 	 * manager.generarListadoCobro(5,"2018-01-01"); //
 	 * manager.genListadoCsvCobro(cuotas); // } catch (ParseException e) { // //
 	 * TODO Auto-generated catch block // e.printStackTrace(); // }
-	 * 
-	 * 
-	 * 
 	 * 
 	 * manager.exit();
 	 * 
