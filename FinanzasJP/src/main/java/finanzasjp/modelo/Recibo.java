@@ -44,7 +44,7 @@ public class Recibo {
 
 	private Cliente id_cliente;
 	private Set<Cuota> cuotas;
-	private Set<Dia> dias;
+	private Set<Dia_Recibo> dias;
 
 	public Recibo() {
 
@@ -52,7 +52,7 @@ public class Recibo {
 
 	public Recibo(int id_recibo, double saldo, double monto_prestamo, boolean activo, boolean mora, double pago_total,
 			double interes, boolean diario, Date fecha_prestamo, Date fecha_fin, Cliente id_cliente, Set<Cuota> cuotas,
-			Set<Dia> dias) {
+			Set<Dia_Recibo> dias) {
 		super();
 		this.id_recibo = id_recibo;
 		this.saldo = saldo;
@@ -89,9 +89,9 @@ public class Recibo {
 	public boolean contieneDia(int dia) {
 
 		boolean ret = false;
-		for (Dia d : this.getDias()) {
+		for (Dia_Recibo d : this.getDias()) {
 
-			if (d.getDia() == dia) {
+			if (d.getId_dia() == dia) {
 				ret = true;
 				break;
 			}
@@ -186,15 +186,16 @@ public class Recibo {
 		this.cuotas = cuotas;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	/*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "dia_recibo", joinColumns = {
 			@JoinColumn(name = "id_recibo", nullable = false) }, inverseJoinColumns = {
-					@JoinColumn(name = "id_dia", nullable = false) })
-	public Set<Dia> getDias() {
+					@JoinColumn(name = "id_dia", nullable = false) })*/
+	@OneToMany(mappedBy = "id_recibo", targetEntity = Dia_Recibo.class, cascade = CascadeType.ALL)
+	public Set<Dia_Recibo> getDias() {
 		return dias;
 	}
 
-	public void setDias(Set<Dia> dias) {
+	public void setDias(Set<Dia_Recibo> dias) {
 		this.dias = dias;
 	}
 

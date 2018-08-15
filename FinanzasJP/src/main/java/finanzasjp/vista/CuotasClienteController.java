@@ -82,13 +82,15 @@ public class CuotasClienteController {
 
 			public void changed(ObservableValue<? extends Cuota> observable, Cuota oldValue, Cuota newValue) {
 				// TODO Auto-generated method stub
+				dt_fechaCuota.setValue(null);
 				tx_cuota.setText("" + newValue.getId_cuota());
 				tx_valorPago.setText("" + newValue.getValor());
 				String strFecha = "";
 				if(newValue.getFecha_cobro() != null) {
 					strFecha = newValue.getFecha_cobro().toString();
 					dt_fechaCuota.setValue(LOCAL_DATE(strFecha));
-				}								
+				}
+				
 			}			
 		});
 		
@@ -97,6 +99,7 @@ public class CuotasClienteController {
 	@FXML
 	private void guardarFechaCuota() {
 		main.guardarFechaCuota(dt_fechaCuota.getValue().toString(), lb_idRecibo.getText(), tx_cuota.getText());
+		
 	}
 	
 	private ArrayList<Cuota> darCuotas(String idCliente) {

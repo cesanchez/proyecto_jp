@@ -16,7 +16,7 @@
     <mapping class="finanzasjp.modelo.Cliente" />
     <mapping class="finanzasjp.modelo.Recibo" />
     <mapping class="finanzasjp.modelo.Cuota" />
-    <mapping class="finanzasjp.modelo.Dia" />
+    <mapping class="finanzasjp.modelo.Dia_Recibo" />
      
   </session-factory>
 </hibernate-configuration>

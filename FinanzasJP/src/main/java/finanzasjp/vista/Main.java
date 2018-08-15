@@ -47,7 +47,7 @@ public class Main extends Application {
 		return manager.darReciboCliente(cliente);
 	}
 	
-	public static ArrayList<Dia> darDias(Recibo recibo) {
+	public static ArrayList<Dia_Recibo> darDias(Recibo recibo) {
 		
 		return manager.darDiasRecibo(recibo);		
 	}
@@ -60,6 +60,10 @@ public class Main extends Application {
 	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha) throws ParseException {
 		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha);
 		return clientes;		
+	}
+	
+	public static ArrayList<Cliente> darListaClientesMora(){
+		return manager.darListaClientesMora();
 	}
 	
 	public static void desactivarRecibo(String id_recibo) {
@@ -239,14 +243,16 @@ public class Main extends Application {
 		}
 	}
 
-	public static void actualizarEstadoCuotas(String fechaActual) {
+	public static boolean actualizarEstadoCuotas(String fechaActual) {
 		// TODO Auto-generated method stub
+		boolean ret = false;
 		try {
-			manager.actualizarEstadoCuota(fechaActual);
+			ret = manager.actualizarEstadoCuota(fechaActual);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return ret;
 	}
 
 	public static double calcularPagoTotal(double prestamo, double interes, String modoPago, int cuotas) {
@@ -264,8 +270,49 @@ public class Main extends Application {
 		return manager.calcularPagoTotal(prestamo, interes, modo, cuotas);
 	}
 	
+	public static double calcularPagoTotalLabel(double prestamo, double interes, String modoPago, int cuotas) {
+		// TODO Auto-generated method stub
+		int modo = 0;
+		if(modoPago.equalsIgnoreCase("Mensual")) {
+			modo = 1;
+		}else if(modoPago.equalsIgnoreCase("Quincenal")) {
+			modo = 2;
+		}else if(modoPago.equalsIgnoreCase("Semanal")) {
+			modo = 3;
+		}else {
+			modo = 4;
+		}
+		return manager.calcularPagoTotalLabel(prestamo, interes, modo, cuotas);
+	}
+	
 	public static String validarReciboActivoCliente(String idCliente) {
 		return manager.validarReciboActivoCliente(idCliente);
+	}
+
+	public static ArrayList<Cuota> darCuotasMoraCliente(String idCliente) {
+		// TODO Auto-generated method stub
+		return manager.darCuotasMoraCliente(idCliente);
+	}
+
+	public static void verListaCuotasMora() throws IOException{
+		// TODO Auto-generated method stub
+		FXMLLoader loader =  new FXMLLoader();
+		//loader.setLocation(Main.class.getResource("GenListados.fxml"));
+		loader.setLocation(Main.class.getResource("ListadoCuotaMora.fxml"));
+		BorderPane listado = loader.load();
+		
+		Stage listadoStage = new Stage();
+		listadoStage.setTitle("Créditos JP");
+		listadoStage.initModality(Modality.WINDOW_MODAL);
+		listadoStage.initOwner(primaryStage);
+		
+		Scene scene = new Scene(listado);
+		listadoStage.setScene(scene);		
+		listadoStage.showAndWait();
+	}
+	
+	public static  ArrayList<Mora> darInfMoraCliente(String id) {
+		return manager.darInfMoraCliente(id);
 	}
 
 

@@ -36,7 +36,7 @@ import com.sun.javafx.css.converters.StringConverter;
 import antlr.Token;
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cliente_VIP;
-import finanzasjp.modelo.Dia;
+import finanzasjp.modelo.Dia_Recibo;
 import finanzasjp.modelo.OpcionPrestamo;
 import finanzasjp.modelo.Recibo;
 import javafx.beans.value.ChangeListener;
@@ -59,7 +59,7 @@ public class InfoClientesController {
 	private GridPane gridRecibo_admin;
 	@FXML
 	private GridPane gridRecibo_mod;
-	
+
 	@FXML
 	private TextField txNombre_mod;
 	@FXML
@@ -121,7 +121,6 @@ public class InfoClientesController {
 	private ObservableList<Cliente_VIP> dataPert_admin = FXCollections.observableArrayList();
 	private ObservableList<String> dataModoPago_admin = FXCollections.observableArrayList();
 
-
 	// Admin nuevo cliente
 	@FXML
 	private TextField txNombreAdmin;
@@ -162,7 +161,7 @@ public class InfoClientesController {
 	private Label lbRecibo;
 	@FXML
 	private Label lbRecibo_mod;
-	
+
 	@FXML
 	private TextField txPrestamo_mod;
 
@@ -182,17 +181,17 @@ public class InfoClientesController {
 
 	@FXML
 	private Label lbPagoTotal_mod;
-	
+
 	@FXML
 	private DatePicker dtCurrentDate;
-	
-	// Date Now  ### "To Date Picker"
-    public static final LocalDate NOW_LOCAL_DATE (){
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(date , formatter);
-        return localDate;
-    }
+
+	// Date Now ### "To Date Picker"
+	public static final LocalDate NOW_LOCAL_DATE() {
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate localDate = LocalDate.parse(date, formatter);
+		return localDate;
+	}
 
 	public InfoClientesController() {
 
@@ -204,41 +203,41 @@ public class InfoClientesController {
 	public void initialize() {
 
 		txInteres_admin.textProperty().addListener(new ChangeListener<String>() {
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                   
-                	txInteres_admin.setText("");
-                }
-            }
-        });
-		
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+
+					txInteres_admin.setText("");
+				}
+			}
+		});
+
 		txPrestamo_admin.textProperty().addListener(new ChangeListener<String>() {
-            
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                	txPrestamo_admin.setText("");
-                }
-            }
-        });
-		
+
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+					txPrestamo_admin.setText("");
+				}
+			}
+		});
+
 		txPrestamo_mod.textProperty().addListener(new ChangeListener<String>() {
-            
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                	txPrestamo_mod.setText("");
-                }
-            }
-        });
-		
+
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+					txPrestamo_mod.setText("");
+				}
+			}
+		});
+
 		txInteres_mod.textProperty().addListener(new ChangeListener<String>() {
-            
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                	txInteres_mod.setText("");
-                }
-            }
-        });
-		
+
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+					txInteres_mod.setText("");
+				}
+			}
+		});
+
 		dtCurrentDate.setValue(NOW_LOCAL_DATE());
 
 		tooltip.setText("Agregue los días separados por coma (ej: 5, 20)");
@@ -253,7 +252,7 @@ public class InfoClientesController {
 			}
 
 		});
-		
+
 		modoPago_mod.setItems(dataModoPago_admin);
 		modoPago_mod.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 
@@ -340,10 +339,10 @@ public class InfoClientesController {
 					txInteres.setText("" + rec.getInteres());
 					txPagoTotal.setText("" + rec.getPago_total());
 
-					ArrayList<Dia> dias = main.darDias(rec);
+					ArrayList<Dia_Recibo> dias = main.darDias(rec);
 					String sdias = "";
-					for (Dia d : dias) {
-						sdias += d.getDia() + ",";
+					for (Dia_Recibo d : dias) {
+						sdias += d.getId_dia() + ",";
 					}
 					sdias = sdias.substring(0, sdias.length() - 1);
 					txDias.setText(sdias);
@@ -362,7 +361,7 @@ public class InfoClientesController {
 
 					lbSinRecibo.setText("El cliente seleccionado no tiene recibo activo");
 				}
-				
+
 				txNombre_mod.setText(cl.getNombre());
 				txCedula_mod.setText(cl.getId());
 			}
@@ -475,15 +474,15 @@ public class InfoClientesController {
 				alert.setHeaderText(null);
 				alert.setContentText("Datos guardados exitosamente");
 				alert.showAndWait();
-				
-				//Inhabilitar campos de contacto
+
+				// Inhabilitar campos de contacto
 				txNombreAdmin.setDisable(true);
 				txApellidoAdmin.setDisable(true);
 				txCedulaAdmin.setDisable(true);
 				txTelefonoAdmin.setDisable(true);
 				txDireccionAdmin.setDisable(true);
 				btGuardarCliente.setDisable(true);
-				
+
 				// Se habilita el grid del recibo
 				gridRecibo_admin.setDisable(false);
 				lbRecibo.setText(Integer.toString(main.darNumUltRecibo()));
@@ -525,16 +524,26 @@ public class InfoClientesController {
 					if (txDias_admin.getText() != "") {
 						losDias = txDias_admin.getText().split(",");
 					}
-					
-					double pagTotal = main.calcularPagoTotal(Double.parseDouble(txPrestamo_admin.getText()), Double.parseDouble(txInteres_admin.getText()), 
-															modoPago, Integer.parseInt(txCuotas_admin.getText()));
-					lbPagoTotal_admin.setText(""+pagTotal);
-					resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(),
-							Double.parseDouble(txPrestamo_admin.getText()),
-							Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(),
-							txFechaFin_admin.getValue().toString(), pagTotal, losDias);
-					
-					flagOk = true;
+
+					double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_admin.getText()),
+							Double.parseDouble(txInteres_admin.getText()), modoPago,
+							Integer.parseInt(txCuotas_admin.getText()));
+					lbPagoTotal_admin.setText("" + pagTotal);
+
+					if (Double.parseDouble(txInteres_admin.getText()) < 1) {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Información");
+						alert.setHeaderText(null);
+						alert.setContentText("El interés no puede ser menor que el 1%");
+						alert.showAndWait();
+					} else {
+						resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(),
+								Double.parseDouble(txPrestamo_admin.getText()),
+								Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(),
+								txFechaFin_admin.getValue().toString(), pagTotal, losDias);
+						flagOk = true;
+					}
+
 				} else {
 					// ... user chose CANCEL or closed the dialog
 				}
@@ -545,7 +554,7 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
-					
+
 				} else {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Información");
@@ -587,7 +596,7 @@ public class InfoClientesController {
 			}
 		}
 	}
-	
+
 	@FXML
 	private void generarCuotasMod() {
 
@@ -611,24 +620,23 @@ public class InfoClientesController {
 			}
 		}
 	}
-	
+
 	@FXML
 	private void limpiarDatos() {
-		
+
 		txNombreAdmin.setText("");
 		txApellidoAdmin.setText("");
 		txCedulaAdmin.setText("");
 		txTelefonoAdmin.setText("");
 		txDireccionAdmin.setText("");
-		
+
 		txPrestamo_admin.setText("");
 		txInteres_admin.setText("");
 		txCuotas_admin.setText("");
 		txDias_admin.setText("");
 		txFechaPres_admin.setValue(null);
 		txFechaFin_admin.setValue(null);
-		
-		
+
 		txNombreAdmin.setDisable(false);
 		txApellidoAdmin.setDisable(false);
 		txCedulaAdmin.setDisable(false);
@@ -636,37 +644,52 @@ public class InfoClientesController {
 		txDireccionAdmin.setDisable(false);
 		btGuardarCliente.setDisable(false);
 	}
-	
+
 	@FXML
 	private void actualizarEstadoCuotas() {
-		main.actualizarEstadoCuotas(dtCurrentDate.getValue().toString());
-	}
-	
-	@FXML
-	private void crearPrestamoClienteExistente() {
-		String val = main.validarReciboActivoCliente(txCedula_mod.getText());
-		
-		if(val.equals("")) {
-			// Se habilita el grid del recibo
-			gridRecibo_mod.setDisable(false);
-			lbRecibo_mod.setText(Integer.toString(main.darNumUltRecibo()));
+		if(main.actualizarEstadoCuotas(dtCurrentDate.getValue().toString())) {
+			
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText(
+					"Las cuotas se actualizaron exitosamente");
+			alert.showAndWait();
 		}else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Información");
 			alert.setHeaderText(null);
-			alert.setContentText("El cliente " + txNombre_mod.getText() + " actualmente tiene el siguiente recibo activo: " + val);
+			alert.setContentText(
+					"Se produjo un error al actualizar las cuotas");
 			alert.showAndWait();
-		}		
+		}
 	}
-	
+
+	@FXML
+	private void crearPrestamoClienteExistente() {
+		String val = main.validarReciboActivoCliente(txCedula_mod.getText());
+
+		if (val.equals("")) {
+			// Se habilita el grid del recibo
+			gridRecibo_mod.setDisable(false);
+			lbRecibo_mod.setText(Integer.toString(main.darNumUltRecibo()));
+		} else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText(
+					"El cliente " + txNombre_mod.getText() + " actualmente tiene el siguiente recibo activo: " + val);
+			alert.showAndWait();
+		}
+	}
+
 	@FXML
 	private void guardarReciboMod() {
 
-
 		try {
 
-			if (txPrestamo_mod.getText() == "" || txInteres_mod.getText() == ""
-					|| txFechaPres_mod.getValue() == null || txFechaFin_mod.getValue() == null) {
+			if (txPrestamo_mod.getText() == "" || txInteres_mod.getText() == "" || txFechaPres_mod.getValue() == null
+					|| txFechaFin_mod.getValue() == null) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Información");
 				alert.setHeaderText(null);
@@ -689,15 +712,25 @@ public class InfoClientesController {
 						losDias = txDias_mod.getText().split(",");
 					}
 					
-					double pagTotal = main.calcularPagoTotal(Double.parseDouble(txPrestamo_mod.getText()), Double.parseDouble(txInteres_mod.getText()), 
-															modoPago, Integer.parseInt(txCuotas_mod.getText()));
-					lbPagoTotal_mod.setText(""+pagTotal);
-					resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
-							Double.parseDouble(txPrestamo_mod.getText()),
-							Double.parseDouble(txInteres_mod.getText()), txFechaPres_mod.getValue().toString(),
-							txFechaFin_mod.getValue().toString(), pagTotal, losDias);
+					if(Double.parseDouble(txInteres_mod.getText()) < 1) {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Información");
+						alert.setHeaderText(null);
+						alert.setContentText("El interés no puede ser menor que el 1%");
+						alert.showAndWait();
+					}else {
+						double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_mod.getText()),
+								Double.parseDouble(txInteres_mod.getText()), modoPago,
+								Integer.parseInt(txCuotas_mod.getText()));
+						lbPagoTotal_mod.setText("" + pagTotal);
+						resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
+								Double.parseDouble(txPrestamo_mod.getText()), Double.parseDouble(txInteres_mod.getText()),
+								txFechaPres_mod.getValue().toString(), txFechaFin_mod.getValue().toString(), pagTotal,
+								losDias);
+
+						flagOk = true;
+					}
 					
-					flagOk = true;
 				} else {
 					// ... user chose CANCEL or closed the dialog
 				}
@@ -708,7 +741,7 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
-					
+
 				} else {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Información");
@@ -725,6 +758,17 @@ public class InfoClientesController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
+	
+	@FXML
+	private void verListaCuotasMora() {
+		try {
+			main.verListaCuotasMora();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }

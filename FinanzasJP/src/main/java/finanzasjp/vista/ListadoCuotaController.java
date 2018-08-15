@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cuota;
-import finanzasjp.modelo.Dia;
+import finanzasjp.modelo.Dia_Recibo;
 import finanzasjp.modelo.Recibo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -203,11 +203,11 @@ public class ListadoCuotaController {
 						txFechaFin.setText(""+reciboCl.getFecha_fin());
 						txPagoTotal.setText(""+reciboCl.getPago_total());
 						
-						ArrayList<Dia> dias = main.darDias(reciboCl);
+						ArrayList<Dia_Recibo> dias = main.darDias(reciboCl);
 						String sdias = "";
 						if(!dias.isEmpty()) {
-							for (Dia d : dias) {
-								sdias += d.getDia() + ",";
+							for (Dia_Recibo d : dias) {
+								sdias += d.getId_dia() + ",";
 							}
 							sdias = sdias.substring(0, sdias.length() - 1);
 						}

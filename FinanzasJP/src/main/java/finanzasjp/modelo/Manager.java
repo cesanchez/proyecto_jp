@@ -28,6 +28,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.jmx.SessionFactoryStub;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.transform.Transformers;
@@ -183,12 +184,12 @@ public class Manager {
 		return reciboCliente;
 	}
 
-	public ArrayList<Dia> darDiasRecibo(Recibo recibo) {
+	public ArrayList<Dia_Recibo> darDiasRecibo(Recibo recibo) {
 
-		ArrayList<Dia> diasRecibo = new ArrayList<Dia>();
+		ArrayList<Dia_Recibo> diasRecibo = new ArrayList<Dia_Recibo>();
 		Recibo rec = (Recibo) session.get(Recibo.class, recibo.getId_recibo());
 
-		for (Dia d : rec.getDias()) {
+		for (Dia_Recibo d : rec.getDias()) {
 			diasRecibo.add(d);
 		}
 
@@ -207,6 +208,7 @@ public class Manager {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new java.util.Date());
 		int mesActual = cal.get(Calendar.MONTH) + 1;
+		
 
 		for (Cliente_VIP clVi : clientesVip) {
 
@@ -310,13 +312,29 @@ public class Manager {
 		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha);
 
 		for (Cuota c : listaCuota) {
-
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
 			listaClientes.add(cl);
 		}
-
 		return listaClientes;
+	}
+	
+	public ArrayList<Cliente> darListaClientesMora(){
+		
+		ArrayList<Cliente> listaClientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
+		ArrayList<Cliente> clientesMora = new ArrayList<Cliente>();
+		
+		for (Cliente c : listaClientes) {
+			
+			for(Recibo r : c.getRecibos()) {
+				
+				if(r.isActivo() && r.isMora()) {
+					
+					clientesMora.add(c);
+				}
+			}
+		}
+		return clientesMora;
 	}
 
 	public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
@@ -524,7 +542,7 @@ public class Manager {
 
 	}
 
-	public boolean guardarRecibo(int id_rec, String ced, double prestamo, double interes, String fechaI, String fechaF,
+	public boolean guardarRecibo(int id_rec, String ced, double prestamo, double miInteres, String fechaI, String fechaF,
 			double pagoTotal, ArrayList<Integer> dias) throws ParseException {
 
 		boolean ret = false;
@@ -539,7 +557,9 @@ public class Manager {
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date dateF = sdf2.parse(endtDate);
 		java.sql.Date sqlEndDate = new java.sql.Date(dateF.getTime());
-
+		
+		double interes = miInteres / 100;
+		
 		session.beginTransaction();
 		// Si el recibo no existe en la bd, se crea uno nuevo y se guarda.
 		if (elRecibo == null) {
@@ -550,9 +570,9 @@ public class Manager {
 
 			// Verificar si el arraylist dias no está vacío
 			if (!dias.isEmpty()) {
-				Set<Dia> losDias = new HashSet<Dia>();
+				Set<Dia_Recibo> losDias = new HashSet<Dia_Recibo>();
 				for (Integer d : dias) {
-					Dia elDia = new Dia(d.intValue());
+					Dia_Recibo elDia = new Dia_Recibo(d.intValue(), elRecibo);
 					losDias.add(elDia);
 				}
 				elRecibo.setDias(losDias);
@@ -637,10 +657,20 @@ public class Manager {
 		return interesTotal;
 	}
 
-	public double calcularPagoTotal(double valorPrestamo, double interes, int modo, int numCuotas) {
+	public double calcularPagoTotal(double valorPrestamo, double miInteres, int modo, int numCuotas) {
 		double pagoTotal = 0;
 		double valorInteres = 0;
-
+		double interes = miInteres;
+		double interesTotal = calcularInteresTotal(numCuotas, interes, modo);
+		valorInteres = interesTotal * valorPrestamo;
+		pagoTotal = valorInteres + valorPrestamo;
+		return pagoTotal;
+	}
+	
+	public double calcularPagoTotalLabel(double valorPrestamo, double miInteres, int modo, int numCuotas) {
+		double pagoTotal = 0;
+		double valorInteres = 0;
+		double interes = miInteres / 100;
 		double interesTotal = calcularInteresTotal(numCuotas, interes, modo);
 		valorInteres = interesTotal * valorPrestamo;
 		pagoTotal = valorInteres + valorPrestamo;
@@ -655,8 +685,9 @@ public class Manager {
 		return valorPagoCuota;
 	}
 
-	public boolean generarCuotas(double valorPrestamo, double interes, int modo, int numCuotas, int idRecibo) {
-
+	public boolean generarCuotas(double valorPrestamo, double miInteres, int modo, int numCuotas, int idRecibo) {
+		
+		double interes = miInteres / 100;
 		boolean res = false;
 		Recibo recibo = (Recibo) session.get(Recibo.class, idRecibo);
 		double valor = calcularValorCuota(valorPrestamo, interes, modo, numCuotas);
@@ -701,8 +732,9 @@ public class Manager {
 
 	}
 
-	public void actualizarEstadoCuota(String fechaActual) throws ParseException {
+	public boolean actualizarEstadoCuota(String fechaActual) throws ParseException {
 		// TODO Auto-generated method stub
+		boolean re = false;
 		List<Cuota> cuotas = session.createCriteria(Cuota.class).list();
 
 		String startDate = fechaActual;
@@ -720,13 +752,21 @@ public class Manager {
 					double valPagado = c.getValor_pagado();
 					if (valPagado < valor) {
 						c.setMora(true);
+						
+						Recibo recibo = c.getId_recibo();
+						recibo.setMora(true);
+						
 						session.update(c);
+						session.update(recibo);
 					}
 				}
 			}			
 		}
 
 		session.getTransaction().commit();
+		
+		re = true;
+		return re;
 	}
 	
 	public String validarReciboActivoCliente(String idCliente) {
@@ -735,6 +775,48 @@ public class Manager {
 		String recActivo = miCliente.reciboActivo();
 		
 		return recActivo;
+	}
+
+	public ArrayList<Cuota> darCuotasMoraCliente(String idCliente) {
+		// TODO Auto-generated method stub
+		ArrayList<Cuota> cuotasMora = new ArrayList<Cuota>();
+		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
+		
+		for(Recibo r : miCliente.getRecibos()) {
+			
+			if(r.isMora() && r.isActivo()) {
+				for(Cuota c : r.getCuotas()) {
+					if(c.isMora()) {
+						cuotasMora.add(c);
+					}
+				}					
+			}
+		}
+		
+		ComparadorCuota cmCu = new ComparadorCuota();
+		cuotasMora.sort(cmCu);
+		return cuotasMora;
+	}
+	
+	public ArrayList<Mora> darInfMoraCliente(String idCliente){
+		
+		ArrayList<Mora> infMora = new ArrayList<Mora>();
+		
+		Calendar actual = Calendar.getInstance();
+		actual.setTime(new java.util.Date());
+		java.util.Date actualDate = actual.getTime();
+		long actualTime = actualDate.getTime();
+		
+		for(Cuota c : darCuotasMoraCliente(idCliente)) {
+			Date cobroDate = c.getFecha_cobro();
+			long cobroTime = cobroDate.getTime();
+			long diffTime = actualTime - cobroTime;
+			long diffDays = diffTime / (1000 * 60 * 60 * 24);
+			
+			infMora.add(new Mora(c, diffDays, (c.getValor()-c.getValor_pagado())));
+		}
+		
+		return infMora;
 	}
 
 	/*
