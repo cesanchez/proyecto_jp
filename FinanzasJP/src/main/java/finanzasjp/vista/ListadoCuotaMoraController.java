@@ -10,9 +10,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.util.Callback;
 
 public class ListadoCuotaMoraController {
@@ -131,6 +133,16 @@ public class ListadoCuotaMoraController {
 		ArrayList<Cuota> cuotas = main.darCuotasMoraCliente(idCliente);		
 		
 		return cuotas;
+	}
+	
+	public void generarListadoCsvMora() {
+		main.generarListadoCsvMora();
+		
+		Alert conf = new Alert(AlertType.INFORMATION);
+		conf.setTitle("Información");
+		conf.setHeaderText(null);
+		conf.setContentText("Se ha generado el archivo ListaDeCuotasEnMora.xlsx en el escritorio");
+		conf.showAndWait();
 	}
 	
 	

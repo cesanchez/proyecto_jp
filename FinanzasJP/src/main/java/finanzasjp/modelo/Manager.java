@@ -398,6 +398,67 @@ public class Manager {
 		
 	}
 	
+	public void generarListadoCsvMora() throws IOException{
+				
+		Workbook workbook = new XSSFWorkbook();
+		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
+		
+		Font headerFont = workbook.createFont();
+		headerFont.setBold(true);
+		headerFont.setFontHeightInPoints((short)14);
+		headerFont.setColor(IndexedColors.BLACK.getIndex());
+		
+		CellStyle headerCellStyle = workbook.createCellStyle();
+		headerCellStyle.setFont(headerFont);
+		
+		Row headerRow = sheet.createRow(0);
+		
+		String[] headerValues = {"Nombre Cliente", "Teléfono","Dirección", "Id_cuota", "Fecha Cobro", "Valor Cuota", "Valor Pagado","Días Mora", "Valor Mora"};
+		
+		for(int i = 0; i < headerValues.length; i++) {
+			Cell cell = headerRow.createCell(i);
+			cell.setCellValue(headerValues[i]);
+			cell.setCellStyle(headerCellStyle);
+		}
+				
+		ArrayList<Cliente> listaClientes = darListaClientesMora();
+					
+		int numRow = 1;
+		for (Cliente cl : listaClientes) {			
+					
+			String nom = cl.getNombre() + " " + cl.getApellido();			
+			ArrayList<Mora> moras = darInfMoraCliente(cl.getId());
+			
+			for(Mora mora : moras) {
+				Row row = sheet.createRow(numRow);	
+				row.createCell(0).setCellValue(nom);
+				row.createCell(1).setCellValue(cl.getTelefono());
+				row.createCell(2).setCellValue(cl.getDireccion());
+				row.createCell(3).setCellValue(mora.getCuota().getId_cuota());
+				row.createCell(4).setCellValue(mora.getCuota().getFecha_cobro().toString());
+				row.createCell(5).setCellValue(mora.getCuota().getValor());
+				row.createCell(6).setCellValue(mora.getCuota().getValor_pagado());
+				row.createCell(7).setCellValue(mora.getDiasMora());
+				row.createCell(8).setCellValue(mora.getValorMora());
+				
+				numRow++;
+			}
+		}
+		
+		FileOutputStream fileout = null;
+		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
+		File file = new File(userHomeFolder, "ListaDeCuotasEnMora.xlsx");
+		try {
+			fileout = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		workbook.write(fileout);
+		fileout.close();
+		workbook.close();	
+	}
+	
 	/*public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
 		
 		Workbook workbook = new XSSFWorkbook();

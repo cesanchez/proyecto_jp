@@ -314,6 +314,15 @@ public class Main extends Application {
 	public static  ArrayList<Mora> darInfMoraCliente(String id) {
 		return manager.darInfMoraCliente(id);
 	}
+	
+	public static void generarListadoCsvMora() {
+		try {
+			manager.generarListadoCsvMora();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 
 }
