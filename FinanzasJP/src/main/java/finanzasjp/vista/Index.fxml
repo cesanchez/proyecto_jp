@@ -5,9 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="156.0" prefWidth="283.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.IndexController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="283.0" prefWidth="514.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.IndexController">
    <top>
       <Label text="Creditos JP" BorderPane.alignment="CENTER">
          <font>
@@ -16,14 +17,56 @@
       </Label>
    </top>
    <center>
-      <HBox prefHeight="160.0" prefWidth="280.0" spacing="70.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="280.0" prefWidth="520.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#verClientes" prefHeight="26.0" prefWidth="101.0" text="Clientes" />
-            <Button layoutX="20.0" layoutY="30.0" mnemonicParsing="false" onAction="#verClientesVip" prefHeight="26.0" prefWidth="101.0" text="Clientes VIP" />
+            <Label text="Clientes VIP">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <HBox spacing="40.0">
+               <children>
+                  <Label prefHeight="54.0" prefWidth="282.0" text="Gestionar Información asociada a los clientes VIP. " wrapText="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="20.0" layoutY="30.0" mnemonicParsing="false" onAction="#verClientesVip" prefHeight="26.0" prefWidth="101.0" text="Mostrar">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </padding>
+            </HBox>
+            <Label text="Clientes normales">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <HBox spacing="40.0">
+               <children>
+                  <Label prefHeight="70.0" prefWidth="281.0" text="Gestionar Información asociada a todos los clientes de la empresa." wrapText="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#verClientes" prefHeight="26.0" prefWidth="101.0" text="Mostrar">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </padding>
+            </HBox>
          </children>
-         <padding>
-            <Insets bottom="15.0" left="10.0" right="10.0" top="20.0" />
-         </padding>
-      </HBox>
+         <BorderPane.margin>
+            <Insets left="5.0" right="5.0" />
+         </BorderPane.margin>
+      </VBox>
    </center>
 </BorderPane>

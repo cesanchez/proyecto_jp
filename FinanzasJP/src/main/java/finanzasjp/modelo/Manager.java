@@ -96,7 +96,6 @@ public class Manager {
 		cliente.setId("1106");
 		cliente.setNombre("Neil Grass");
 		cliente.setApellido("Tayson");
-		cliente.setTelefono("4416575");
 
 		session.beginTransaction();
 
@@ -369,7 +368,7 @@ public class Manager {
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
 			String nom = cl.getNombre() + " " + cl.getApellido();
-			String tel = cl.getTelefono();
+			String tel = cl.getTelefono_celular();
 			String dir = cl.getDireccion();			
 			
 			row.createCell(0).setCellValue(nom);
@@ -432,7 +431,7 @@ public class Manager {
 			for(Mora mora : moras) {
 				Row row = sheet.createRow(numRow);	
 				row.createCell(0).setCellValue(nom);
-				row.createCell(1).setCellValue(cl.getTelefono());
+				row.createCell(1).setCellValue(cl.getTelefono_celular());
 				row.createCell(2).setCellValue(cl.getDireccion());
 				row.createCell(3).setCellValue(mora.getCuota().getId_cuota());
 				row.createCell(4).setCellValue(mora.getCuota().getFecha_cobro().toString());
@@ -879,6 +878,28 @@ public class Manager {
 		
 		return infMora;
 	}
+
+	public boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo, String trabajo,
+			String telCelular, String direccion, String barrio, String telTrabajo) {
+		// TODO Auto-generated method stub
+		boolean ret = false;
+		session.beginTransaction();
+		
+		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo, telTrabajo);
+		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
+		miCode.setId_cliente(miCliente);
+		
+		session.save(miCode);		
+		session.getTransaction().commit();
+		
+		ret = true;
+		
+		return ret;
+		
+	}
+
+
+
 
 	/*
 	 * public static void main(String[] args) {

@@ -45,7 +45,8 @@ import javafx.beans.value.ObservableValue;
 public class InfoClientesController {
 
 	private Main main;
-
+	
+	private Cliente miCliente;
 	private String cedulaClienteVip = "";
 	private String modoPago = "";
 
@@ -312,7 +313,7 @@ public class InfoClientesController {
 
 				lbSinRecibo.setText("");
 				Cliente cl = (Cliente) arg2;
-
+				miCliente = cl;
 				// String[] data = arg2.toString().split(":");
 				// String nombre = data[1];
 				// txNombre.setText(nombre);
@@ -323,7 +324,7 @@ public class InfoClientesController {
 				// Cliente cl = darCliente(ced);
 
 				txCedula.setText(cl.getId());
-				txTelefono.setText(cl.getTelefono());
+				txTelefono.setText(cl.getTelefono_celular());
 				txDireccion.setText(cl.getDireccion());
 
 				Recibo rec = main.darReciboCliente(cl);
@@ -765,6 +766,16 @@ public class InfoClientesController {
 	private void verListaCuotasMora() {
 		try {
 			main.verListaCuotasMora();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	private void verDatosCodeudor() {
+		try {
+			main.verDatosCodeudor(txNombreAdmin.getText(), txCedulaAdmin.getText());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

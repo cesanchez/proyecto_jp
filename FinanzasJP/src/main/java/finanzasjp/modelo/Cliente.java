@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
@@ -24,35 +25,45 @@ public class Cliente {
 	private String nombre; 
 	private String apellido;
 	private String direccion; 
-	private String telefono; 
+	private String telefono_celular; 
+	private String telefono_fijo;
+	private String barrio;
+	private String trabajo;
+	private String telefono_trabajo;
 	
 	private Cliente_VIP cliente_vip;
 	private Set<Recibo> recibos ;
+	private Set<Codeudor> id_codeudor;
 	
 	public Cliente() {
 		
 	}
-		
-    public Cliente(String id, String nombre, String apellido, String direccion, String telefono,
-			Cliente_VIP cliente_vip, Set<Recibo> recibos) {
+
+    public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
+			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip,
+			Set<Recibo> recibos) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.direccion = direccion;
-		this.telefono = telefono;
+		this.telefono_celular = telefono_celular;
+		this.telefono_fijo = telefono_fijo;
+		this.barrio = barrio;
+		this.trabajo = trabajo;
+		this.telefono_trabajo = telefono_trabajo;
 		this.cliente_vip = cliente_vip;
 		this.recibos = recibos;
 	}
-    
-    public Cliente(String id, String nombre, String apellido, String direccion, String telefono,
+
+	public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
 			Cliente_VIP cliente_vip) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.direccion = direccion;
-		this.telefono = telefono;
+		this.telefono_celular = telefono_celular;
 		this.cliente_vip = cliente_vip;
 		
 		this.recibos = new HashSet<Recibo>();
@@ -90,14 +101,6 @@ public class Cliente {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
-	}
-
-	public String getTelefono() {
-		return telefono;
-	}
-
-	public void setTelefono(String telefono) {
-		this.telefono = telefono;
 	}
 	
 	@ManyToOne
@@ -146,6 +149,55 @@ public class Cliente {
 			}			
 		}		
 		return res;
+	}
+
+	public String getTelefono_celular() {
+		return telefono_celular;
+	}
+
+	public void setTelefono_celular(String telefono_celular) {
+		this.telefono_celular = telefono_celular;
+	}
+
+	public String getTelefono_fijo() {
+		return telefono_fijo;
+	}
+
+	public void setTelefono_fijo(String telefono_fijo) {
+		this.telefono_fijo = telefono_fijo;
+	}
+
+	public String getBarrio() {
+		return barrio;
+	}
+
+	public void setBarrio(String barrio) {
+		this.barrio = barrio;
+	}
+
+	public String getTrabajo() {
+		return trabajo;
+	}
+
+	public void setTrabajo(String trabajo) {
+		this.trabajo = trabajo;
+	}
+
+	public String getTelefono_trabajo() {
+		return telefono_trabajo;
+	}
+
+	public void setTelefono_trabajo(String telefono_trabajo) {
+		this.telefono_trabajo = telefono_trabajo;
+	}
+	
+	@OneToMany(mappedBy = "id_codeudor", targetEntity=Codeudor.class, cascade = CascadeType.ALL)
+	public Set<Codeudor> getId_codeudor() {
+		return id_codeudor;
+	}
+
+	public void setId_codeudor(Set<Codeudor> id_codeudor) {
+		this.id_codeudor = id_codeudor;
 	}
 	
 		

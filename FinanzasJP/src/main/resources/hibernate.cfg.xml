@@ -17,6 +17,7 @@
     <mapping class="finanzasjp.modelo.Recibo" />
     <mapping class="finanzasjp.modelo.Cuota" />
     <mapping class="finanzasjp.modelo.Dia_Recibo" />
+    <mapping class="finanzasjp.modelo.Codeudor" />
      
   </session-factory>
 </hibernate-configuration>

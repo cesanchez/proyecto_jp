@@ -28,8 +28,9 @@ public class Main extends Application {
 		this.primaryStage = primaryStage;
 		try {
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("Index.fxml"));
-			Scene scene = new Scene(root,295,175);
+			Scene scene = new Scene(root);
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setTitle("Créditos JP");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -323,6 +324,35 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
+
+	public static void verDatosCodeudor(String nombreCliente, String idCliente) throws IOException {
+		// TODO Auto-generated method stub
+		
+		FXMLLoader loader =  new FXMLLoader();
+		loader.setLocation(Main.class.getResource("DatosCodeudor.fxml"));
+		BorderPane clienteVip = loader.load();
+		
+		DatosCodeudorController datos = loader.getController();
+		datos.setLbNombreCliente(nombreCliente, idCliente);
+		
+		Stage clientVipDiaStage = new Stage();
+		clientVipDiaStage.setTitle("Créditos JP");
+		clientVipDiaStage.initModality(Modality.WINDOW_MODAL);
+		clientVipDiaStage.initOwner(primaryStage);
+		
+		Scene scene = new Scene(clienteVip);
+		clientVipDiaStage.setScene(scene);		
+		clientVipDiaStage.showAndWait();
+	}
+
+	public static boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo, String trabajo, String telCelular,
+			String direccion, String barrio, String telTrabajo) {
+		// TODO Auto-generated method stub
+		return manager.guardarCodeudor(idCliente, nombre, apellido, cedula, telFijo, trabajo, telCelular,
+				direccion, barrio, telTrabajo);
+	}
+
+	
 
 
 }
