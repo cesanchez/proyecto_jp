@@ -175,9 +175,9 @@ public class Main extends Application {
 	}
 
 	public static boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel,
-			String dir) {
+			String dir, String telFijo, String barrio, String trabajo, String telTrabajo) {
 		
-		return manager.guardarCliente(cedCliVip, ced, nombre, apellido, tel, dir);
+		return manager.guardarCliente(cedCliVip, ced, nombre, apellido, tel, dir, telFijo, barrio, trabajo, telTrabajo);
 		
 	}
 
@@ -185,7 +185,7 @@ public class Main extends Application {
 			String fechaF, double pagoTotal, String[] losDias) throws ParseException {
 		// TODO Auto-generated method stub
 		ArrayList dias = new ArrayList();
-		if(losDias.length>=1) {
+		if(losDias != null) {
 			for(int i = 0; i< losDias.length; i++) {
 				dias.add(Integer.parseInt(losDias[i].trim()));
 			}
@@ -204,11 +204,11 @@ public class Main extends Application {
 		return manager.darClientes(id_clVip);
 	}
 
-	public static boolean guardarClienteVip(String id, String nombre, String telefono, double capital) {
+	public static boolean guardarClienteVip(String id, String nombre, String apellido, String telefono, double capital) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		
-		ret = manager.guardarClienteVip(id, nombre, telefono, capital);
+		ret = manager.guardarClienteVip(id, nombre, apellido, telefono, capital);
 		
 		return ret;
 		
@@ -346,10 +346,41 @@ public class Main extends Application {
 	}
 
 	public static boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo, String trabajo, String telCelular,
-			String direccion, String barrio, String telTrabajo) {
+			String direccion, String barrio, String telTrabajo, boolean activo) {
 		// TODO Auto-generated method stub
 		return manager.guardarCodeudor(idCliente, nombre, apellido, cedula, telFijo, trabajo, telCelular,
-				direccion, barrio, telTrabajo);
+				direccion, barrio, telTrabajo, activo);
+	}
+
+	public static void verDatosCompletos(Cliente cl) throws IOException {
+		// TODO Auto-generated method stub
+		FXMLLoader loader =  new FXMLLoader();
+		loader.setLocation(Main.class.getResource("InfoCompletaCliente.fxml"));
+		BorderPane clienteVip = loader.load();
+		
+		InfoCompletaCliente datos = loader.getController();
+		datos.setInfoCliente(cl);
+		
+		Stage clientVipDiaStage = new Stage();
+		clientVipDiaStage.setTitle("Créditos JP");
+		clientVipDiaStage.initModality(Modality.WINDOW_MODAL);
+		clientVipDiaStage.initOwner(primaryStage);
+		
+		Scene scene = new Scene(clienteVip);
+		clientVipDiaStage.setScene(scene);		
+		clientVipDiaStage.showAndWait();
+	}
+
+	public static boolean actualizarCliente(String idCliente, String nom, String telFijo, String dir, String trabajo, String telCelular, String telTrabajo,
+			String barrio) {
+		// TODO Auto-generated method stub
+		return manager.actualizarCliente(idCliente, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
+	}
+
+	public static boolean actualizarCodeudor(String idCodeudor, String nom, String telFijo, String dir, String trabajo, String telCelular, String telTrabajo,
+			String barrio) {
+		// TODO Auto-generated method stub
+		return manager.actualizarCodeudor(idCodeudor, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
 	}
 
 	

@@ -1,5 +1,7 @@
 package finanzasjp.modelo;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,9 +10,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "codeudor")
-public class Codeudor {
+public class Codeudor implements Serializable{
 	
 	private String id_codeudor; 
 	private String nombre; 
@@ -21,11 +25,17 @@ public class Codeudor {
 	private String barrio;
 	private String trabajo;
 	private String telefono_trabajo;
+	@Column(columnDefinition = "TINYINT(1)")
+	@Type(type = "org.hibernate.type.NumericBooleanType")
 	
 	private Cliente id_cliente;
 	
+	public Codeudor() {
+		
+	}
+	
 	public Codeudor(String id, String nombre, String apellido, String direccion, String telefono_celular,
-			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo) {
+			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo , Cliente idCliente) {
 		super();
 		this.id_codeudor = id;
 		this.nombre = nombre;
@@ -36,6 +46,7 @@ public class Codeudor {
 		this.barrio = barrio;
 		this.trabajo = trabajo;
 		this.telefono_trabajo = telefono_trabajo;
+		this.id_cliente = idCliente;
 	}	
 	
 	@Id
@@ -48,6 +59,7 @@ public class Codeudor {
 		this.id_codeudor = id_codeudor;
 	}
 	
+	@Id
 	@ManyToOne
 	@JoinColumn(name = "id_cliente")
 	public Cliente getId_cliente() {

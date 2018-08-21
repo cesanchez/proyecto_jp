@@ -54,7 +54,7 @@ public class DatosCodeudorController {
 
 	public void guardarCodeudor() {
 		boolean res = main.guardarCodeudor(idCliente, nombre.getText(), apellido.getText(), cedula.getText(), telFijo.getText(),
-				trabajo.getText(), telCelular.getText(), direccion.getText(), barrio.getText(), telTrabajo.getText());
+				trabajo.getText(), telCelular.getText(), direccion.getText(), barrio.getText(), telTrabajo.getText(), true);
 		
 		if (res) {
 			Alert alert = new Alert(AlertType.INFORMATION);

@@ -3,7 +3,11 @@ package finanzasjp.vista;
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Codeudor;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.GridPane;
 
 public class InfoCompletaCliente {
 
@@ -43,12 +47,121 @@ public class InfoCompletaCliente {
 	@FXML
 	private TextField txCodBarrio;
 
+	@FXML
+	private Button btnGuardarCliente;
+	@FXML
+	private Button btnGuardarCodeudor;
+
 	public InfoCompletaCliente() {
 
 	}
 
 	public void initialize() {
 
+	}
+	
+	public void guardarInfoCodeudor() {
+		boolean res = main.actualizarCodeudor(txCedula.getText(), txNombre.getText(),
+				txTelefono_fijo.getText(),
+				txDireccion.getText(),
+				txTrabajo.getText(),
+				txTel_celular.getText(),
+				txTel_trabajo.getText(),
+				txBarrio.getText());
+		
+		if (res) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Codeudor actualizado satisfactoriamente");
+			alert.showAndWait();
+		}else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Se generó un error al modificar los datos del codeudor");
+			alert.showAndWait();
+		}
+	}
+
+	public void guardarInfCliente() {
+		boolean res = main.actualizarCliente(txCedula.getText(), txNombre.getText(),
+				txTelefono_fijo.getText(),
+				txDireccion.getText(),
+				txTrabajo.getText(),
+				txTel_celular.getText(),
+				txTel_trabajo.getText(),
+				txBarrio.getText());
+		
+		if (res) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Cliente actualizado satisfactoriamente");
+			alert.showAndWait();
+		}else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Se generó un error al modificar los datos del cliente");
+			alert.showAndWait();
+		}
+
+	}
+	
+
+	public void modificarInfCliente() {
+		txNombre.setDisable(false);
+
+		txCedula.setDisable(false);
+
+		txTelefono_fijo.setDisable(false);
+
+		txDireccion.setDisable(false);
+
+		txTrabajo.setDisable(false);
+
+		txTel_celular.setDisable(false);
+
+		txTel_trabajo.setDisable(false);
+
+		txBarrio.setDisable(false);
+		
+		btnGuardarCliente.setDisable(false);
+
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Información");
+		alert.setHeaderText(null);
+		alert.setContentText("Modifica los datos que necesites y luego has clic en el botón Guardar");
+		alert.showAndWait();
+		
+	}
+
+	public void modificarInfCodeudor() {
+		txCodNombre.setDisable(false);
+
+		txCodCedula.setDisable(false);
+
+		txCodTelefono_fijo.setDisable(false);
+
+		txCodDireccion.setDisable(false);
+
+		txCodTrabajo.setDisable(false);
+
+		txCodTel_celular.setDisable(false);
+
+		txCodTel_trabajo.setDisable(false);
+
+		txCodBarrio.setDisable(false);
+
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Información");
+		alert.setHeaderText(null);
+		alert.setContentText("Modifica los datos que necesites y luego has clic en el botón Guardar");
+		alert.showAndWait();
+
+		btnGuardarCodeudor.setDisable(false);		
+		
 	}
 
 	public void setInfoCliente(Cliente cl) {

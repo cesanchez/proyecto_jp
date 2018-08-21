@@ -1,6 +1,5 @@
 package finanzasjp.modelo;
 
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,32 +15,31 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "cliente")
 public class Cliente {
-	
-	private String id; 
-	private String nombre; 
+
+	private String id;
+	private String nombre;
 	private String apellido;
-	private String direccion; 
-	private String telefono_celular; 
+	private String direccion;
+	private String telefono_celular;
 	private String telefono_fijo;
 	private String barrio;
 	private String trabajo;
 	private String telefono_trabajo;
-	
+
 	private Cliente_VIP cliente_vip;
-	private Set<Recibo> recibos ;
+	private Set<Recibo> recibos;
 	private Set<Codeudor> id_codeudor;
-	
+
 	public Cliente() {
-		
+
 	}
 
-    public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
+	public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
 			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip,
-			Set<Recibo> recibos) {
+			Set<Recibo> recibos, Set<Codeudor> id_codeudor) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -54,23 +52,28 @@ public class Cliente {
 		this.telefono_trabajo = telefono_trabajo;
 		this.cliente_vip = cliente_vip;
 		this.recibos = recibos;
+		this.id_codeudor = id_codeudor;
 	}
 
 	public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
-			Cliente_VIP cliente_vip) {
+			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.direccion = direccion;
 		this.telefono_celular = telefono_celular;
+		this.telefono_fijo = telefono_fijo;
+		this.barrio = barrio;
+		this.trabajo = trabajo;
+		this.telefono_trabajo = telefono_trabajo;
 		this.cliente_vip = cliente_vip;
-		
+
 		this.recibos = new HashSet<Recibo>();
 	}
-
+	
 	@Id
-    @Column(name = "id")
+	@Column(name = "id")
 	public String getId() {
 		return id;
 	}
@@ -102,9 +105,9 @@ public class Cliente {
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
-	
+
 	@ManyToOne
-    @JoinColumn(name = "id_cliente_vip")
+	@JoinColumn(name = "id_cliente_vip")
 	public Cliente_VIP getCliente_vip() {
 		return cliente_vip;
 	}
@@ -113,7 +116,16 @@ public class Cliente {
 		this.cliente_vip = cliente_vip;
 	}
 	
-	@OneToMany(mappedBy = "id_cliente", targetEntity=Recibo.class, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "id_cliente", targetEntity = Codeudor.class, cascade = CascadeType.ALL)
+	public Set<Codeudor> getId_codeudor() {
+		return id_codeudor;
+	}
+
+	public void setId_codeudor(Set<Codeudor> id_codeudor) {
+		this.id_codeudor = id_codeudor;
+	}
+
+	@OneToMany(mappedBy = "id_cliente", targetEntity = Recibo.class, cascade = CascadeType.ALL)
 	public Set<Recibo> getRecibos() {
 		return recibos;
 	}
@@ -121,33 +133,33 @@ public class Cliente {
 	public void setRecibos(Set<Recibo> recibos) {
 		this.recibos = recibos;
 	}
-	
+
 	public void addRecibo(Recibo rec) {
 		this.recibos.add(rec);
 	}
-	
+
 	public Recibo darRecibo(int id_recibo) {
 		Recibo ret = null;
-		
+
 		if (recibos != null) {
-			for(Recibo re : recibos) {
-				if(re.getId_recibo() == id_recibo) {
+			for (Recibo re : recibos) {
+				if (re.getId_recibo() == id_recibo) {
 					ret = re;
 					break;
 				}
 			}
-		}		
+		}
 		return ret;
 	}
-	
+
 	public String reciboActivo() {
-		
+
 		String res = "";
-		for(Recibo r : recibos) {
-			if(r.isActivo()) {
-				res += r.getId_recibo()+ ", ";
-			}			
-		}		
+		for (Recibo r : recibos) {
+			if (r.isActivo()) {
+				res += r.getId_recibo() + ", ";
+			}
+		}
 		return res;
 	}
 
@@ -190,15 +202,6 @@ public class Cliente {
 	public void setTelefono_trabajo(String telefono_trabajo) {
 		this.telefono_trabajo = telefono_trabajo;
 	}
-	
-	@OneToMany(mappedBy = "id_codeudor", targetEntity=Codeudor.class, cascade = CascadeType.ALL)
-	public Set<Codeudor> getId_codeudor() {
-		return id_codeudor;
-	}
 
-	public void setId_codeudor(Set<Codeudor> id_codeudor) {
-		this.id_codeudor = id_codeudor;
-	}
-	
-		
+
 }

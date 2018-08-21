@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
@@ -30,7 +31,7 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <content>
-                        <GridPane vgap="1.0">
+                        <GridPane fx:id="gridCliente" vgap="1.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="203.20001220703125" minWidth="10.0" prefWidth="105.9999557495117" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="407.2000366210938" minWidth="10.0" prefWidth="114.4" />
@@ -42,9 +43,10 @@
                               <RowConstraints maxHeight="28.799993896484374" minHeight="10.0" prefHeight="28.000006103515624" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label text="Nombre:">
+                              <Label text="Nombre:" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -55,7 +57,7 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                               </Label>
-                              <Label text="Cédula:" GridPane.rowIndex="1">
+                              <Label text="Cédula:">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -94,8 +96,8 @@
                                     <Insets left="15.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField fx:id="txNombre" disable="true" GridPane.columnIndex="1" />
-                              <TextField fx:id="txCedula" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txNombre" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txCedula" GridPane.columnIndex="1" />
                               <TextField fx:id="txTel_celular" disable="true" GridPane.columnIndex="3" />
                               <TextField fx:id="txDireccion" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label text="Tel. Fijo" GridPane.rowIndex="2">
@@ -152,6 +154,8 @@
                               <TextField fx:id="txTrabajo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="txBarrio" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <TextField fx:id="txTel_trabajo" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" onAction="#modificarInfCliente" prefHeight="94.0" prefWidth="249.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btnGuardarCliente" disable="true" mnemonicParsing="false" onAction="#guardarInfCliente" prefHeight="100.0" prefWidth="232.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                            </children>
                            <padding>
                               <Insets bottom="2.0" left="25.0" right="25.0" top="2.0" />
@@ -164,7 +168,7 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                      <content>
-                        <GridPane vgap="1.0">
+                        <GridPane fx:id="gridCodeudor" vgap="1.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="203.20001220703125" minWidth="10.0" prefWidth="105.9999557495117" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="407.2000366210938" minWidth="10.0" prefWidth="114.4" />
@@ -176,9 +180,10 @@
                               <RowConstraints maxHeight="28.799993896484374" minHeight="10.0" prefHeight="28.000006103515624" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="32.79999389648437" minHeight="10.0" prefHeight="32.79999389648437" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label text="Nombre:">
+                              <Label text="Nombre:" GridPane.rowIndex="1">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -189,7 +194,7 @@
                                     <Insets left="10.0" right="10.0" />
                                  </padding>
                               </Label>
-                              <Label text="Cédula:" GridPane.rowIndex="1">
+                              <Label text="Cédula:">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -228,10 +233,10 @@
                                     <Insets left="15.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField fx:id="txNombre1" disable="true" GridPane.columnIndex="1" />
-                              <TextField fx:id="txCedula1" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="txTelefono1" disable="true" GridPane.columnIndex="3" />
-                              <TextField fx:id="txDireccion1" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <TextField fx:id="txCodNombre" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txCodCedula" disable="true" GridPane.columnIndex="1" />
+                              <TextField fx:id="txCodTel_celular" disable="true" GridPane.columnIndex="3" />
+                              <TextField fx:id="txCodDireccion" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label text="Tel. Fijo" GridPane.rowIndex="2">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
@@ -282,10 +287,12 @@
                                     <Insets left="15.0" />
                                  </GridPane.margin>
                               </Label>
-                              <TextField disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField disable="true" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                              <TextField disable="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <TextField fx:id="txCodTelefono_fijo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="txCodTrabajo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextField fx:id="txCodBarrio" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="txCodTel_trabajo" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <Button mnemonicParsing="false" onAction="#modificarInfCodeudor" prefHeight="106.0" prefWidth="207.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btnGuardarCodeudor" disable="true" mnemonicParsing="false" onAction="#guardarInfoCodeudor" prefHeight="147.0" prefWidth="326.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                            </children>
                            <padding>
                               <Insets bottom="2.0" left="25.0" right="25.0" top="2.0" />

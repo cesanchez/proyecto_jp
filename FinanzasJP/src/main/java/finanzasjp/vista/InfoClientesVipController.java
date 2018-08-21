@@ -40,6 +40,8 @@ public class InfoClientesVipController {
 	@FXML
 	private TextField txNombreAdmin;
 	@FXML
+	private TextField txApellidoAdmin;
+	@FXML
 	private TextField txCedulaAdmin;
 	@FXML
 	private TextField txTelefonoAdmin;
@@ -145,7 +147,7 @@ public class InfoClientesVipController {
 			boolean flagOk = false; //flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo mensaje
 			
 			if (result.get() == ButtonType.OK){
-				resp = main.guardarClienteVip(txCedulaAdmin.getText(), txNombreAdmin.getText(), txTelefonoAdmin.getText(), Double.parseDouble(txCapitalAdmin.getText()));
+				resp = main.guardarClienteVip(txCedulaAdmin.getText(), txNombreAdmin.getText(), txApellidoAdmin.getText(), txTelefonoAdmin.getText(), Double.parseDouble(txCapitalAdmin.getText()));
 				flagOk = true;
 			} else {
 			    // ... user chose CANCEL or closed the dialog

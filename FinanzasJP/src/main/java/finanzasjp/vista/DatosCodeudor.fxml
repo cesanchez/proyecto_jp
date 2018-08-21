@@ -103,9 +103,14 @@
                      </GridPane.margin>
                   </Label>
                   <TextField fx:id="nombre" GridPane.columnIndex="1" />
+                  <TextField fx:id="apellido" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <TextField fx:id="cedula" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="telFijo" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="trabajo" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <TextField fx:id="telCelular" GridPane.columnIndex="3" />
                   <TextField fx:id="direccion" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <TextField fx:id="barrio" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <TextField fx:id="telTrabajo" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                   <Label text="Tel. Fijo" GridPane.rowIndex="3">
                      <font>
                         <Font name="System Bold" size="14.0" />
@@ -156,10 +161,6 @@
                         <Insets left="15.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextField fx:id="telFijo" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField fx:id="trabajo" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TextField fx:id="barrio" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                  <TextField fx:id="telTrabajo" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                   <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardarCodeudor" prefHeight="74.0" prefWidth="187.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                   <Label text="Apellido: " GridPane.rowIndex="1">
                      <font>
@@ -172,7 +173,6 @@
                         <Insets left="10.0" right="10.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="apellido" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <padding>
                   <Insets bottom="2.0" left="25.0" right="25.0" top="2.0" />

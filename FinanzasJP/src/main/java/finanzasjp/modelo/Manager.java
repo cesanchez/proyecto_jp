@@ -154,6 +154,8 @@ public class Manager {
 		ArrayList<Cliente> clientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
 		ComparadorCliente c = new ComparadorCliente();
 		clientes.sort(c);
+		
+		ArrayList<Codeudor> code = (ArrayList<Codeudor>) session.createCriteria(Codeudor.class).list();
 		return clientes;
 	}
 
@@ -581,7 +583,7 @@ public class Manager {
 	}
 
 	public boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel,
-			String dir) {
+			String dir, String telFijo, String barrio, String trabajo, String telTrabajo) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		Cliente_VIP clVip = (Cliente_VIP) session.get(Cliente_VIP.class, cedCliVip);
@@ -590,7 +592,7 @@ public class Manager {
 		session.beginTransaction();
 		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
 		if (elCliente == null) {
-			elCliente = new Cliente(ced, nombre, apellido, dir, tel, clVip);
+			elCliente = new Cliente(ced, nombre, apellido, dir, tel, telFijo, barrio, trabajo, telTrabajo, clVip);
 			clVip.addCliente(elCliente);
 			session.save(elCliente);
 			ret = true;
@@ -672,7 +674,7 @@ public class Manager {
 		return clientes;
 	}
 
-	public boolean guardarClienteVip(String id, String nombre, String tel, double capital) {
+	public boolean guardarClienteVip(String id, String nombre, String apellido, String tel, double capital) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		Cliente_VIP elCliente = (Cliente_VIP) session.get(Cliente_VIP.class, id);
@@ -680,8 +682,7 @@ public class Manager {
 		session.beginTransaction();
 		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
 		if (elCliente == null) {
-			String[] dat = nombre.split(" ");
-			elCliente = new Cliente_VIP(id, dat[0], dat[1], tel, capital);
+			elCliente = new Cliente_VIP(id, nombre, apellido, tel, capital);
 			session.save(elCliente);
 			ret = true;
 		} else {
@@ -880,14 +881,14 @@ public class Manager {
 	}
 
 	public boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo, String trabajo,
-			String telCelular, String direccion, String barrio, String telTrabajo) {
+			String telCelular, String direccion, String barrio, String telTrabajo, boolean activo) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		session.beginTransaction();
 		
-		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo, telTrabajo);
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
-		miCode.setId_cliente(miCliente);
+		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo, telTrabajo, miCliente);		
+		//miCode.setId_cliente(miCliente);
 		
 		session.save(miCode);		
 		session.getTransaction().commit();
@@ -896,6 +897,50 @@ public class Manager {
 		
 		return ret;
 		
+	}
+
+	public boolean actualizarCliente(String idCliente, String nom, String telFijo, String dir, String trabajo, String telCelular,
+			String telTrabajo, String barrio) {
+		// TODO Auto-generated method stub
+		session.beginTransaction();
+		
+		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
+		
+		miCliente.setNombre(nom);
+		miCliente.setTelefono_fijo(telFijo);
+		miCliente.setDireccion(dir);
+		miCliente.setTrabajo(trabajo);
+		miCliente.setTelefono_celular(telCelular);
+		miCliente.setTelefono_trabajo(telTrabajo);
+		miCliente.setBarrio(barrio);
+		
+		session.update(miCliente);		
+		
+		session.getTransaction().commit();
+		
+		return true;
+	}
+
+	public boolean actualizarCodeudor(String idCodeudor, String nom, String telFijo, String dir, String trabajo,
+			String telCelular, String telTrabajo, String barrio) {
+		// TODO Auto-generated method stub
+		session.beginTransaction();
+		
+		Codeudor miCodeudor = (Codeudor) session.get(Codeudor.class, idCodeudor);
+		
+		miCodeudor.setNombre(nom);
+		miCodeudor.setTelefono_fijo(telFijo);
+		miCodeudor.setDireccion(dir);
+		miCodeudor.setTrabajo(trabajo);
+		miCodeudor.setTelefono_celular(telCelular);
+		miCodeudor.setTelefono_trabajo(telTrabajo);
+		miCodeudor.setBarrio(barrio);
+		
+		session.update(miCodeudor);		
+		
+		session.getTransaction().commit();
+		
+		return true;
 	}
 
 

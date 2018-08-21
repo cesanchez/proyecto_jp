@@ -45,7 +45,7 @@ import javafx.beans.value.ObservableValue;
 public class InfoClientesController {
 
 	private Main main;
-	
+
 	private Cliente miCliente;
 	private String cedulaClienteVip = "";
 	private String modoPago = "";
@@ -115,6 +115,10 @@ public class InfoClientesController {
 	private TextField txDias_admin;
 	@FXML
 	private Button btGuardarCliente;
+	@FXML
+	private Button btGuardarRecibo;
+	@FXML
+	private Button btGuardarReciboMod;
 
 	final Tooltip tooltip = new Tooltip();
 
@@ -133,6 +137,14 @@ public class InfoClientesController {
 	private TextField txTelefonoAdmin;
 	@FXML
 	private TextField txDireccionAdmin;
+	@FXML
+	private TextField txTelFijoAdmin;
+	@FXML
+	private TextField txBarrioAdmin;
+	@FXML
+	private TextField txTrabajoAdmin;
+	@FXML
+	private TextField txTelTrabajoAdmin;
 	@FXML
 	private Label lbSinRecibo;
 
@@ -202,6 +214,9 @@ public class InfoClientesController {
 	}
 
 	public void initialize() {
+		
+		btGuardarRecibo.setDisable(false);
+		btGuardarReciboMod.setDisable(false);
 
 		txInteres_admin.textProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -240,6 +255,7 @@ public class InfoClientesController {
 		});
 
 		dtCurrentDate.setValue(NOW_LOCAL_DATE());
+		main.actualizarEstadoCuotas(dtCurrentDate.getValue().toString());
 
 		tooltip.setText("Agregue los días separados por coma (ej: 5, 20)");
 		txDias_admin.setTooltip(tooltip);
@@ -250,6 +266,22 @@ public class InfoClientesController {
 			public void changed(ObservableValue observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
 				modoPago = newValue;
+				
+				if(newValue.equals("Semanal")) {
+					txDias_admin.setText(newValue);
+					txDias_admin.setDisable(true);
+				}	
+				
+				if(newValue.equals("Diario")) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Información");
+					alert.setHeaderText(null);
+					alert.setContentText("Esta opción aún no se encuentra disponible");
+					alert.showAndWait();
+					
+					modoPago_admin.setValue("");
+				}
+				
 			}
 
 		});
@@ -260,6 +292,21 @@ public class InfoClientesController {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
 				modoPago = newValue;
+				
+				if(newValue.equals("Semanal")) {
+					txDias_mod.setText(newValue);
+					txDias_mod.setDisable(true);
+				}
+				
+				if(newValue.equals("Diario")) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Información");
+					alert.setHeaderText(null);
+					alert.setContentText("Esta opción aún no se encuentra disponible");
+					alert.showAndWait();
+					
+					modoPago_mod.setValue("");
+				}
 			}
 		});
 
@@ -341,12 +388,14 @@ public class InfoClientesController {
 					txPagoTotal.setText("" + rec.getPago_total());
 
 					ArrayList<Dia_Recibo> dias = main.darDias(rec);
-					String sdias = "";
-					for (Dia_Recibo d : dias) {
-						sdias += d.getId_dia() + ",";
+					if (!dias.isEmpty()) {
+						String sdias = "";
+						for (Dia_Recibo d : dias) {
+							sdias += d.getId_dia() + ",";
+						}
+						sdias = sdias.substring(0, sdias.length() - 1);
+						txDias.setText(sdias);
 					}
-					sdias = sdias.substring(0, sdias.length() - 1);
-					txDias.setText(sdias);
 
 				} else {
 
@@ -463,7 +512,9 @@ public class InfoClientesController {
 
 			if (result.get() == ButtonType.OK) {
 				resp = main.guardarCliente(cedulaClienteVip, txCedulaAdmin.getText(), txNombreAdmin.getText(),
-						txApellidoAdmin.getText(), txTelefonoAdmin.getText(), txDireccionAdmin.getText());
+						txApellidoAdmin.getText(), txTelefonoAdmin.getText(), txDireccionAdmin.getText(),
+						txTelFijoAdmin.getText(), txBarrioAdmin.getText(), txTrabajoAdmin.getText(),
+						txTelTrabajoAdmin.getText());
 				flagOk = true;
 			} else {
 				// ... user chose CANCEL or closed the dialog
@@ -522,7 +573,7 @@ public class InfoClientesController {
 
 				if (result.get() == ButtonType.OK) {
 					String[] losDias = null;
-					if (txDias_admin.getText() != "") {
+					if (!txDias_admin.getText().equals("Semanal") && !txDias_admin.getText().equals("Diario")) {
 						losDias = txDias_admin.getText().split(",");
 					}
 
@@ -538,11 +589,20 @@ public class InfoClientesController {
 						alert.setContentText("El interés no puede ser menor que el 1%");
 						alert.showAndWait();
 					} else {
+						// Guarda el RECIBO
 						resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(),
 								Double.parseDouble(txPrestamo_admin.getText()),
 								Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(),
 								txFechaFin_admin.getValue().toString(), pagTotal, losDias);
-						flagOk = true;
+
+						// Genera las CUOTAS
+						boolean resCuota = main.generarCuotas(txPrestamo_admin.getText(), txInteres_admin.getText(),
+								modoPago, txCuotas_admin.getText(), lbRecibo.getText());
+
+						if (resp && resCuota) {
+							flagOk = true;
+						}
+
 					}
 
 				} else {
@@ -555,6 +615,8 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
+					
+					btGuardarRecibo.setDisable(true);
 
 				} else {
 					Alert alert = new Alert(AlertType.ERROR);
@@ -577,49 +639,38 @@ public class InfoClientesController {
 	@FXML
 	private void generarCuotas() {
 
-		System.out.println("Entró");
-		boolean res = main.generarCuotas(txPrestamo_admin.getText(), txInteres_admin.getText(), modoPago,
-				txCuotas_admin.getText(), lbRecibo.getText());
+		try {
+			main.verInfoCuotas(txNombreAdmin.getText(), lbRecibo.getText(), txPrestamo_admin.getText(),
+					txInteres_admin.getText(), lbPagoTotal_admin.getText(), txCedulaAdmin.getText());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-		if (!res) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Información");
-			alert.setHeaderText(null);
-			alert.setContentText("Error al generar las cuotas");
-			alert.showAndWait();
-		} else {
-			try {
-				main.verInfoCuotas(txNombreAdmin.getText(), lbRecibo.getText(), txPrestamo_admin.getText(),
-						txInteres_admin.getText(), lbPagoTotal_admin.getText(), txCedulaAdmin.getText());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	@FXML
+	private void verCuotas() {
+
+		try {
+			main.verInfoCuotas(txNombre.getText(), txRecibo.getText(), txPrestamo.getText(), txInteres.getText(),
+					txPagoTotal.getText(), txCedula.getText());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	@FXML
 	private void generarCuotasMod() {
 
-		System.out.println("Entró");
-		boolean res = main.generarCuotas(txPrestamo_mod.getText(), txInteres_mod.getText(), modoPago,
-				txCuotas_mod.getText(), lbRecibo_mod.getText());
-
-		if (!res) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Información");
-			alert.setHeaderText(null);
-			alert.setContentText("Error al generar las cuotas");
-			alert.showAndWait();
-		} else {
-			try {
-				main.verInfoCuotas(txNombre_mod.getText(), lbRecibo_mod.getText(), txPrestamo_mod.getText(),
-						txInteres_mod.getText(), lbPagoTotal_mod.getText(), txCedula_mod.getText());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			main.verInfoCuotas(txNombre_mod.getText(), lbRecibo_mod.getText(), txPrestamo_mod.getText(),
+					txInteres_mod.getText(), lbPagoTotal_mod.getText(), txCedula_mod.getText());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 	@FXML
@@ -644,26 +695,6 @@ public class InfoClientesController {
 		txTelefonoAdmin.setDisable(false);
 		txDireccionAdmin.setDisable(false);
 		btGuardarCliente.setDisable(false);
-	}
-
-	@FXML
-	private void actualizarEstadoCuotas() {
-		if(main.actualizarEstadoCuotas(dtCurrentDate.getValue().toString())) {
-			
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Información");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"Las cuotas se actualizaron exitosamente");
-			alert.showAndWait();
-		}else {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Información");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"Se produjo un error al actualizar las cuotas");
-			alert.showAndWait();
-		}
 	}
 
 	@FXML
@@ -709,29 +740,36 @@ public class InfoClientesController {
 
 				if (result.get() == ButtonType.OK) {
 					String[] losDias = null;
-					if (txDias_mod.getText() != "") {
+					if (!txDias_mod.getText().equals("Semanal") && !txDias_mod.getText().equals("Diario")) {
 						losDias = txDias_mod.getText().split(",");
 					}
-					
-					if(Double.parseDouble(txInteres_mod.getText()) < 1) {
+
+					if (Double.parseDouble(txInteres_mod.getText()) < 1) {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("Información");
 						alert.setHeaderText(null);
 						alert.setContentText("El interés no puede ser menor que el 1%");
 						alert.showAndWait();
-					}else {
+					} else {
 						double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_mod.getText()),
 								Double.parseDouble(txInteres_mod.getText()), modoPago,
 								Integer.parseInt(txCuotas_mod.getText()));
 						lbPagoTotal_mod.setText("" + pagTotal);
-						resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
-								Double.parseDouble(txPrestamo_mod.getText()), Double.parseDouble(txInteres_mod.getText()),
-								txFechaPres_mod.getValue().toString(), txFechaFin_mod.getValue().toString(), pagTotal,
-								losDias);
 
-						flagOk = true;
+						// Guardar el RECIBO
+						resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
+								Double.parseDouble(txPrestamo_mod.getText()),
+								Double.parseDouble(txInteres_mod.getText()), txFechaPres_mod.getValue().toString(),
+								txFechaFin_mod.getValue().toString(), pagTotal, losDias);
+						// Generar las CUOTAS
+						boolean resCuo = main.generarCuotas(txPrestamo_mod.getText(), txInteres_mod.getText(), modoPago,
+								txCuotas_mod.getText(), lbRecibo_mod.getText());
+
+						if (resp && resCuo) {
+							flagOk = true;
+						}
 					}
-					
+
 				} else {
 					// ... user chose CANCEL or closed the dialog
 				}
@@ -742,6 +780,8 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
+					
+					btGuardarReciboMod.setDisable(true);
 
 				} else {
 					Alert alert = new Alert(AlertType.ERROR);
@@ -761,7 +801,7 @@ public class InfoClientesController {
 		}
 
 	}
-	
+
 	@FXML
 	private void verListaCuotasMora() {
 		try {
@@ -771,7 +811,7 @@ public class InfoClientesController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@FXML
 	private void verDatosCodeudor() {
 		try {
@@ -781,5 +821,15 @@ public class InfoClientesController {
 			e.printStackTrace();
 		}
 	}
-	
+
+	@FXML
+	private void verDatosCompletos() {
+		try {
+			main.verDatosCompletos(miCliente);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
