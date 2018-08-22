@@ -61,13 +61,13 @@ public class InfoCompletaCliente {
 	}
 	
 	public void guardarInfoCodeudor() {
-		boolean res = main.actualizarCodeudor(txCedula.getText(), txNombre.getText(),
-				txTelefono_fijo.getText(),
-				txDireccion.getText(),
-				txTrabajo.getText(),
-				txTel_celular.getText(),
-				txTel_trabajo.getText(),
-				txBarrio.getText());
+		boolean res = main.actualizarCodeudor(txCodCedula.getText(), txCodNombre.getText(),
+				txCodTelefono_fijo.getText(),
+				txCodDireccion.getText(),
+				txCodTrabajo.getText(),
+				txCodTel_celular.getText(),
+				txCodTel_trabajo.getText(),
+				txCodBarrio.getText());
 		
 		if (res) {
 			Alert alert = new Alert(AlertType.INFORMATION);

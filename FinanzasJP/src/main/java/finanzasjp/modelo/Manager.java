@@ -315,8 +315,13 @@ public class Manager {
 		for (Cuota c : listaCuota) {
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
-			listaClientes.add(cl);
+			
+			if(!listaClientes.contains(cl)) {
+				listaClientes.add(cl);
+			}			
 		}
+		ComparadorCliente com = new ComparadorCliente();
+		listaClientes.sort(com);
 		return listaClientes;
 	}
 	
@@ -888,7 +893,7 @@ public class Manager {
 		
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
 		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo, telTrabajo, miCliente);		
-		//miCode.setId_cliente(miCliente);
+		miCliente.addCodeudor(miCode);
 		
 		session.save(miCode);		
 		session.getTransaction().commit();
@@ -926,17 +931,22 @@ public class Manager {
 		// TODO Auto-generated method stub
 		session.beginTransaction();
 		
-		Codeudor miCodeudor = (Codeudor) session.get(Codeudor.class, idCodeudor);
+		ArrayList<Codeudor> coders = (ArrayList<Codeudor>) session.createCriteria(Codeudor.class).list();
 		
-		miCodeudor.setNombre(nom);
-		miCodeudor.setTelefono_fijo(telFijo);
-		miCodeudor.setDireccion(dir);
-		miCodeudor.setTrabajo(trabajo);
-		miCodeudor.setTelefono_celular(telCelular);
-		miCodeudor.setTelefono_trabajo(telTrabajo);
-		miCodeudor.setBarrio(barrio);
-		
-		session.update(miCodeudor);		
+		for(Codeudor miCodeudor : coders) {
+			
+			if(miCodeudor.getId_codeudor().equals(idCodeudor)) {
+				miCodeudor.setNombre(nom);
+				miCodeudor.setTelefono_fijo(telFijo);
+				miCodeudor.setDireccion(dir);
+				miCodeudor.setTrabajo(trabajo);
+				miCodeudor.setTelefono_celular(telCelular);
+				miCodeudor.setTelefono_trabajo(telTrabajo);
+				miCodeudor.setBarrio(barrio);
+				session.update(miCodeudor);	
+				break;
+			}
+		}
 		
 		session.getTransaction().commit();
 		

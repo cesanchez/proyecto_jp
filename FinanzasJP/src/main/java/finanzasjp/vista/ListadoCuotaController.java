@@ -107,8 +107,8 @@ public class ListadoCuotaController {
 
 	}
 
-	public void initialize() {		
-		
+	public void initialize() {
+
 		datePicker.setValue(NOW_LOCAL_DATE());
 		main.actualizarEstadoCuotas(datePicker.getValue().toString());
 		txValorPagado.textProperty().addListener(new ChangeListener<String>() {
@@ -246,19 +246,22 @@ public class ListadoCuotaController {
 								txValorCuota.setText("");
 								txValorPagado.setText("");
 
-								String[] dataCu = arg2.toString().split(":");
-								String noCuota = dataCu[0];
-								String strFecha = dataCu[1];
-								txCuota.setText(noCuota);
-								txFechaCobro.setText(strFecha);
+								if (arg2 != null) {
+									String[] dataCu = arg2.toString().split(":");
+									String noCuota = dataCu[0];
+									String strFecha = dataCu[1];
+									txCuota.setText(noCuota);
+									txFechaCobro.setText(strFecha);
 
-								Recibo reciboCl = main.darReciboCliente(cl);
-								Cuota cut = reciboCl.darCuotaId(Integer.parseInt(noCuota));
+									Recibo reciboCl = main.darReciboCliente(cl);
+									Cuota cut = reciboCl.darCuotaId(Integer.parseInt(noCuota));
 
-								txValorCuota.setText("" + cut.getValor());
-								txValorPagado.setText("" + cut.getValor_pagado());
-								boolean mora = cut.isMora();
-								txMora.setText(!mora ? "No" : "Sí");
+									txValorCuota.setText("" + cut.getValor());
+									txValorPagado.setText("" + cut.getValor_pagado());
+									boolean mora = cut.isMora();
+									txMora.setText(!mora ? "No" : "Sí");
+								}
+
 							}
 						});
 					}

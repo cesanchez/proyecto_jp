@@ -70,6 +70,7 @@ public class Cliente {
 		this.cliente_vip = cliente_vip;
 
 		this.recibos = new HashSet<Recibo>();
+		this.id_codeudor = new HashSet<Codeudor>();
 	}
 	
 	@Id
@@ -119,6 +120,10 @@ public class Cliente {
 	@OneToMany(mappedBy = "id_cliente", targetEntity = Codeudor.class, cascade = CascadeType.ALL)
 	public Set<Codeudor> getId_codeudor() {
 		return id_codeudor;
+	}
+	
+	public void addCodeudor(Codeudor code) {
+		this.id_codeudor.add(code);
 	}
 
 	public void setId_codeudor(Set<Codeudor> id_codeudor) {
