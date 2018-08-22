@@ -154,7 +154,7 @@ public class Manager {
 		ArrayList<Cliente> clientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
 		ComparadorCliente c = new ComparadorCliente();
 		clientes.sort(c);
-		
+
 		ArrayList<Codeudor> code = (ArrayList<Codeudor>) session.createCriteria(Codeudor.class).list();
 		return clientes;
 	}
@@ -209,7 +209,6 @@ public class Manager {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new java.util.Date());
 		int mesActual = cal.get(Calendar.MONTH) + 1;
-		
 
 		for (Cliente_VIP clVi : clientesVip) {
 
@@ -233,7 +232,7 @@ public class Manager {
 								if (mesActual == mesCob) {
 									listaCuota.add(cu);
 								}
-								if(cu.isMora()) {
+								if (cu.isMora()) {
 									listaCuota.add(cu);
 								}
 							}
@@ -268,16 +267,19 @@ public class Manager {
 						Set<Cuota> cuotas = rec.getCuotas();
 						for (Cuota cu : cuotas) {
 
-							if (cu.getFecha_cobro().equals(sqlStartDate)) {
-								listaCuota.add(cu);
-							}
-							
-							if(cu.isMora()) {
-								listaCuota.add(cu);
+							if (cu.getFecha_cobro() != null) {
+								if (cu.getFecha_cobro().equals(sqlStartDate)) {
+									listaCuota.add(cu);
+								}
+
+								if (cu.isMora()) {
+									listaCuota.add(cu);
+								}
 							}
 						}
 					}
 				}
+
 			}
 		}
 		return listaCuota;
@@ -315,27 +317,27 @@ public class Manager {
 		for (Cuota c : listaCuota) {
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
-			
-			if(!listaClientes.contains(cl)) {
+
+			if (!listaClientes.contains(cl)) {
 				listaClientes.add(cl);
-			}			
+			}
 		}
 		ComparadorCliente com = new ComparadorCliente();
 		listaClientes.sort(com);
 		return listaClientes;
 	}
-	
-	public ArrayList<Cliente> darListaClientesMora(){
-		
+
+	public ArrayList<Cliente> darListaClientesMora() {
+
 		ArrayList<Cliente> listaClientes = (ArrayList<Cliente>) session.createCriteria(Cliente.class).list();
 		ArrayList<Cliente> clientesMora = new ArrayList<Cliente>();
-		
+
 		for (Cliente c : listaClientes) {
-			
-			for(Recibo r : c.getRecibos()) {
-				
-				if(r.isActivo() && r.isMora()) {
-					
+
+			for (Recibo r : c.getRecibos()) {
+
+				if (r.isActivo() && r.isMora()) {
+
 					clientesMora.add(c);
 				}
 			}
@@ -344,99 +346,95 @@ public class Manager {
 	}
 
 	public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
-		
+
 		Workbook workbook = new XSSFWorkbook();
 		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
-		
+
 		Font headerFont = workbook.createFont();
 		headerFont.setBold(true);
-		headerFont.setFontHeightInPoints((short)14);
+		headerFont.setFontHeightInPoints((short) 14);
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
-		
+
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.setFont(headerFont);
-		
+
 		Row headerRow = sheet.createRow(0);
-		
-		String[] headerValues = {"Nombre", "Valor Cuota", "Valor Pagado","Teléfono","Dirección","Id Cuota","Fecha"};
-		
-		for(int i = 0; i < headerValues.length; i++) {
+
+		String[] headerValues = { "Nombre", "Id Cuota", "Valor Cuota", "Valor Pagado", "Teléfono", "Dirección",
+				"Fecha" };
+
+		for (int i = 0; i < headerValues.length; i++) {
 			Cell cell = headerRow.createCell(i);
 			cell.setCellValue(headerValues[i]);
 			cell.setCellStyle(headerCellStyle);
 		}
-				
-		
+
 		int numRow = 1;
 		for (Cuota c : lista) {
-			
+
 			Row row = sheet.createRow(numRow);
-			
+
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
 			String nom = cl.getNombre() + " " + cl.getApellido();
 			String tel = cl.getTelefono_celular();
-			String dir = cl.getDireccion();			
-			
+			String dir = cl.getDireccion();
+
 			row.createCell(0).setCellValue(nom);
-			row.createCell(1).setCellValue(c.getValor());
-			row.createCell(2).setCellValue(c.getValor_pagado());
-			row.createCell(3).setCellValue(tel);
-			row.createCell(4).setCellValue(dir);
-			row.createCell(5).setCellValue(c.getId_cuota());
-			row.createCell(6).setCellValue(c.getFecha_cobro());
-			
+			row.createCell(1).setCellValue(c.getId_cuota());
+			row.createCell(2).setCellValue(c.getValor());
+			row.createCell(3).setCellValue(c.getValor_pagado());
+			row.createCell(4).setCellValue(tel);
+			row.createCell(5).setCellValue(dir);
+			row.createCell(6).setCellValue(c.getFecha_cobro().toString());
+
 			numRow++;
 		}
-		
-		FileOutputStream fileout = null;
+
 		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
 		File file = new File(userHomeFolder, "ListaDeCobro.xlsx");
-		try {
-			fileout = new FileOutputStream(file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileOutputStream fileout = new FileOutputStream(file);
+
 		workbook.write(fileout);
 		fileout.close();
 		workbook.close();
-		
+
 	}
-	
-	public void generarListadoCsvMora() throws IOException{
-				
+
+	public void generarListadoCsvMora() throws IOException {
+
 		Workbook workbook = new XSSFWorkbook();
 		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
-		
+
 		Font headerFont = workbook.createFont();
 		headerFont.setBold(true);
-		headerFont.setFontHeightInPoints((short)14);
+		headerFont.setFontHeightInPoints((short) 14);
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
-		
+
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.setFont(headerFont);
-		
+
 		Row headerRow = sheet.createRow(0);
-		
-		String[] headerValues = {"Nombre Cliente", "Teléfono","Dirección", "Id_cuota", "Fecha Cobro", "Valor Cuota", "Valor Pagado","Días Mora", "Valor Mora"};
-		
-		for(int i = 0; i < headerValues.length; i++) {
+
+		String[] headerValues = { "Nombre Cliente", "Teléfono", "Dirección", "Id_cuota", "Fecha Cobro", "Valor Cuota",
+				"Valor Pagado", "Días Mora", "Valor Mora" };
+
+		for (int i = 0; i < headerValues.length; i++) {
 			Cell cell = headerRow.createCell(i);
 			cell.setCellValue(headerValues[i]);
 			cell.setCellStyle(headerCellStyle);
 		}
-				
+
 		ArrayList<Cliente> listaClientes = darListaClientesMora();
-					
+
 		int numRow = 1;
-		for (Cliente cl : listaClientes) {			
-					
-			String nom = cl.getNombre() + " " + cl.getApellido();			
+		for (Cliente cl : listaClientes) {
+
+			String nom = cl.getNombre() + " " + cl.getApellido();
 			ArrayList<Mora> moras = darInfMoraCliente(cl.getId());
-			
-			for(Mora mora : moras) {
-				Row row = sheet.createRow(numRow);	
+
+			for (Mora mora : moras) {
+				Row row = sheet.createRow(numRow);
 				row.createCell(0).setCellValue(nom);
 				row.createCell(1).setCellValue(cl.getTelefono_celular());
 				row.createCell(2).setCellValue(cl.getDireccion());
@@ -446,61 +444,50 @@ public class Manager {
 				row.createCell(6).setCellValue(mora.getCuota().getValor_pagado());
 				row.createCell(7).setCellValue(mora.getDiasMora());
 				row.createCell(8).setCellValue(mora.getValorMora());
-				
+
 				numRow++;
 			}
 		}
-		
-		FileOutputStream fileout = null;
+
 		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
 		File file = new File(userHomeFolder, "ListaDeCuotasEnMora.xlsx");
-		try {
-			fileout = new FileOutputStream(file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		workbook.write(fileout);
-		fileout.close();
-		workbook.close();	
-	}
-	
-	/*public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
-		
-		Workbook workbook = new XSSFWorkbook();
-		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
-		
-		Font headerFont = workbook.createFont();
-		headerFont.setBold(true);
-		headerFont.setFontHeightInPoints((short)17);
-		headerFont.setColor(IndexedColors.RED.getIndex());
-		
-		CellStyle headerCellStyle = workbook.createCellStyle();
-		headerCellStyle.setFont(headerFont);
-		
-		Row headerRow = sheet.createRow(0);
-		
-		Cell cell = headerRow.createCell(4);
-		cell.setCellValue("HellomyFriend");
-		cell.setCellStyle(headerCellStyle);
-		
-		Row row = sheet.createRow(1);
-		
-		row.createCell(0).setCellValue("toobntos");
-		
-		FileOutputStream fileout = null;
-		try {
-			fileout = new FileOutputStream("myFisrt.xlsx");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		FileOutputStream fileout = new FileOutputStream(file);
+
 		workbook.write(fileout);
 		fileout.close();
 		workbook.close();
-	
-		
-	}*/
+	}
+
+	/*
+	 * public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
+	 * 
+	 * Workbook workbook = new XSSFWorkbook(); org.apache.poi.ss.usermodel.Sheet
+	 * sheet = workbook.createSheet();
+	 * 
+	 * Font headerFont = workbook.createFont(); headerFont.setBold(true);
+	 * headerFont.setFontHeightInPoints((short)17);
+	 * headerFont.setColor(IndexedColors.RED.getIndex());
+	 * 
+	 * CellStyle headerCellStyle = workbook.createCellStyle();
+	 * headerCellStyle.setFont(headerFont);
+	 * 
+	 * Row headerRow = sheet.createRow(0);
+	 * 
+	 * Cell cell = headerRow.createCell(4); cell.setCellValue("HellomyFriend");
+	 * cell.setCellStyle(headerCellStyle);
+	 * 
+	 * Row row = sheet.createRow(1);
+	 * 
+	 * row.createCell(0).setCellValue("toobntos");
+	 * 
+	 * FileOutputStream fileout = null; try { fileout = new
+	 * FileOutputStream("myFisrt.xlsx"); } catch (FileNotFoundException e) { // TODO
+	 * Auto-generated catch block e.printStackTrace(); } workbook.write(fileout);
+	 * fileout.close(); workbook.close();
+	 * 
+	 * 
+	 * }
+	 */
 
 	public void generarListadoCobro_hql(int dia, String fecha) {
 
@@ -573,7 +560,7 @@ public class Manager {
 		cuotasCliente = darCuotasRecibo(rec);
 		ComparadorCuota c = new ComparadorCuota();
 		cuotasCliente.sort(c);
-		
+
 		return cuotasCliente;
 	}
 
@@ -587,8 +574,8 @@ public class Manager {
 		return cuotas;
 	}
 
-	public boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel,
-			String dir, String telFijo, String barrio, String trabajo, String telTrabajo) {
+	public boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel, String dir,
+			String telFijo, String barrio, String trabajo, String telTrabajo) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		Cliente_VIP clVip = (Cliente_VIP) session.get(Cliente_VIP.class, cedCliVip);
@@ -609,8 +596,8 @@ public class Manager {
 
 	}
 
-	public boolean guardarRecibo(int id_rec, String ced, double prestamo, double miInteres, String fechaI, String fechaF,
-			double pagoTotal, ArrayList<Integer> dias) throws ParseException {
+	public boolean guardarRecibo(int id_rec, String ced, double prestamo, double miInteres, String fechaI,
+			String fechaF, double pagoTotal, ArrayList<Integer> dias) throws ParseException {
 
 		boolean ret = false;
 		Recibo elRecibo = (Recibo) session.get(Recibo.class, id_rec);
@@ -624,9 +611,9 @@ public class Manager {
 		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date dateF = sdf2.parse(endtDate);
 		java.sql.Date sqlEndDate = new java.sql.Date(dateF.getTime());
-		
+
 		double interes = miInteres / 100;
-		
+
 		session.beginTransaction();
 		// Si el recibo no existe en la bd, se crea uno nuevo y se guarda.
 		if (elRecibo == null) {
@@ -732,7 +719,7 @@ public class Manager {
 		pagoTotal = valorInteres + valorPrestamo;
 		return pagoTotal;
 	}
-	
+
 	public double calcularPagoTotalLabel(double valorPrestamo, double miInteres, int modo, int numCuotas) {
 		double pagoTotal = 0;
 		double valorInteres = 0;
@@ -752,7 +739,7 @@ public class Manager {
 	}
 
 	public boolean generarCuotas(double valorPrestamo, double miInteres, int modo, int numCuotas, int idRecibo) {
-		
+
 		double interes = miInteres / 100;
 		boolean res = false;
 		Recibo recibo = (Recibo) session.get(Recibo.class, idRecibo);
@@ -811,35 +798,35 @@ public class Manager {
 		session.beginTransaction();
 		for (Cuota c : cuotas) {
 			java.sql.Date fechaCobro = c.getFecha_cobro();
-			if(fechaCobro != null) {
+			if (fechaCobro != null) {
 				int com = fechaCobro.compareTo(sqlStartDate);
 				double valor = c.getValor();
 				if (com < 0) {
 					double valPagado = c.getValor_pagado();
 					if (valPagado < valor) {
 						c.setMora(true);
-						
+
 						Recibo recibo = c.getId_recibo();
 						recibo.setMora(true);
-						
+
 						session.update(c);
 						session.update(recibo);
 					}
 				}
-			}			
+			}
 		}
 
 		session.getTransaction().commit();
-		
+
 		re = true;
 		return re;
 	}
-	
+
 	public String validarReciboActivoCliente(String idCliente) {
-				
+
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
 		String recActivo = miCliente.reciboActivo();
-		
+
 		return recActivo;
 	}
 
@@ -847,70 +834,71 @@ public class Manager {
 		// TODO Auto-generated method stub
 		ArrayList<Cuota> cuotasMora = new ArrayList<Cuota>();
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
-		
-		for(Recibo r : miCliente.getRecibos()) {
-			
-			if(r.isMora() && r.isActivo()) {
-				for(Cuota c : r.getCuotas()) {
-					if(c.isMora()) {
+
+		for (Recibo r : miCliente.getRecibos()) {
+
+			if (r.isMora() && r.isActivo()) {
+				for (Cuota c : r.getCuotas()) {
+					if (c.isMora()) {
 						cuotasMora.add(c);
 					}
-				}					
+				}
 			}
 		}
-		
+
 		ComparadorCuota cmCu = new ComparadorCuota();
 		cuotasMora.sort(cmCu);
 		return cuotasMora;
 	}
-	
-	public ArrayList<Mora> darInfMoraCliente(String idCliente){
-		
+
+	public ArrayList<Mora> darInfMoraCliente(String idCliente) {
+
 		ArrayList<Mora> infMora = new ArrayList<Mora>();
-		
+
 		Calendar actual = Calendar.getInstance();
 		actual.setTime(new java.util.Date());
 		java.util.Date actualDate = actual.getTime();
 		long actualTime = actualDate.getTime();
-		
-		for(Cuota c : darCuotasMoraCliente(idCliente)) {
+
+		for (Cuota c : darCuotasMoraCliente(idCliente)) {
 			Date cobroDate = c.getFecha_cobro();
 			long cobroTime = cobroDate.getTime();
 			long diffTime = actualTime - cobroTime;
 			long diffDays = diffTime / (1000 * 60 * 60 * 24);
-			
-			infMora.add(new Mora(c, diffDays, (c.getValor()-c.getValor_pagado())));
+
+			infMora.add(new Mora(c, diffDays, (c.getValor() - c.getValor_pagado())));
 		}
-		
+
 		return infMora;
 	}
 
-	public boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo, String trabajo,
-			String telCelular, String direccion, String barrio, String telTrabajo, boolean activo) {
+	public boolean guardarCodeudor(String idCliente, String nombre, String apellido, String cedula, String telFijo,
+			String trabajo, String telCelular, String direccion, String barrio, String telTrabajo, boolean activo) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		session.beginTransaction();
-		
+
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
-		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo, telTrabajo, miCliente);		
+		Codeudor miCode = new Codeudor(cedula, nombre, apellido, direccion, telCelular, telFijo, barrio, trabajo,
+				telTrabajo, miCliente);
 		miCliente.addCodeudor(miCode);
-		
-		session.save(miCode);		
+
+		session.save(miCode);
 		session.getTransaction().commit();
-		
+
 		ret = true;
-		
+
 		return ret;
-		
+
 	}
 
-	public boolean actualizarCliente(String idCliente, String nom, String telFijo, String dir, String trabajo, String telCelular,
-			String telTrabajo, String barrio) {
+	public boolean actualizarCliente(String idCliente, String nom, String telFijo, String dir, String trabajo,
+			String telCelular, String telTrabajo, String barrio) {
 		// TODO Auto-generated method stub
 		session.beginTransaction();
-		
+
 		Cliente miCliente = (Cliente) session.get(Cliente.class, idCliente);
-		
+
 		miCliente.setNombre(nom);
 		miCliente.setTelefono_fijo(telFijo);
 		miCliente.setDireccion(dir);
@@ -918,43 +906,50 @@ public class Manager {
 		miCliente.setTelefono_celular(telCelular);
 		miCliente.setTelefono_trabajo(telTrabajo);
 		miCliente.setBarrio(barrio);
-		
-		session.update(miCliente);		
-		
+
+		session.update(miCliente);
+
 		session.getTransaction().commit();
-		
+
 		return true;
 	}
 
-	public boolean actualizarCodeudor(String idCodeudor, String nom, String telFijo, String dir, String trabajo,
-			String telCelular, String telTrabajo, String barrio) {
+	public boolean actualizarCodeudor(String idCliente, String idCodeudor, String nom, String telFijo, String dir,
+			String trabajo, String telCelular, String telTrabajo, String barrio) {
 		// TODO Auto-generated method stub
+
 		session.beginTransaction();
-		
-		ArrayList<Codeudor> coders = (ArrayList<Codeudor>) session.createCriteria(Codeudor.class).list();
-		
-		for(Codeudor miCodeudor : coders) {
-			
-			if(miCodeudor.getId_codeudor().equals(idCodeudor)) {
-				miCodeudor.setNombre(nom);
-				miCodeudor.setTelefono_fijo(telFijo);
-				miCodeudor.setDireccion(dir);
-				miCodeudor.setTrabajo(trabajo);
-				miCodeudor.setTelefono_celular(telCelular);
-				miCodeudor.setTelefono_trabajo(telTrabajo);
-				miCodeudor.setBarrio(barrio);
-				session.update(miCodeudor);	
-				break;
+
+		// ArrayList<Codeudor> coders = (ArrayList<Codeudor>)
+		// session.createCriteria(Codeudor.class).list();
+		Cliente cl = (Cliente) session.get(Cliente.class, idCliente);
+
+		if (!cl.getId_codeudor().isEmpty()) {
+			for (Codeudor miCodeudor : cl.getId_codeudor()) {
+
+				if (miCodeudor.getId_codeudor().equals(idCodeudor)) {
+					miCodeudor.setNombre(nom);
+					miCodeudor.setTelefono_fijo(telFijo);
+					miCodeudor.setDireccion(dir);
+					miCodeudor.setTrabajo(trabajo);
+					miCodeudor.setTelefono_celular(telCelular);
+					miCodeudor.setTelefono_trabajo(telTrabajo);
+					miCodeudor.setBarrio(barrio);
+					session.update(miCodeudor);
+					break;
+				}
 			}
+		} else {
+			Codeudor unCodeudor = new Codeudor(idCodeudor, nom, "", dir, telCelular, telFijo, barrio, trabajo,
+					telTrabajo, cl);
+			cl.addCodeudor(unCodeudor);
+			session.save(unCodeudor);
 		}
-		
+
 		session.getTransaction().commit();
-		
+
 		return true;
 	}
-
-
-
 
 	/*
 	 * public static void main(String[] args) {

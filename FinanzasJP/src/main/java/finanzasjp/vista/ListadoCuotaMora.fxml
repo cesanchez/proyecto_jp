@@ -91,12 +91,12 @@
                                           <Insets left="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <TextField fx:id="txCuota" GridPane.columnIndex="1" />
-                                    <TextField fx:id="txFechaCobro" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <TextField fx:id="txValorCuota" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <TextField fx:id="txValorMora" GridPane.columnIndex="3" />
-                                    <TextField fx:id="txTiempoMora" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                    <TextField fx:id="txValorPagado" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txCuota" editable="false" GridPane.columnIndex="1" />
+                                    <TextField fx:id="txFechaCobro" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txValorCuota" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txValorMora" editable="false" GridPane.columnIndex="3" />
+                                    <TextField fx:id="txTiempoMora" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txValorPagado" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                  </children>
                                  <padding>
                                     <Insets left="5.0" right="5.0" />

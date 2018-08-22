@@ -1,5 +1,6 @@
 package finanzasjp.vista;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import finanzasjp.modelo.Cliente;
@@ -140,13 +141,27 @@ public class ListadoCuotaMoraController {
 	}
 
 	public void generarListadoCsvMora() {
-		main.generarListadoCsvMora();
+		try {
+			main.generarListadoCsvMora();
+			
+			Alert conf = new Alert(AlertType.INFORMATION);
+			conf.setTitle("Información");
+			conf.setHeaderText(null);
+			conf.setContentText("Se ha generado el archivo ListaDeCuotasEnMora.xlsx en el escritorio");
+			conf.showAndWait();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Sí tiene el archivo ListaDeCuotasEnMora.xls abierto, por favor cierrelo para generar uno nuevo");
+			alert.showAndWait();
+		}
 
-		Alert conf = new Alert(AlertType.INFORMATION);
-		conf.setTitle("Información");
-		conf.setHeaderText(null);
-		conf.setContentText("Se ha generado el archivo ListaDeCuotasEnMora.xlsx en el escritorio");
-		conf.showAndWait();
+		
 	}
 
 }

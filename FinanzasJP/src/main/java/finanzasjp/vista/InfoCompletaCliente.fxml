@@ -97,7 +97,7 @@
                                  </GridPane.margin>
                               </Label>
                               <TextField fx:id="txNombre" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="txCedula" GridPane.columnIndex="1" />
+                              <TextField fx:id="txCedula" disable="true" editable="false" GridPane.columnIndex="1" />
                               <TextField fx:id="txTel_celular" disable="true" GridPane.columnIndex="3" />
                               <TextField fx:id="txDireccion" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label text="Tel. Fijo" GridPane.rowIndex="2">
@@ -154,7 +154,7 @@
                               <TextField fx:id="txTrabajo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="txBarrio" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <TextField fx:id="txTel_trabajo" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                              <Button mnemonicParsing="false" onAction="#modificarInfCliente" prefHeight="94.0" prefWidth="249.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btnModificarCliente" mnemonicParsing="false" onAction="#modificarInfCliente" prefHeight="94.0" prefWidth="249.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Button fx:id="btnGuardarCliente" disable="true" mnemonicParsing="false" onAction="#guardarInfCliente" prefHeight="100.0" prefWidth="232.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                            </children>
                            <padding>
@@ -234,7 +234,7 @@
                                  </GridPane.margin>
                               </Label>
                               <TextField fx:id="txCodNombre" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="txCodCedula" editable="false" GridPane.columnIndex="1" />
+                              <TextField fx:id="txCodCedula" disable="true" GridPane.columnIndex="1" />
                               <TextField fx:id="txCodTel_celular" disable="true" GridPane.columnIndex="3" />
                               <TextField fx:id="txCodDireccion" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label text="Tel. Fijo" GridPane.rowIndex="2">
@@ -291,7 +291,7 @@
                               <TextField fx:id="txCodTrabajo" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="txCodBarrio" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <TextField fx:id="txCodTel_trabajo" disable="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                              <Button mnemonicParsing="false" onAction="#modificarInfCodeudor" prefHeight="106.0" prefWidth="207.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btnModificarCodeudor" mnemonicParsing="false" onAction="#modificarInfCodeudor" prefHeight="106.0" prefWidth="207.0" text="Modificar" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Button fx:id="btnGuardarCodeudor" disable="true" mnemonicParsing="false" onAction="#guardarInfoCodeudor" prefHeight="147.0" prefWidth="326.0" text="Guardar" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                            </children>
                            <padding>

@@ -214,7 +214,7 @@ public class InfoClientesController {
 	}
 
 	public void initialize() {
-		
+
 		btGuardarRecibo.setDisable(false);
 		btGuardarReciboMod.setDisable(false);
 
@@ -266,22 +266,14 @@ public class InfoClientesController {
 			public void changed(ObservableValue observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
 				modoPago = newValue;
-				
-				if(newValue.equals("Semanal")) {
+				txDias_admin.setText("");
+				txDias_admin.setDisable(false);
+
+				if (newValue.equals("Semanal")) {
 					txDias_admin.setText(newValue);
 					txDias_admin.setDisable(true);
-				}	
-				
-				if(newValue.equals("Diario")) {
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Información");
-					alert.setHeaderText(null);
-					alert.setContentText("Esta opción aún no se encuentra disponible");
-					alert.showAndWait();
-					
-					modoPago_admin.setValue("");
 				}
-				
+
 			}
 
 		});
@@ -292,21 +284,14 @@ public class InfoClientesController {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				// TODO Auto-generated method stub
 				modoPago = newValue;
-				
-				if(newValue.equals("Semanal")) {
+				txDias_mod.setText("");
+				txDias_mod.setDisable(false);
+
+				if (newValue.equals("Semanal")) {
 					txDias_mod.setText(newValue);
 					txDias_mod.setDisable(true);
 				}
-				
-				if(newValue.equals("Diario")) {
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Información");
-					alert.setHeaderText(null);
-					alert.setContentText("Esta opción aún no se encuentra disponible");
-					alert.showAndWait();
-					
-					modoPago_mod.setValue("");
-				}
+
 			}
 		});
 
@@ -386,6 +371,7 @@ public class InfoClientesController {
 					txPrestamo.setText("" + rec.getMonto_prestamo());
 					txInteres.setText("" + rec.getInteres());
 					txPagoTotal.setText("" + rec.getPago_total());
+					txSaldo.setText("" + rec.getSaldo());
 
 					ArrayList<Dia_Recibo> dias = main.darDias(rec);
 					if (!dias.isEmpty()) {
@@ -408,6 +394,7 @@ public class InfoClientesController {
 					txInteres.setText("");
 					txPagoTotal.setText("");
 					txDias.setText("");
+					txSaldo.setText("");
 
 					lbSinRecibo.setText("El cliente seleccionado no tiene recibo activo");
 				}
@@ -432,7 +419,6 @@ public class InfoClientesController {
 		modos.add("Mensual");
 		modos.add("Quincenal");
 		modos.add("Semanal");
-		modos.add("Diario");
 
 		return modos;
 	}
@@ -554,7 +540,8 @@ public class InfoClientesController {
 		try {
 
 			if (txPrestamo_admin.getText() == "" || txInteres_admin.getText() == ""
-					|| txFechaPres_admin.getValue() == null || txFechaFin_admin.getValue() == null) {
+					|| txFechaPres_admin.getValue() == null || txFechaFin_admin.getValue() == null
+					|| txCuotas_admin.getText() == "" || txDias_admin.getText() == "") {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Información");
 				alert.setHeaderText(null);
@@ -615,7 +602,7 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
-					
+
 					btGuardarRecibo.setDisable(true);
 
 				} else {
@@ -681,6 +668,10 @@ public class InfoClientesController {
 		txCedulaAdmin.setText("");
 		txTelefonoAdmin.setText("");
 		txDireccionAdmin.setText("");
+		txBarrioAdmin.setText("");
+		txTelFijoAdmin.setText("");
+		txTelTrabajoAdmin.setText("");
+		txTrabajoAdmin.setText("");
 
 		txPrestamo_admin.setText("");
 		txInteres_admin.setText("");
@@ -695,6 +686,12 @@ public class InfoClientesController {
 		txTelefonoAdmin.setDisable(false);
 		txDireccionAdmin.setDisable(false);
 		btGuardarCliente.setDisable(false);
+		txBarrioAdmin.setDisable(false);
+		txTelFijoAdmin.setDisable(false);
+		txTelTrabajoAdmin.setDisable(false);
+		txTrabajoAdmin.setDisable(false);
+
+		btGuardarRecibo.setDisable(false);
 	}
 
 	@FXML
@@ -721,7 +718,8 @@ public class InfoClientesController {
 		try {
 
 			if (txPrestamo_mod.getText() == "" || txInteres_mod.getText() == "" || txFechaPres_mod.getValue() == null
-					|| txFechaFin_mod.getValue() == null) {
+					|| txFechaFin_mod.getValue() == null || txCuotas_mod.getText() == ""
+					|| txDias_mod.getText() == "") {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Información");
 				alert.setHeaderText(null);
@@ -780,7 +778,7 @@ public class InfoClientesController {
 					alert.setHeaderText(null);
 					alert.setContentText("Datos guardados exitosamente");
 					alert.showAndWait();
-					
+
 					btGuardarReciboMod.setDisable(true);
 
 				} else {

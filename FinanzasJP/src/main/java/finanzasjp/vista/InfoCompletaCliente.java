@@ -12,6 +12,8 @@ import javafx.scene.layout.GridPane;
 public class InfoCompletaCliente {
 
 	private Main main;
+	
+	private Cliente miCliente;
 
 	@FXML
 	private TextField txNombre;
@@ -51,17 +53,22 @@ public class InfoCompletaCliente {
 	private Button btnGuardarCliente;
 	@FXML
 	private Button btnGuardarCodeudor;
+	@FXML
+	private Button btnModificarCliente;
+	@FXML
+	private Button btnModificarCodeudor;
 
 	public InfoCompletaCliente() {
 
 	}
 
 	public void initialize() {
-
+		
+		txCodCedula.setText("vacio");
 	}
 	
 	public void guardarInfoCodeudor() {
-		boolean res = main.actualizarCodeudor(txCodCedula.getText(), txCodNombre.getText(),
+		boolean res = main.actualizarCodeudor(txCedula.getText(), txCodCedula.getText(), txCodNombre.getText(),
 				txCodTelefono_fijo.getText(),
 				txCodDireccion.getText(),
 				txCodTrabajo.getText(),
@@ -82,6 +89,8 @@ public class InfoCompletaCliente {
 			alert.setContentText("Se generó un error al modificar los datos del codeudor");
 			alert.showAndWait();
 		}
+		
+		btnGuardarCodeudor.setDisable(true);
 	}
 
 	public void guardarInfCliente() {
@@ -106,6 +115,8 @@ public class InfoCompletaCliente {
 			alert.setContentText("Se generó un error al modificar los datos del cliente");
 			alert.showAndWait();
 		}
+		
+		btnGuardarCliente.setDisable(true);
 
 	}
 	
@@ -135,24 +146,22 @@ public class InfoCompletaCliente {
 		alert.setContentText("Modifica los datos que necesites y luego has clic en el botón Guardar");
 		alert.showAndWait();
 		
+		btnModificarCliente.setDisable(true);
 	}
 
 	public void modificarInfCodeudor() {
-		txCodNombre.setDisable(false);
-
-		txCodCedula.setDisable(false);
-
+		txCodNombre.setDisable(false);		
 		txCodTelefono_fijo.setDisable(false);
-
 		txCodDireccion.setDisable(false);
-
 		txCodTrabajo.setDisable(false);
-
 		txCodTel_celular.setDisable(false);
-
 		txCodTel_trabajo.setDisable(false);
-
 		txCodBarrio.setDisable(false);
+		
+		if(txCodCedula.getText().equals("vacio")) {
+			txCodCedula.setDisable(false);
+			txCodCedula.setText("");
+		}
 
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Información");
@@ -160,11 +169,15 @@ public class InfoCompletaCliente {
 		alert.setContentText("Modifica los datos que necesites y luego has clic en el botón Guardar");
 		alert.showAndWait();
 
-		btnGuardarCodeudor.setDisable(false);		
+		btnGuardarCodeudor.setDisable(false);	
+		
+		btnModificarCodeudor.setDisable(true);
 		
 	}
 
 	public void setInfoCliente(Cliente cl) {
+		
+		miCliente = cl;
 		txNombre.setText(cl.getNombre());
 
 		txCedula.setText(cl.getId());
@@ -200,6 +213,8 @@ public class InfoCompletaCliente {
 					txCodTel_trabajo.setText(cod.getTelefono_trabajo());
 
 					txCodBarrio.setText(cod.getBarrio());
+					
+					break;
 
 				}
 			}

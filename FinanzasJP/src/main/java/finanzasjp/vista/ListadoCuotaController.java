@@ -1,5 +1,7 @@
 package finanzasjp.vista;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -153,12 +155,29 @@ public class ListadoCuotaController {
 
 			} else {
 				main.generarArchivoListaCobro(Integer.parseInt(strDia), strFecha);
+				Alert conf = new Alert(AlertType.INFORMATION);
+				conf.setTitle("Información");
+				conf.setHeaderText(null);
+				conf.setContentText("Se ha generado el archivo ListaDeCobro.xlsx en el escritorio");
+				conf.showAndWait();
 			}
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Sí tiene el archivo ListaDeCobro.xls abierto, por favor cierrelo para generar uno nuevo");
+			alert.showAndWait();
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	public void generarListadoClientes() {
@@ -203,6 +222,7 @@ public class ListadoCuotaController {
 					public void changed(ObservableValue observable, Object arg1, Object arg2) {
 						// TODO Auto-generated method stub
 						listDataCuota.clear();
+						txValorPagado.setDisable(true);
 
 						// Se asigna el cliente seleccionado desde la lista de clientes
 						cl = (Cliente) arg2;
@@ -245,6 +265,7 @@ public class ListadoCuotaController {
 								txFechaCobro.setText("");
 								txValorCuota.setText("");
 								txValorPagado.setText("");
+								txValorPagado.setDisable(false);
 
 								if (arg2 != null) {
 									String[] dataCu = arg2.toString().split(":");
@@ -295,7 +316,10 @@ public class ListadoCuotaController {
 
 		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Integer.parseInt(txCuota.getText()),
 				Integer.parseInt(txRecibo.getText()));
-		System.out.println("Pago re");
+		
+		double saldo = Double.parseDouble(txSaldo.getText());
+		saldo = saldo - Double.parseDouble(txValorPagado.getText());
+		txSaldo.setText(""+saldo);
 	}
 
 	public ArrayList<String> darNombreClientes(ArrayList<Cliente> lClientes) {

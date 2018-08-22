@@ -130,7 +130,7 @@
                                                             <Font size="14.0" />
                                                          </font>
                                                       </TextField>
-                                                      <TextField fx:id="txValorPagado" layoutX="250.0" layoutY="10.0" promptText="\$0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                                      <TextField fx:id="txValorPagado" disable="true" layoutX="250.0" layoutY="10.0" promptText="\$0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>

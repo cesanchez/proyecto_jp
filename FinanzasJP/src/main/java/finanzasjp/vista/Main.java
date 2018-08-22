@@ -1,5 +1,6 @@
 package finanzasjp.vista;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -316,13 +317,9 @@ public class Main extends Application {
 		return manager.darInfMoraCliente(id);
 	}
 	
-	public static void generarListadoCsvMora() {
-		try {
-			manager.generarListadoCsvMora();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void generarListadoCsvMora() throws IOException {
+		manager.generarListadoCsvMora();
+		
 	}
 
 	public static void verDatosCodeudor(String nombreCliente, String idCliente) throws IOException {
@@ -377,10 +374,10 @@ public class Main extends Application {
 		return manager.actualizarCliente(idCliente, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
 	}
 
-	public static boolean actualizarCodeudor(String idCodeudor, String nom, String telFijo, String dir, String trabajo, String telCelular, String telTrabajo,
+	public static boolean actualizarCodeudor(String idCliente, String idCodeudor, String nom, String telFijo, String dir, String trabajo, String telCelular, String telTrabajo,
 			String barrio) {
 		// TODO Auto-generated method stub
-		return manager.actualizarCodeudor(idCodeudor, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
+		return manager.actualizarCodeudor(idCliente, idCodeudor, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
 	}
 
 	
