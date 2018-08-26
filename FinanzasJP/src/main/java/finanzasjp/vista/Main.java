@@ -75,6 +75,9 @@ public class Main extends Application {
 	}
 	
 	public static void verInfoClientes() throws IOException {
+		
+		//manager.cargarCuotas();
+		
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
 		BorderPane clienteVip = loader.load();
