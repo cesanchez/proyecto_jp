@@ -198,6 +198,10 @@ public class Recibo {
 	public void setDias(Set<Dia_Recibo> dias) {
 		this.dias = dias;
 	}
+	
+	public void addDia(Dia_Recibo dia) {
+		this.dias.add(dia);
+	}
 
 	public Date getFecha_prestamo() {
 		return fecha_prestamo;

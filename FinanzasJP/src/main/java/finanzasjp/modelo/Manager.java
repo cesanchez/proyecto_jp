@@ -690,9 +690,9 @@ public class Manager {
 	public double calcularInteresTotal(int miCuotas, double interes, int modo) {
 		double interesTotal = 0;
 		int numMeses = 0;
-		
+
 		double cuotas = (double) miCuotas;
-		
+
 		switch (modo) {
 		// 1. Modo de pago Mensual
 		case 1:
@@ -700,7 +700,7 @@ public class Manager {
 			break;
 		// 2. Modo de pago Quincenal
 		case 2:
-			numMeses = (int) Math.round(cuotas /2);
+			numMeses = (int) Math.round(cuotas / 2);
 			break;
 		// 3. Modo de pago Semanal
 		case 3:
@@ -742,17 +742,17 @@ public class Manager {
 
 		return valorPagoCuota;
 	}
-	
+
 	public void cargarCuotas() {
-		
-		File file = new File ("infoRecibos.txt");//Carga el archivo
-		
+
+		File file = new File("infoRecibos.txt");// Carga el archivo
+
 		try {
-			FileReader reader = new FileReader(file); //Se prepara para la lectura del archivo
-			BufferedReader br = new BufferedReader(reader); //Se carga en el buffer para su manipulación
+			FileReader reader = new FileReader(file); // Se prepara para la lectura del archivo
+			BufferedReader br = new BufferedReader(reader); // Se carga en el buffer para su manipulación
 			String line = "";
-			
-			while((line = br.readLine()) != null){ //Se leen las lineas hasta el final del documento
+
+			while ((line = br.readLine()) != null) { // Se leen las lineas hasta el final del documento
 				String[] data = line.split(";");
 				String idrec = data[0];
 				String interes = data[1];
@@ -760,25 +760,34 @@ public class Manager {
 				String diaCobro = data[3];
 				String cuotas = data[7];
 				String modo = data[9];
-				
+
 				int idRecibo = Integer.parseInt(idrec);
 				double valorPrestamo = Double.parseDouble(prestamo);
 				double miInteres = Double.parseDouble(interes);
 				int numCuotas = Integer.parseInt(cuotas);
 				int miModo = Integer.parseInt(modo);
-				
+
+				String[] dias = diaCobro.split("-");
+				Recibo miRec = (Recibo) session.get(Recibo.class, idRecibo);
+				for (int i = 0; i < dias.length; i++) {
+					Dia_Recibo diaRec = new Dia_Recibo(Integer.parseInt(dias[i].trim()), miRec);
+					miRec.addDia(diaRec);
+					session.save(diaRec);
+				}
+
 				generarCuotas(valorPrestamo, miInteres, miModo, numCuotas, idRecibo);
+
 			}
-			
-			br.close(); //Se cierra el buffer
-			
+
+			br.close(); // Se cierra el buffer
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}catch(IOException e){
-			
+		} catch (IOException e) {
+
 		}
-		
+
 	}
 
 	public boolean generarCuotas(double valorPrestamo, double miInteres, int modo, int numCuotas, int idRecibo) {
@@ -787,20 +796,73 @@ public class Manager {
 		boolean res = false;
 		Recibo recibo = (Recibo) session.get(Recibo.class, idRecibo);
 		double valor = calcularValorCuota(valorPrestamo, interes, modo, numCuotas);
-		double valorInteresTotal = calcularInteresTotal(numCuotas, interes, modo) * valorPrestamo;		
+		double valorInteresTotal = calcularInteresTotal(numCuotas, interes, modo) * valorPrestamo;
 		double valorInteres = valorInteresTotal / numCuotas;
 		double valorCapital = valor - valorInteres;
-		   
-		valor = Math.round(valor);		     
-		valorInteres = Math.round(valorInteres);		     
+
+		valor = Math.round(valor);
+		valorInteres = Math.round(valorInteres);
 		valorCapital = Math.round(valorCapital);
 
 		session.beginTransaction();
 
 		try {
 
+			Date fecha = recibo.getFecha_prestamo();			
+			Set<Dia_Recibo> dias = recibo.getDias();
+			int[] misDias = new int[dias.size()];
+			int j = 0;
+			for (Dia_Recibo d : dias) {
+				misDias[j] = d.getId_dia();
+				j++;
+			}
+
 			for (int i = 1; i <= numCuotas; i++) {
+
+				// tomar la fecha inicial del recibo, y apartir de esa fecha almacenar las
+				// cuotas de acuerdo al modo
+				Date fechaProx = null;
+				switch (modo) {
+				// mensual
+				case 1:
+					int day = fecha.getDate();
+					int month = fecha.getMonth() + i;
+					int year = fecha.getYear();
+					
+					fechaProx = new Date(year, month, day);
+					if (!dias.isEmpty() && dias.size() == 1) {
+						for (Dia_Recibo d : dias) {
+							fechaProx.setDate(d.getId_dia());
+						}
+					}
+					// quincenal
+				case 2:
+
+					if (!dias.isEmpty() && dias.size() == 2) {
+
+						fechaProx.setDate(fechaProx.getDate() + 15);
+						int date = fechaProx.getDate();
+
+						int difPri = Math.abs(date - misDias[0]);
+						int difSec = Math.abs(date - misDias[1]);
+
+						if (difPri < difSec) {
+							fechaProx.setDate(misDias[0]);
+						} else {
+							fechaProx.setDate(misDias[1]);
+						}
+					}
+
+					// semanal
+				case 3:
+
+				default:
+					break;
+
+				}
+
 				Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo);
+				cuota.setFecha_cobro(fechaProx);
 				recibo.addCuota(cuota);
 				session.save(cuota);
 			}
