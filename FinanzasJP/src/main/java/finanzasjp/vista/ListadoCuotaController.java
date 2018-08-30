@@ -93,7 +93,7 @@ public class ListadoCuotaController {
 	private TextField txSaldo;
 
 	private ObservableList<Cliente> listDataCliente = FXCollections.observableArrayList();
-	private ObservableList<String> listDataCuota = FXCollections.observableArrayList();
+	private ObservableList<Cuota> listDataCuota = FXCollections.observableArrayList();
 
 	private Cliente cl;
 
@@ -223,6 +223,7 @@ public class ListadoCuotaController {
 						// TODO Auto-generated method stub
 						listDataCuota.clear();
 						txValorPagado.setDisable(true);
+						txValorCuota.setDisable(true);
 
 						// Se asigna el cliente seleccionado desde la lista de clientes
 						cl = (Cliente) arg2;
@@ -234,7 +235,7 @@ public class ListadoCuotaController {
 						Recibo reciboCl = main.darReciboCliente(cl);
 						txRecibo.setText("" + reciboCl.getId_recibo());
 						txPrestamo.setText("" + reciboCl.getMonto_prestamo());
-						txInteres.setText("" + reciboCl.getInteres());
+						txInteres.setText("" + (reciboCl.getInteres()*100) + " %");
 						txFechaPres.setText("" + reciboCl.getFecha_prestamo());
 						txSaldo.setText("" + reciboCl.getSaldo());
 						boolean moraRec = reciboCl.isMora();
@@ -255,10 +256,27 @@ public class ListadoCuotaController {
 
 						listDataCuota.addAll(darStrCuotas(cl));
 						listaCuotas.setItems(listDataCuota);
+						
+						listaCuotas.setCellFactory(new Callback<ListView<Cuota>, ListCell<Cuota>>() {
 
-						listaCuotas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+							public ListCell<Cuota> call(ListView<Cuota> param) {
+								// TODO Auto-generated method stub
+								ListCell<Cuota> cell = new ListCell<Cuota>(){ 
+				                    @Override
+				                    protected void updateItem(Cuota t, boolean bln) {
+				                        super.updateItem(t, bln);
+				                        if (t != null) {
+				                            setText("Cuota # " + t.getId_cuota());
+				                        }
+				                    } 
+				                };                 
+				                return cell;
+							}
+						});
 
-							public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+						listaCuotas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Cuota>() {
+
+							public void changed(ObservableValue arg0, Cuota arg1, Cuota arg2) {
 								// TODO Auto-generated method stub
 
 								txCuota.setText("");
@@ -266,11 +284,12 @@ public class ListadoCuotaController {
 								txValorCuota.setText("");
 								txValorPagado.setText("");
 								txValorPagado.setDisable(false);
+								txValorCuota.setDisable(false);
 
 								if (arg2 != null) {
-									String[] dataCu = arg2.toString().split(":");
-									String noCuota = dataCu[0];
-									String strFecha = dataCu[1];
+									
+									String noCuota = arg2.getId_cuota() + "";
+									String strFecha = arg2.getFecha_cobro().toString();
 									txCuota.setText(noCuota);
 									txFechaCobro.setText(strFecha);
 
@@ -314,7 +333,7 @@ public class ListadoCuotaController {
 
 	public void guardarPago() {
 
-		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Integer.parseInt(txCuota.getText()),
+		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Double.parseDouble(txValorCuota.getText()), Integer.parseInt(txCuota.getText()),
 				Integer.parseInt(txRecibo.getText()));
 		
 		double saldo = Double.parseDouble(txSaldo.getText());
@@ -330,15 +349,9 @@ public class ListadoCuotaController {
 		return nombresCl;
 	}
 
-	public ArrayList<String> darStrCuotas(Cliente cl) {
-		ArrayList<String> strCuotas = new ArrayList<String>();
+	public ArrayList<Cuota> darStrCuotas(Cliente cl) {
 		String idCliente = cl.getId();
 		ArrayList<Cuota> cuotas = main.darCuotasCliente(idCliente);
-
-		for (Cuota cu : cuotas) {
-			strCuotas.add(cu.getId_cuota() + ": " + cu.getFecha_cobro());
-		}
-
-		return strCuotas;
+		return cuotas;
 	}
 }

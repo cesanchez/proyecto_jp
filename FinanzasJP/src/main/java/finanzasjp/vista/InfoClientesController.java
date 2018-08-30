@@ -369,7 +369,7 @@ public class InfoClientesController {
 					txFechaPres.setText("" + rec.getFecha_prestamo());
 					txMora.setText(rec.isMora() ? "Sí" : "No");
 					txPrestamo.setText("" + rec.getMonto_prestamo());
-					txInteres.setText("" + rec.getInteres());
+					txInteres.setText("" + (rec.getInteres()*100) + "%");
 					txPagoTotal.setText("" + rec.getPago_total());
 					txSaldo.setText("" + rec.getSaldo());
 

@@ -107,21 +107,33 @@ public class Manager {
 		session.getTransaction().commit();
 	}
 
-	public void guardarPago(double valor, int id_cuota, int id_recibo) {
+	public void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo) {
 		// TODO Auto-generated method stub
 		Recibo recibo = (Recibo) session.get(Recibo.class, id_recibo);
 		Cuota cu = recibo.darCuotaId(id_cuota);
+		double valorCuota = cu.getValor();
+		double saldo = recibo.getSaldo();
+		double dif = 0;
+		//Actualizar valor cuota, si es necesario
+		if(newValorCuota != valorCuota){
+			cu.setValor(newValorCuota);
+			dif = newValorCuota - valorCuota;
+			
+			if(dif > 0) {
+				saldo = saldo + newValorCuota;
+			}else {
+				saldo = saldo - newValorCuota;
+			}
+		}		
 
 		// Actualizar cuota
-		cu.setValor_pagado(valor);
-		double valorCuota = cu.getValor();
+		cu.setValor_pagado(valor);		
 		if (valor >= valorCuota) {
 			cu.setMora(false);
 		}
 
-		// Actualizar saldo recibo
-		double saldo = recibo.getSaldo();
-		saldo = saldo - valor;
+		// Actualizar saldo recibo		
+		saldo = saldo - valor;		
 		recibo.setSaldo(saldo);
 
 		session.beginTransaction();
@@ -743,6 +755,61 @@ public class Manager {
 		return valorPagoCuota;
 	}
 
+	public void cargarPagos() {
+
+		File file = new File("infoPagos.txt");// Carga el archivo
+
+		try {
+			FileReader reader = new FileReader(file); // Se prepara para la lectura del archivo
+			BufferedReader br = new BufferedReader(reader); // Se carga en el buffer para su manipulación
+			String line = "";
+
+			while ((line = br.readLine()) != null) { // Se leen las lineas hasta el final del documento
+				String[] data = line.split(";");
+				int idrec = Integer.parseInt(data[0]);
+				double[] pagos = new double[2];
+				pagos[0] = Double.parseDouble(data[1]);
+				pagos[1] = Double.parseDouble(data[2]);
+//				pagos[2] = Double.parseDouble(data[3]);
+//				pagos[3] = Double.parseDouble(data[4]);
+//				pagos[4] = Double.parseDouble(data[5]);
+//				pagos[5] = Double.parseDouble(data[6]);
+//				pagos[6] = Double.parseDouble(data[7]);
+//				pagos[7] = Double.parseDouble(data[8]);
+//				pagos[8] = Double.parseDouble(data[9]);
+//				pagos[9] = Double.parseDouble(data[10]);
+//				pagos[10] = Double.parseDouble(data[11]);
+//				pagos[11] = Double.parseDouble(data[12]);
+//				pagos[12] = Double.parseDouble(data[13]);
+//				pagos[13] = Double.parseDouble(data[14]);
+				
+				Recibo miRec = (Recibo) session.get(Recibo.class, idrec);
+				
+				if(miRec != null) {
+					Set<Cuota> ctas = miRec.getCuotas();
+					if(!ctas.isEmpty() || ctas != null) {
+						for(Cuota c: ctas) {
+							int id = c.getId_cuota();
+							for(int i = 0; i<pagos.length; i++) {
+								if(id == i ) {
+									c.setValor_pagado(pagos[i]);
+								}
+							}						
+						}
+					}
+				}
+			}
+			br.close(); // Se cierra el buffer
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+
+		}
+
+	}
+
 	public void cargarCuotas() {
 
 		File file = new File("infoRecibos.txt");// Carga el archivo
@@ -808,52 +875,99 @@ public class Manager {
 
 		try {
 
-			Date fecha = recibo.getFecha_prestamo();			
+			Date fecha = recibo.getFecha_prestamo();
 			Set<Dia_Recibo> dias = recibo.getDias();
+			ArrayList<Dia_Recibo> arrayDias = new ArrayList<Dia_Recibo>();
 			int[] misDias = new int[dias.size()];
-			int j = 0;
+
 			for (Dia_Recibo d : dias) {
+				arrayDias.add(d);
+			}
+
+			arrayDias.sort(new ComparadorDia());
+
+			int j = 0;
+			for (Dia_Recibo d : arrayDias) {
 				misDias[j] = d.getId_dia();
 				j++;
 			}
 
+			int elMes = 0;
+			boolean cambio = false;
 			for (int i = 1; i <= numCuotas; i++) {
 
 				// tomar la fecha inicial del recibo, y apartir de esa fecha almacenar las
 				// cuotas de acuerdo al modo
 				Date fechaProx = null;
+
 				switch (modo) {
 				// mensual
 				case 1:
 					int day = fecha.getDate();
 					int month = fecha.getMonth() + i;
 					int year = fecha.getYear();
-					
 					fechaProx = new Date(year, month, day);
+
 					if (!dias.isEmpty() && dias.size() == 1) {
 						for (Dia_Recibo d : dias) {
 							fechaProx.setDate(d.getId_dia());
 						}
 					}
-					// quincenal
+					break;
+				// quincenal
 				case 2:
+
+					int dayQ = fecha.getDate();
+					int monthQ = fecha.getMonth();
+					int yearQ = fecha.getYear();
+					fechaProx = new Date(yearQ, monthQ, dayQ);
+
+					// Calendar proxiQ = Calendar.getInstance();
+					// proxiQ.set(yearQ, monthQ, dayQ + (15*i));
+					java.util.Date proxiQDate = (java.util.Date) fechaProx;
+					proxiQDate.setDate(dayQ + (15 * i));
+					long proxiQ_Time = proxiQDate.getTime();
 
 					if (!dias.isEmpty() && dias.size() == 2) {
 
-						fechaProx.setDate(fechaProx.getDate() + 15);
-						int date = fechaProx.getDate();
+						int pri = misDias[0];
+						int sec = misDias[1];
+						int mes = proxiQDate.getMonth();
+						int anio = proxiQDate.getYear();
 
-						int difPri = Math.abs(date - misDias[0]);
-						int difSec = Math.abs(date - misDias[1]);
+						if (cambio) {
+							if (mes == elMes) {
+								mes = mes + 1;
+							}
+						}
 
-						if (difPri < difSec) {
-							fechaProx.setDate(misDias[0]);
+						// pri
+						Date priQ = new Date(anio, mes, pri);
+						java.util.Date priQDate = (java.util.Date) priQ;
+						long priQ_Time = priQDate.getTime();
+						// sec
+						Date secQ = new Date(anio, mes, sec);
+						java.util.Date secQDate = (java.util.Date) secQ;
+						long secQ_Time = secQDate.getTime();
+
+						long diffTimePri = Math.abs(proxiQ_Time - priQ_Time);
+						long diffDaysPri = diffTimePri / (1000 * 60 * 60 * 24);
+
+						long diffTimeSec = Math.abs(proxiQ_Time - secQ_Time);
+						long diffDaysSec = diffTimeSec / (1000 * 60 * 60 * 24);
+
+						if (diffDaysPri > diffDaysSec) {
+							fechaProx = secQ;
+							cambio = true;
 						} else {
-							fechaProx.setDate(misDias[1]);
+							fechaProx = priQ;
+							cambio = false;
 						}
 					}
 
-					// semanal
+					break;
+
+				// semanal
 				case 3:
 
 				default:
@@ -865,6 +979,8 @@ public class Manager {
 				cuota.setFecha_cobro(fechaProx);
 				recibo.addCuota(cuota);
 				session.save(cuota);
+
+				elMes = fechaProx.getMonth();
 			}
 		} catch (Exception e) {
 			System.out.println("Excepcion: Cuotas ya guardadas");
@@ -875,7 +991,7 @@ public class Manager {
 		return res;
 	}
 
-	public void guardarFechaCuota(String fecha, int idRecibo, int idCuota) throws ParseException {
+	public void guardarFechaCuota(String fecha, int idRecibo, int idCuota, double valorPagar) throws ParseException {
 		// TODO Auto-generated method stub
 		String startDate = fecha;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -885,10 +1001,10 @@ public class Manager {
 		Recibo elRecibo = (Recibo) session.get(Recibo.class, idRecibo);
 		Cuota laCuota = elRecibo.darCuotaId(idCuota);
 		laCuota.setFecha_cobro(sqlStartDate);
+		laCuota.setValor(valorPagar);
+		
 		session.beginTransaction();
-
 		session.update(laCuota);
-
 		session.getTransaction().commit();
 
 	}

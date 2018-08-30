@@ -62,6 +62,14 @@ public class CuotasClienteController {
 		
 		listaCuotas.setItems(dataCuotas);
 		
+		tx_valorPago.textProperty().addListener(new ChangeListener<String>() {
+
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+					tx_valorPago.setText("");
+				}
+			}
+		});		
 		listaCuotas.setCellFactory(new Callback<ListView<Cuota>, ListCell<Cuota>>() {
 
 			public ListCell<Cuota> call(ListView<Cuota> param) {
@@ -98,18 +106,13 @@ public class CuotasClienteController {
 	
 	@FXML
 	private void guardarFechaCuota() {
-		main.guardarFechaCuota(dt_fechaCuota.getValue().toString(), lb_idRecibo.getText(), tx_cuota.getText());
+		main.guardarFechaCuota(dt_fechaCuota.getValue().toString(), lb_idRecibo.getText(), tx_cuota.getText(), tx_valorPago.getText());
 		
 	}
 	
 	private ArrayList<Cuota> darCuotas(String idCliente) {
-		// TODO Auto-generated method stub
-		//ArrayList<String> strCuotas = new ArrayList<String>();		
+		// TODO Auto-generated method stub		
 		ArrayList<Cuota> cuotas = main.darCuotasCliente(idCliente);
-		
-//		for(Cuota c : cuotas) {
-//			strCuotas.add("Cuota # " + c.getId_cuota());
-//		}
 		
 		return cuotas;
 	}

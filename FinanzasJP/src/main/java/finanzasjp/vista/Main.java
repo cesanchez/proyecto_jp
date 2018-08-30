@@ -77,6 +77,7 @@ public class Main extends Application {
 	public static void verInfoClientes() throws IOException {
 		
 		//manager.cargarCuotas();
+		manager.cargarPagos();
 		
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
@@ -107,12 +108,14 @@ public class Main extends Application {
 		clientVipDiaStage.showAndWait();		
 	}
 	
-	public static void verInfoCuotas(String nombre, String idRecibo, String prestamo, String interes, String pagototal, String idCliente) throws IOException {
+	public static void verInfoCuotas(String nombre, String idRecibo, String prestamo, String inte, String pagototal, String idCliente) throws IOException {
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("CuotasCliente.fxml"));
 		BorderPane clienteVip = loader.load();
 		
 		CuotasClienteController cuotasCli = loader.getController();
+		String submiIn = inte.substring(0, 2);
+		String interes = submiIn + "%";
 		cuotasCli.setCampos(nombre, idRecibo, prestamo, interes, pagototal, idCliente);
 		cuotasCli.inicializarCuotas(idCliente);
 		
@@ -168,9 +171,9 @@ public class Main extends Application {
 		manager.exit();
 	}
 
-	public static void guardarPago(double valor, int id_cuota, int id_recibo) {
+	public static void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo) {
 		// TODO Auto-generated method stub
-		manager.guardarPago(valor, id_cuota, id_recibo);
+		manager.guardarPago(valor, newValorCuota, id_cuota, id_recibo);
 	}
 
 	public static ArrayList<Cliente_VIP> darClientesVip() {
@@ -235,10 +238,10 @@ public class Main extends Application {
 		
 	}
 
-	public static void guardarFechaCuota(String fecha, String idRecibo, String idCuota) {
+	public static void guardarFechaCuota(String fecha, String idRecibo, String idCuota, String valorPagar) {
 		// TODO Auto-generated method stub
 		try {
-			manager.guardarFechaCuota(fecha, Integer.parseInt(idRecibo), Integer.parseInt(idCuota));
+			manager.guardarFechaCuota(fecha, Integer.parseInt(idRecibo), Integer.parseInt(idCuota), Double.parseDouble(valorPagar));
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -328,7 +328,7 @@
                                  <children>
                                     <Accordion layoutX="7.0" layoutY="7.0" prefHeight="667.2" prefWidth="537.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <panes>
-                                        <TitledPane animated="false" expanded="false" text="Agregar Nuevo Cliente">
+                                        <TitledPane animated="false" text="Agregar Nuevo Cliente">
                                           <content>
                                             <AnchorPane>
                                                    <children>
@@ -607,7 +607,7 @@
                                                 <Font name="System Bold" size="14.0" />
                                              </font>
                                         </TitledPane>
-                                        <TitledPane animated="false" text="Agregar Nuevo Prestamo a Cliente Existente">
+                                        <TitledPane animated="false" expanded="false" text="Agregar Nuevo Prestamo a Cliente Existente">
                                           <content>
                                             <AnchorPane>
                                                    <children>

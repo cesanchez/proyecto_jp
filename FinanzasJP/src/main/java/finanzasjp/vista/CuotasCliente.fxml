@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="321.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.CuotasClienteController">
+<BorderPane prefHeight="321.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.CuotasClienteController">
    <top>
       <Label text="Cuotas a pagar" BorderPane.alignment="CENTER">
          <font>
@@ -35,12 +35,12 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lb_NomCliente" prefWidth="115.0">
+                  <Label fx:id="lb_NomCliente" prefHeight="27.0" prefWidth="208.0">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Separator prefHeight="2.0" prefWidth="110.0" visible="false">
+                  <Separator prefHeight="7.0" prefWidth="48.0" visible="false">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
@@ -70,7 +70,7 @@
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lb_idCliente">
+                  <Label fx:id="lb_idCliente" prefHeight="27.0" prefWidth="162.0">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
@@ -92,7 +92,7 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txPrestamo" prefHeight="26.0" prefWidth="106.0" />
+                  <TextField fx:id="txPrestamo" editable="false" prefHeight="26.0" prefWidth="118.0" />
                   <Label text="Interés: ">
                      <font>
                         <Font name="System Bold" size="14.0" />
@@ -101,7 +101,7 @@
                         <Insets left="20.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="txInteres" prefHeight="26.0" prefWidth="45.0" />
+                  <TextField fx:id="txInteres" editable="false" prefHeight="26.0" prefWidth="76.0" />
                   <Label text="Pago total: ">
                      <font>
                         <Font name="System Bold" size="14.0" />
@@ -110,7 +110,7 @@
                         <Insets left="20.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="tx_PagoTotal" prefHeight="26.0" prefWidth="106.0" />
+                  <TextField fx:id="tx_PagoTotal" editable="false" prefHeight="26.0" prefWidth="114.0" />
                </children>
                <VBox.margin>
                   <Insets left="2.0" right="2.0" top="6.0" />
@@ -158,7 +158,7 @@
                                           <Insets left="30.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <TextField fx:id="tx_cuota" GridPane.columnIndex="1" />
+                                    <TextField fx:id="tx_cuota" editable="false" GridPane.columnIndex="1" />
                                     <TextField fx:id="tx_valorPago" GridPane.columnIndex="3" />
                                     <Label prefHeight="20.0" prefWidth="117.0" text="Fecha de pago: " GridPane.columnIndex="2" GridPane.rowIndex="1">
                                        <font>

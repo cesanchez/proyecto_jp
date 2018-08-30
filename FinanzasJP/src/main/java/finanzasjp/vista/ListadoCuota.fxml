@@ -125,7 +125,7 @@
                                                             <Font size="14.0" />
                                                          </font>
                                                       </TextField>
-                                                      <TextField fx:id="txValorCuota" disable="true" editable="false" layoutX="90.0" layoutY="40.0" GridPane.columnIndex="3">
+                                                      <TextField fx:id="txValorCuota" disable="true" layoutX="90.0" layoutY="40.0" GridPane.columnIndex="3">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
