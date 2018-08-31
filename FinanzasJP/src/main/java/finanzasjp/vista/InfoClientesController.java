@@ -330,7 +330,11 @@ public class InfoClientesController {
 					protected void updateItem(Cliente t, boolean bln) {
 						super.updateItem(t, bln);
 						if (t != null) {
-							setText(t.getNombre() + " " + t.getApellido());
+							String apellido = t.getApellido();
+							if(apellido == null) {
+								apellido = "";
+							}
+							setText(t.getNombre() + " " + apellido);
 						}
 					}
 				};
@@ -369,7 +373,7 @@ public class InfoClientesController {
 					txFechaPres.setText("" + rec.getFecha_prestamo());
 					txMora.setText(rec.isMora() ? "Sí" : "No");
 					txPrestamo.setText("" + rec.getMonto_prestamo());
-					txInteres.setText("" + (rec.getInteres()*100) + "%");
+					txInteres.setText("" + (rec.getInteres() * 100) + "%");
 					txPagoTotal.setText("" + rec.getPago_total());
 					txSaldo.setText("" + rec.getSaldo());
 
@@ -542,84 +546,126 @@ public class InfoClientesController {
 			if (txPrestamo_admin.getText() == "" || txInteres_admin.getText() == ""
 					|| txFechaPres_admin.getValue() == null || txFechaFin_admin.getValue() == null
 					|| txCuotas_admin.getText() == "" || txDias_admin.getText() == "") {
-				Alert alert = new Alert(AlertType.INFORMATION);
+				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Información");
 				alert.setHeaderText(null);
 				alert.setContentText("Ningún campo del recibo puede quedar vacío");
 				alert.showAndWait();
 			} else {
 
-				Alert alertConf = new Alert(AlertType.CONFIRMATION);
-				alertConf.setTitle("Confirmación");
-				alertConf.setHeaderText(null);
-				alertConf.setContentText("¿Confirma que desea almacenar el recibo?");
-				Optional<ButtonType> result = alertConf.showAndWait();
-				boolean resp = false;
-				boolean flagOk = false; // flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo
-										// mensaje
+				boolean valDias = true;
 
-				if (result.get() == ButtonType.OK) {
-					String[] losDias = null;
-					if (!txDias_admin.getText().equals("Semanal") && !txDias_admin.getText().equals("Diario")) {
-						losDias = txDias_admin.getText().split(",");
+				String[] losDias = null;
+				if (!txDias_admin.getText().equals("Semanal") && !txDias_admin.getText().equals("Diario")) {
+					losDias = txDias_admin.getText().split(",");
+				}
+
+				if (losDias != null) {
+					for (int i = 0; i < losDias.length; i++) {
+						int elDia = Integer.parseInt(losDias[i]);
+						if (elDia > 30 || elDia < 1) {
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setTitle("Información");
+							alert.setHeaderText(null);
+							alert.setContentText(losDias[i] + " No es un día valido para realizar cobro");
+							alert.showAndWait();
+
+							txDias_admin.setText("");
+							valDias = false;
+							break;
+						}
+					}
+				}
+
+				if (valDias) {
+
+					Alert alertConf = new Alert(AlertType.CONFIRMATION);
+					alertConf.setTitle("Confirmación");
+					alertConf.setHeaderText(null);
+					alertConf.setContentText("¿Confirma que desea almacenar el recibo?");
+					Optional<ButtonType> result = alertConf.showAndWait();
+					boolean resp = false;
+					boolean flagOk = false; // flag usado para confirmar que se hizo clic en ok y asi mostrar el
+											// respectivo
+											// mensaje
+
+					if (result.get() == ButtonType.OK) {
+
+						double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_admin.getText()),
+								Double.parseDouble(txInteres_admin.getText()), modoPago,
+								Integer.parseInt(txCuotas_admin.getText()));
+						lbPagoTotal_admin.setText("" + pagTotal);
+
+						if (Double.parseDouble(txInteres_admin.getText()) < 1) {
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setTitle("Información");
+							alert.setHeaderText(null);
+							alert.setContentText("El interés no puede ser menor que el 1%");
+							alert.showAndWait();
+						} else {
+							// Guarda el RECIBO
+							resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(),
+									Double.parseDouble(txPrestamo_admin.getText()),
+									Double.parseDouble(txInteres_admin.getText()),
+									txFechaPres_admin.getValue().toString(), txFechaFin_admin.getValue().toString(),
+									pagTotal, losDias);
+
+							// Genera las CUOTAS
+							boolean resCuota = main.generarCuotas(txPrestamo_admin.getText(), txInteres_admin.getText(),
+									modoPago, txCuotas_admin.getText(), lbRecibo.getText());
+
+							if (resp && resCuota) {
+								flagOk = true;
+							}
+
+						}
+
+					} else {
+						// ... user chose CANCEL or closed the dialog
 					}
 
-					double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_admin.getText()),
-							Double.parseDouble(txInteres_admin.getText()), modoPago,
-							Integer.parseInt(txCuotas_admin.getText()));
-					lbPagoTotal_admin.setText("" + pagTotal);
+					if (resp && flagOk) {
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Confirmación");
+						alert.setHeaderText(null);
+						alert.setContentText("Datos guardados exitosamente");
+						alert.showAndWait();
 
-					if (Double.parseDouble(txInteres_admin.getText()) < 1) {
+						btGuardarRecibo.setDisable(true);
+
+					} else {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("Información");
 						alert.setHeaderText(null);
-						alert.setContentText("El interés no puede ser menor que el 1%");
+						alert.setContentText("El recibo No. " + lbRecibo.getText() + " ya existe");
 						alert.showAndWait();
-					} else {
-						// Guarda el RECIBO
-						resp = main.guardarRecibo(Integer.parseInt(lbRecibo.getText()), txCedulaAdmin.getText(),
-								Double.parseDouble(txPrestamo_admin.getText()),
-								Double.parseDouble(txInteres_admin.getText()), txFechaPres_admin.getValue().toString(),
-								txFechaFin_admin.getValue().toString(), pagTotal, losDias);
-
-						// Genera las CUOTAS
-						boolean resCuota = main.generarCuotas(txPrestamo_admin.getText(), txInteres_admin.getText(),
-								modoPago, txCuotas_admin.getText(), lbRecibo.getText());
-
-						if (resp && resCuota) {
-							flagOk = true;
-						}
-
 					}
 
-				} else {
-					// ... user chose CANCEL or closed the dialog
 				}
 
-				if (resp && flagOk) {
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Confirmación");
-					alert.setHeaderText(null);
-					alert.setContentText("Datos guardados exitosamente");
-					alert.showAndWait();
-
-					btGuardarRecibo.setDisable(true);
-
-				} else {
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Información");
-					alert.setHeaderText(null);
-					alert.setContentText("El recibo No. " + lbRecibo.getText() + " ya existe");
-					alert.showAndWait();
-				}
 			}
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Error al ingeresar uno de los días de pago.");
+			alert.showAndWait();
+
+			txDias_admin.setText("");
+
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Error al ingeresar uno de los días de pago.");
+			alert.showAndWait();
+
+			txDias_admin.setText("");
 		}
 	}
 
@@ -727,75 +773,111 @@ public class InfoClientesController {
 				alert.showAndWait();
 			} else {
 
-				Alert alertConf = new Alert(AlertType.CONFIRMATION);
-				alertConf.setTitle("Confirmación");
-				alertConf.setHeaderText(null);
-				alertConf.setContentText("¿Confirma que desea almacenar el recibo?");
-				Optional<ButtonType> result = alertConf.showAndWait();
-				boolean resp = false;
-				boolean flagOk = false; // flag usado para confirmar que se hizo clic en ok y asi mostrar el respectivo
-										// mensaje
+				boolean valDias = true;
 
-				if (result.get() == ButtonType.OK) {
-					String[] losDias = null;
-					if (!txDias_mod.getText().equals("Semanal") && !txDias_mod.getText().equals("Diario")) {
-						losDias = txDias_mod.getText().split(",");
+				String[] losDias = null;
+				if (!txDias_mod.getText().equals("Semanal") && !txDias_mod.getText().equals("Diario")) {
+					losDias = txDias_mod.getText().split(",");
+				}
+
+				if (losDias != null) {
+					for (int i = 0; i < losDias.length; i++) {
+						int elDia = Integer.parseInt(losDias[i]);
+						if (elDia > 30 || elDia < 1) {
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setTitle("Información");
+							alert.setHeaderText(null);
+							alert.setContentText(losDias[i] + " No es un día valido para realizar cobro");
+							alert.showAndWait();
+
+							txDias_mod.setText("");
+							valDias = false;
+							break;
+						}
+					}
+				}
+
+				if (valDias) {
+
+					Alert alertConf = new Alert(AlertType.CONFIRMATION);
+					alertConf.setTitle("Confirmación");
+					alertConf.setHeaderText(null);
+					alertConf.setContentText("¿Confirma que desea almacenar el recibo?");
+					Optional<ButtonType> result = alertConf.showAndWait();
+					boolean resp = false;
+					boolean flagOk = false; // flag usado para confirmar que se hizo clic en ok y asi mostrar el
+											// respectivo
+											// mensaje
+
+					if (result.get() == ButtonType.OK) {
+
+						if (Double.parseDouble(txInteres_mod.getText()) < 1) {
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setTitle("Información");
+							alert.setHeaderText(null);
+							alert.setContentText("El interés no puede ser menor que el 1%");
+							alert.showAndWait();
+						} else {
+							double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_mod.getText()),
+									Double.parseDouble(txInteres_mod.getText()), modoPago,
+									Integer.parseInt(txCuotas_mod.getText()));
+							lbPagoTotal_mod.setText("" + pagTotal);
+
+							// Guardar el RECIBO
+							resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
+									Double.parseDouble(txPrestamo_mod.getText()),
+									Double.parseDouble(txInteres_mod.getText()), txFechaPres_mod.getValue().toString(),
+									txFechaFin_mod.getValue().toString(), pagTotal, losDias);
+							// Generar las CUOTAS
+							boolean resCuo = main.generarCuotas(txPrestamo_mod.getText(), txInteres_mod.getText(),
+									modoPago, txCuotas_mod.getText(), lbRecibo_mod.getText());
+
+							if (resp && resCuo) {
+								flagOk = true;
+							}
+						}
+
+					} else {
+						// ... user chose CANCEL or closed the dialog
 					}
 
-					if (Double.parseDouble(txInteres_mod.getText()) < 1) {
+					if (resp && flagOk) {
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Confirmación");
+						alert.setHeaderText(null);
+						alert.setContentText("Datos guardados exitosamente");
+						alert.showAndWait();
+
+						btGuardarReciboMod.setDisable(true);
+
+					} else {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("Información");
 						alert.setHeaderText(null);
-						alert.setContentText("El interés no puede ser menor que el 1%");
+						alert.setContentText("El recibo No. " + lbRecibo_mod.getText() + " ya existe");
 						alert.showAndWait();
-					} else {
-						double pagTotal = main.calcularPagoTotalLabel(Double.parseDouble(txPrestamo_mod.getText()),
-								Double.parseDouble(txInteres_mod.getText()), modoPago,
-								Integer.parseInt(txCuotas_mod.getText()));
-						lbPagoTotal_mod.setText("" + pagTotal);
-
-						// Guardar el RECIBO
-						resp = main.guardarRecibo(Integer.parseInt(lbRecibo_mod.getText()), txCedula_mod.getText(),
-								Double.parseDouble(txPrestamo_mod.getText()),
-								Double.parseDouble(txInteres_mod.getText()), txFechaPres_mod.getValue().toString(),
-								txFechaFin_mod.getValue().toString(), pagTotal, losDias);
-						// Generar las CUOTAS
-						boolean resCuo = main.generarCuotas(txPrestamo_mod.getText(), txInteres_mod.getText(), modoPago,
-								txCuotas_mod.getText(), lbRecibo_mod.getText());
-
-						if (resp && resCuo) {
-							flagOk = true;
-						}
 					}
 
-				} else {
-					// ... user chose CANCEL or closed the dialog
 				}
 
-				if (resp && flagOk) {
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Confirmación");
-					alert.setHeaderText(null);
-					alert.setContentText("Datos guardados exitosamente");
-					alert.showAndWait();
-
-					btGuardarReciboMod.setDisable(true);
-
-				} else {
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Información");
-					alert.setHeaderText(null);
-					alert.setContentText("El recibo No. " + lbRecibo_mod.getText() + " ya existe");
-					alert.showAndWait();
-				}
 			}
 
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Error al ingresar el día de cobro");
+			alert.showAndWait();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Error al ingresar el día de cobro");
+			alert.showAndWait();
 		}
 
 	}

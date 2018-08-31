@@ -23,7 +23,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="785.0" prefWidth="745.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.InfoClientesController">
+<BorderPane prefHeight="785.0" prefWidth="808.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.InfoClientesController">
    <top>
       <Label text="Clientes" BorderPane.alignment="CENTER">
          <font>
@@ -32,16 +32,16 @@
       </Label>
    </top>
    <center>
-      <SplitPane dividerPositions="0.2608929532006455" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.31141439205955335" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane>
                <children>
-                  <ListView fx:id="listaClientes" layoutX="6.0" layoutY="66.0" prefHeight="356.8" prefWidth="177.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ListView fx:id="listaClientes" layoutX="6.0" layoutY="66.0" prefHeight="356.8" prefWidth="224.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-          <AnchorPane>
+          <AnchorPane prefHeight="707.0" prefWidth="557.0">
                <children>
-                  <TabPane layoutX="61.0" layoutY="27.0" prefHeight="707.2" prefWidth="572.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TabPane layoutX="17.0" layoutY="27.0" prefHeight="707.0" prefWidth="562.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
                     <tabs>
                       <Tab text="Información general">
                         <content>

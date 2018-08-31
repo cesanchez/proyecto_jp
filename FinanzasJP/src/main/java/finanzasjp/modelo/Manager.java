@@ -114,26 +114,26 @@ public class Manager {
 		double valorCuota = cu.getValor();
 		double saldo = recibo.getSaldo();
 		double dif = 0;
-		//Actualizar valor cuota, si es necesario
-		if(newValorCuota != valorCuota){
+		// Actualizar valor cuota, si es necesario
+		if (newValorCuota != valorCuota) {
 			cu.setValor(newValorCuota);
 			dif = newValorCuota - valorCuota;
-			
-			if(dif > 0) {
+
+			if (dif > 0) {
 				saldo = saldo + newValorCuota;
-			}else {
+			} else {
 				saldo = saldo - newValorCuota;
 			}
-		}		
+		}
 
 		// Actualizar cuota
-		cu.setValor_pagado(valor);		
+		cu.setValor_pagado(valor);
 		if (valor >= valorCuota) {
 			cu.setMora(false);
 		}
 
-		// Actualizar saldo recibo		
-		saldo = saldo - valor;		
+		// Actualizar saldo recibo
+		saldo = saldo - valor;
 		recibo.setSaldo(saldo);
 
 		session.beginTransaction();
@@ -770,31 +770,31 @@ public class Manager {
 				double[] pagos = new double[2];
 				pagos[0] = Double.parseDouble(data[1]);
 				pagos[1] = Double.parseDouble(data[2]);
-//				pagos[2] = Double.parseDouble(data[3]);
-//				pagos[3] = Double.parseDouble(data[4]);
-//				pagos[4] = Double.parseDouble(data[5]);
-//				pagos[5] = Double.parseDouble(data[6]);
-//				pagos[6] = Double.parseDouble(data[7]);
-//				pagos[7] = Double.parseDouble(data[8]);
-//				pagos[8] = Double.parseDouble(data[9]);
-//				pagos[9] = Double.parseDouble(data[10]);
-//				pagos[10] = Double.parseDouble(data[11]);
-//				pagos[11] = Double.parseDouble(data[12]);
-//				pagos[12] = Double.parseDouble(data[13]);
-//				pagos[13] = Double.parseDouble(data[14]);
-				
+				// pagos[2] = Double.parseDouble(data[3]);
+				// pagos[3] = Double.parseDouble(data[4]);
+				// pagos[4] = Double.parseDouble(data[5]);
+				// pagos[5] = Double.parseDouble(data[6]);
+				// pagos[6] = Double.parseDouble(data[7]);
+				// pagos[7] = Double.parseDouble(data[8]);
+				// pagos[8] = Double.parseDouble(data[9]);
+				// pagos[9] = Double.parseDouble(data[10]);
+				// pagos[10] = Double.parseDouble(data[11]);
+				// pagos[11] = Double.parseDouble(data[12]);
+				// pagos[12] = Double.parseDouble(data[13]);
+				// pagos[13] = Double.parseDouble(data[14]);
+
 				Recibo miRec = (Recibo) session.get(Recibo.class, idrec);
-				
-				if(miRec != null) {
+
+				if (miRec != null) {
 					Set<Cuota> ctas = miRec.getCuotas();
-					if(!ctas.isEmpty() || ctas != null) {
-						for(Cuota c: ctas) {
+					if (!ctas.isEmpty() || ctas != null) {
+						for (Cuota c : ctas) {
 							int id = c.getId_cuota();
-							for(int i = 0; i<pagos.length; i++) {
-								if(id == i ) {
+							for (int i = 0; i < pagos.length; i++) {
+								if (id == i) {
 									c.setValor_pagado(pagos[i]);
 								}
-							}						
+							}
 						}
 					}
 				}
@@ -991,7 +991,7 @@ public class Manager {
 		return res;
 	}
 
-	public void guardarFechaCuota(String fecha, int idRecibo, int idCuota, double valorPagar) throws ParseException {
+	public boolean guardarFechaCuota(String fecha, int idRecibo, int idCuota, double valorPagar) throws ParseException {
 		// TODO Auto-generated method stub
 		String startDate = fecha;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1002,10 +1002,12 @@ public class Manager {
 		Cuota laCuota = elRecibo.darCuotaId(idCuota);
 		laCuota.setFecha_cobro(sqlStartDate);
 		laCuota.setValor(valorPagar);
-		
+
 		session.beginTransaction();
 		session.update(laCuota);
 		session.getTransaction().commit();
+
+		return true;
 
 	}
 
@@ -1035,13 +1037,35 @@ public class Manager {
 
 						session.update(c);
 						session.update(recibo);
+					} else {
+						c.setMora(false);
+						session.update(c);
 					}
 				}
 			}
 		}
 
-		session.getTransaction().commit();
+		// Verifique las cuotas de todos los recibos y verifique si salieron de mora
+		ArrayList<Recibo> losRecibos = (ArrayList<Recibo>) session.createCriteria(Recibo.class).list();
+		for (Recibo r : losRecibos) {
+			if (r.isActivo()) {
+				boolean mora = false;
+				for (Cuota c : r.getCuotas()) {
+					java.sql.Date fechaCobro = c.getFecha_cobro();
+					if (fechaCobro != null) {
+						int com = fechaCobro.compareTo(sqlStartDate);
+						if (com < 0) {
+							if (c.getValor_pagado() < c.getValor()) {
+								mora = true;
+							}
+						}
+					}
+				}
+				session.update(r);
+			}
+		}
 
+		session.getTransaction().commit();
 		re = true;
 		return re;
 	}

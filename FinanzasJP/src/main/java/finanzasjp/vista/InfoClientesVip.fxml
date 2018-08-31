@@ -127,7 +127,7 @@
                                              <content>
                                                 <HBox prefHeight="100.0" prefWidth="200.0">
                                                    <children>
-                                                      <ListView fx:id="listaClientes" prefHeight="167.0" prefWidth="182.0" />
+                                                      <ListView fx:id="listaClientes" prefHeight="167.0" prefWidth="370.0" />
                                                    </children>
                                                 </HBox>
                                              </content>

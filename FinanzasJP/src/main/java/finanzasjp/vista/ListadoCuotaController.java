@@ -121,6 +121,15 @@ public class ListadoCuotaController {
 				}
 			}
 		});
+		
+		txValorCuota.textProperty().addListener(new ChangeListener<String>() {
+
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+					txValorCuota.setText("");
+				}
+			}
+		});
 
 		txDia.focusedProperty().addListener(new ChangeListener() {
 

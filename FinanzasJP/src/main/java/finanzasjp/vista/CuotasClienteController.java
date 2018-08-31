@@ -11,11 +11,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.util.Callback;
 
 public class CuotasClienteController {
@@ -106,8 +108,21 @@ public class CuotasClienteController {
 	
 	@FXML
 	private void guardarFechaCuota() {
-		main.guardarFechaCuota(dt_fechaCuota.getValue().toString(), lb_idRecibo.getText(), tx_cuota.getText(), tx_valorPago.getText());
+		boolean res = main.guardarFechaCuota(dt_fechaCuota.getValue().toString(), lb_idRecibo.getText(), tx_cuota.getText(), tx_valorPago.getText());
 		
+		if(res) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Cuota actualizada con éxito");
+			alert.showAndWait();
+		}else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Información");
+			alert.setHeaderText(null);
+			alert.setContentText("Se generó un error al intentar guardar la cuota");
+			alert.showAndWait();
+		}
 	}
 	
 	private ArrayList<Cuota> darCuotas(String idCliente) {

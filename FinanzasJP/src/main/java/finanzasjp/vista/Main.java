@@ -77,7 +77,7 @@ public class Main extends Application {
 	public static void verInfoClientes() throws IOException {
 		
 		//manager.cargarCuotas();
-		manager.cargarPagos();
+		//manager.cargarPagos();
 		
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
@@ -238,17 +238,20 @@ public class Main extends Application {
 		
 	}
 
-	public static void guardarFechaCuota(String fecha, String idRecibo, String idCuota, String valorPagar) {
+	public static boolean guardarFechaCuota(String fecha, String idRecibo, String idCuota, String valorPagar) {
 		// TODO Auto-generated method stub
+		boolean res = false;
 		try {
-			manager.guardarFechaCuota(fecha, Integer.parseInt(idRecibo), Integer.parseInt(idCuota), Double.parseDouble(valorPagar));
+			res = manager.guardarFechaCuota(fecha, Integer.parseInt(idRecibo), Integer.parseInt(idCuota), Double.parseDouble(valorPagar));
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}finally {
+			return res;
+		}		
 	}
 
 	public static boolean actualizarEstadoCuotas(String fechaActual) {

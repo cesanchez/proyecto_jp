@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="290.0" prefWidth="678.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaMoraController">
+<BorderPane prefHeight="290.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finanzasjp.vista.ListadoCuotaMoraController">
    <top>
       <Label text="Listado de Cuotas en Mora" BorderPane.alignment="CENTER">
          <font>
@@ -25,7 +25,7 @@
       </Label>
    </top>
    <center>
-      <SplitPane dividerPositions="0.21305947271612508" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.2705499704316972" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="198.0" prefWidth="147.0">
                <children>
@@ -36,7 +36,7 @@
                <children>
                   <HBox layoutX="53.0" layoutY="80.0" prefHeight="360.8" prefWidth="380.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ListView fx:id="listaCuotas" prefHeight="361.0" prefWidth="104.0" />
+                        <ListView fx:id="listaCuotas" prefHeight="188.0" prefWidth="142.0" />
                         <Pane prefHeight="231.0" prefWidth="418.0">
                            <children>
                               <GridPane layoutY="36.0" prefHeight="128.0" prefWidth="409.0">
