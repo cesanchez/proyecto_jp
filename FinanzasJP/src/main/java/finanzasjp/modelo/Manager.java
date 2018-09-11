@@ -107,38 +107,68 @@ public class Manager {
 		session.getTransaction().commit();
 	}
 
-	public void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo) {
+	public void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo, String fechaPago) {
 		// TODO Auto-generated method stub
 		Recibo recibo = (Recibo) session.get(Recibo.class, id_recibo);
 		Cuota cu = recibo.darCuotaId(id_cuota);
-		double valorCuota = cu.getValor();
-		double saldo = recibo.getSaldo();
-		double dif = 0;
-		// Actualizar valor cuota, si es necesario
-		if (newValorCuota != valorCuota) {
-			cu.setValor(newValorCuota);
-			dif = newValorCuota - valorCuota;
-
-			// if (dif > 0) {
-			// saldo = saldo + newValorCuota;
-			// } else {
-			// saldo = saldo - newValorCuota;
-			// }
-		}
-
-		// Actualizar cuota
-		cu.setValor_pagado(valor);
-		if (valor >= valorCuota) {
-			cu.setMora(false);
-		}
-
-		// Actualizar saldo recibo
-		saldo = saldo - valor;
-		recibo.setSaldo(saldo);
-
 		session.beginTransaction();
-		session.update(cu);
-		session.update(recibo);
+
+		String startDate = fechaPago;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateI = null;
+		java.sql.Date sqlStartDate = null;
+
+		if (fechaPago != null) {
+			try {
+				dateI = sdf1.parse(startDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sqlStartDate = new java.sql.Date(dateI.getTime());
+		}
+
+		if (cu != null) {
+			double valorCuota = cu.getValor();
+			double saldo = recibo.getSaldo();
+			double dif = 0;
+			// Actualizar valor cuota, si es necesario
+			if (newValorCuota != valorCuota) {
+				cu.setValor(newValorCuota);
+				dif = newValorCuota - valorCuota;
+
+				if (dif > 0) {
+					saldo = saldo + dif;
+				} else {
+					saldo = saldo - dif;
+				}
+			}
+
+			// Actualizar cuota
+			cu.setValor_pagado(valor);
+			if (valor >= valorCuota) {
+				cu.setMora(false);
+			}
+
+			// Actualizar saldo recibo
+			saldo = saldo - valor;
+			recibo.setSaldo(saldo);
+
+			// Guardar Fecha Pago
+			cu.setFecha_pago(sqlStartDate);
+
+			session.update(cu);
+			session.update(recibo);
+
+		} else {
+			// Crear la nueva cuota
+			boolean mora = false;
+			if (valor < newValorCuota)
+				mora = true;
+
+			Cuota nuevaCuota = new Cuota(id_cuota, sqlStartDate, newValorCuota, valor, mora, recibo);
+			session.save(nuevaCuota);
+		}
 		session.getTransaction().commit();
 	}
 
@@ -217,7 +247,7 @@ public class Manager {
 		clientesVip = session.createCriteria(Cliente_VIP.class).list();
 	}
 
-	public ArrayList<Cuota> generarListadoCobroDia(int dia) {
+	public ArrayList<Cuota> generarListadoCobroDia(int dia, String idCobrador) {
 
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
 
@@ -225,31 +255,30 @@ public class Manager {
 		cal.setTime(new java.util.Date());
 		int mesActual = cal.get(Calendar.MONTH) + 1;
 
-		for (Cliente_VIP clVi : clientesVip) {
+		Cobrador cobrador = (Cobrador) session.get(Cobrador.class, idCobrador);
 
-			Set<Cliente> clientes = clVi.getClientes();
+		Set<Cliente> clientes = cobrador.getClientes();
 
-			for (Cliente cl : clientes) {
+		for (Cliente cl : clientes) {
 
-				Set<Recibo> recibos = cl.getRecibos();
+			Set<Recibo> recibos = cl.getRecibos();
 
-				for (Recibo rec : recibos) {
+			for (Recibo rec : recibos) {
 
-					if (rec.isActivo()) {
-						Set<Cuota> cuotas = rec.getCuotas();
-						if (rec.contieneDia(dia)) {
+				if (rec.isActivo()) {
+					Set<Cuota> cuotas = rec.getCuotas();
+					if (rec.contieneDia(dia)) {
 
-							for (Cuota cu : cuotas) {
+						for (Cuota cu : cuotas) {
 
-								Date fechaCob = cu.getFecha_cobro();
-								int mesCob = fechaCob.getMonth() + 1;
+							Date fechaCob = cu.getFecha_cobro();
+							int mesCob = fechaCob.getMonth() + 1;
 
-								if (mesActual == mesCob) {
-									listaCuota.add(cu);
-								}
-								if (cu.isMora()) {
-									listaCuota.add(cu);
-								}
+							if (mesActual == mesCob) {
+								listaCuota.add(cu);
+							}
+							if (cu.isMora()) {
+								listaCuota.add(cu);
 							}
 						}
 					}
@@ -259,7 +288,7 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cuota> generarListadoCobroFecha(String fecha) throws ParseException {
+	public ArrayList<Cuota> generarListadoCobroFecha(String fecha, String idCobrador) throws ParseException {
 
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
 
@@ -268,39 +297,38 @@ public class Manager {
 		java.util.Date date = sdf1.parse(startDate);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 
-		for (Cliente_VIP clVi : clientesVip) {
+		Cobrador cobrador = (Cobrador) session.get(Cobrador.class, idCobrador);
 
-			Set<Cliente> clientes = clVi.getClientes();
+		Set<Cliente> clientes = cobrador.getClientes();
 
-			for (Cliente cl : clientes) {
+		for (Cliente cl : clientes) {
 
-				Set<Recibo> recibos = cl.getRecibos();
+			Set<Recibo> recibos = cl.getRecibos();
 
-				for (Recibo rec : recibos) {
+			for (Recibo rec : recibos) {
 
-					if (rec.isActivo()) {
-						Set<Cuota> cuotas = rec.getCuotas();
-						for (Cuota cu : cuotas) {
+				if (rec.isActivo()) {
+					Set<Cuota> cuotas = rec.getCuotas();
+					for (Cuota cu : cuotas) {
 
-							if (cu.getFecha_cobro() != null) {
-								if (cu.getFecha_cobro().equals(sqlStartDate)) {
-									listaCuota.add(cu);
-								}
+						if (cu.getFecha_cobro() != null) {
+							if (cu.getFecha_cobro().equals(sqlStartDate)) {
+								listaCuota.add(cu);
+							}
 
-								if (cu.isMora()) {
-									listaCuota.add(cu);
-								}
+							if (cu.isMora()) {
+								listaCuota.add(cu);
 							}
 						}
 					}
 				}
-
 			}
+
 		}
 		return listaCuota;
 	}
 
-	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha) throws ParseException {
+	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
 
 		// null, fec
 		// dia, null
@@ -308,12 +336,12 @@ public class Manager {
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
 
 		if (dia == 0 && fecha != null) {
-			listaCuota.addAll(generarListadoCobroFecha(fecha));
+			listaCuota.addAll(generarListadoCobroFecha(fecha, idCobrador));
 		} else if (dia != 0 && fecha == null) {
-			listaCuota.addAll(generarListadoCobroDia(dia));
+			listaCuota.addAll(generarListadoCobroDia(dia, idCobrador));
 		} else if (dia != 0 && fecha != null) {
-			listaCuota.addAll(generarListadoCobroDia(dia));
-			ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha);
+			listaCuota.addAll(generarListadoCobroDia(dia, idCobrador));
+			ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha, idCobrador);
 
 			for (Cuota c : cuotasFecha) {
 				if (!listaCuota.contains(c)) {
@@ -324,10 +352,10 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cliente> darListaClientesCobro(int dia, String fecha) throws ParseException {
+	public ArrayList<Cliente> darListaClientesCobro(int dia, String fecha, String idCobrador) throws ParseException {
 
 		ArrayList<Cliente> listaClientes = new ArrayList<Cliente>();
-		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha);
+		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha, idCobrador);
 
 		for (Cuota c : listaCuota) {
 			Recibo rec = c.getId_recibo();
@@ -609,16 +637,18 @@ public class Manager {
 	}
 
 	public boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel, String dir,
-			String telFijo, String barrio, String trabajo, String telTrabajo) {
+			String telFijo, String barrio, String trabajo, String telTrabajo, String idCobrador) {
 		// TODO Auto-generated method stub
 		boolean ret = false;
 		Cliente_VIP clVip = (Cliente_VIP) session.get(Cliente_VIP.class, cedCliVip);
 		Cliente elCliente = (Cliente) session.get(Cliente.class, ced);
+		Cobrador cobrador = (Cobrador) session.get(Cobrador.class, idCobrador);
 
 		session.beginTransaction();
 		// Si el cliente no existe en la db, entonces se crea uno nuevo y guarda.
 		if (elCliente == null) {
-			elCliente = new Cliente(ced, nombre, apellido, dir, tel, telFijo, barrio, trabajo, telTrabajo, clVip);
+			elCliente = new Cliente(ced, nombre, apellido, dir, tel, telFijo, barrio, trabajo, telTrabajo, clVip,
+					cobrador);
 			clVip.addCliente(elCliente);
 			session.save(elCliente);
 			ret = true;
@@ -687,6 +717,22 @@ public class Manager {
 		Recibo elRecibo = losRecibos.get(index - 1);
 		num = elRecibo.getId_recibo();
 		return num;
+	}
+
+	public int darNumNuevaCuotaRecibo(int id_recibo) {
+		int num = 0;
+
+		Recibo rec = (Recibo) session.get(Recibo.class, id_recibo);
+		Set<Cuota> ctas = rec.getCuotas();
+		ArrayList<Cuota> cuotas = new ArrayList<Cuota>();
+		cuotas.addAll(ctas);
+
+		ComparadorCuota compa = new ComparadorCuota();
+		cuotas.sort(compa);
+		int index = cuotas.size();
+		Cuota laCuota = cuotas.get(index - 1);
+		num = laCuota.getId_cuota();
+		return num + 1;
 	}
 
 	public ArrayList<Cliente> darClientes(String id_clVip) {
@@ -785,7 +831,7 @@ public class Manager {
 
 			while ((line = br.readLine()) != null) { // Se leen las lineas hasta el final del documento
 				String[] data = line.split(";");
-				
+
 				if (data[0].equals("2419")) {
 					System.out.println("entro");
 				}
@@ -796,17 +842,17 @@ public class Manager {
 					pagos[0] = Double.parseDouble(data[1]);
 					pagos[1] = Double.parseDouble(data[2]);
 					pagos[2] = Double.parseDouble(data[3]);
-//					pagos[3] = Double.parseDouble(data[4]);
-//					pagos[4] = Double.parseDouble(data[5]);
-//					pagos[5] = Double.parseDouble(data[6]);
-//					pagos[6] = Double.parseDouble(data[7]);
-//					pagos[7] = Double.parseDouble(data[8]);
-//					pagos[8] = Double.parseDouble(data[9]);
-//					pagos[9] = Double.parseDouble(data[10]);
-//					pagos[10] = Double.parseDouble(data[11]);
-//					pagos[11] = Double.parseDouble(data[12]);
-//					pagos[12] = Double.parseDouble(data[13]);
-//					pagos[13] = Double.parseDouble(data[14]);
+					// pagos[3] = Double.parseDouble(data[4]);
+					// pagos[4] = Double.parseDouble(data[5]);
+					// pagos[5] = Double.parseDouble(data[6]);
+					// pagos[6] = Double.parseDouble(data[7]);
+					// pagos[7] = Double.parseDouble(data[8]);
+					// pagos[8] = Double.parseDouble(data[9]);
+					// pagos[9] = Double.parseDouble(data[10]);
+					// pagos[10] = Double.parseDouble(data[11]);
+					// pagos[11] = Double.parseDouble(data[12]);
+					// pagos[12] = Double.parseDouble(data[13]);
+					// pagos[13] = Double.parseDouble(data[14]);
 
 					Recibo miRec = (Recibo) session.get(Recibo.class, idrec);
 
@@ -816,7 +862,7 @@ public class Manager {
 							for (Cuota c : ctas) {
 								int id = c.getId_cuota();
 								for (int i = 0; i < pagos.length; i++) {
-									if (id == (i+1)) {
+									if (id == (i + 1)) {
 										c.setValor_pagado(pagos[i]);
 									}
 								}
@@ -1002,7 +1048,7 @@ public class Manager {
 
 				}
 
-				Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo);
+				Cuota cuota = new Cuota(i, valor, 0, false, valorInteres, valorCapital, recibo, null);
 				cuota.setFecha_cobro(fechaProx);
 				recibo.addCuota(cuota);
 				session.save(cuota);
@@ -1224,6 +1270,13 @@ public class Manager {
 		session.getTransaction().commit();
 
 		return true;
+	}
+
+	public ArrayList<Cobrador> darCobradores() {
+		// TODO Auto-generated method stub
+
+		ArrayList<Cobrador> cobradores = (ArrayList<Cobrador>) session.createCriteria(Cobrador.class).list();
+		return cobradores;
 	}
 
 	/*

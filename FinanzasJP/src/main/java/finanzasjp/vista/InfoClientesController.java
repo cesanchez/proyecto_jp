@@ -36,6 +36,7 @@ import com.sun.javafx.css.converters.StringConverter;
 import antlr.Token;
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cliente_VIP;
+import finanzasjp.modelo.Cobrador;
 import finanzasjp.modelo.Dia_Recibo;
 import finanzasjp.modelo.OpcionPrestamo;
 import finanzasjp.modelo.Recibo;
@@ -48,6 +49,7 @@ public class InfoClientesController {
 
 	private Cliente miCliente;
 	private String cedulaClienteVip = "";
+	private String cedulaCobrador= "";
 	private String modoPago = "";
 
 	@FXML
@@ -107,6 +109,8 @@ public class InfoClientesController {
 	@FXML
 	private ComboBox pertenece_admin;
 	@FXML
+	private ComboBox cobrador_admin;
+	@FXML
 	private ComboBox modoPago_admin;
 	@FXML
 	private ComboBox modoPago_mod;
@@ -124,6 +128,7 @@ public class InfoClientesController {
 
 	private ObservableList<Cliente> listViewData = FXCollections.observableArrayList();
 	private ObservableList<Cliente_VIP> dataPert_admin = FXCollections.observableArrayList();
+	private ObservableList<Cobrador> dataCobra_admin = FXCollections.observableArrayList();
 	private ObservableList<String> dataModoPago_admin = FXCollections.observableArrayList();
 
 	// Admin nuevo cliente
@@ -210,6 +215,7 @@ public class InfoClientesController {
 
 		listViewData.addAll(darNomClientes());
 		dataPert_admin.addAll(darNomClientesVip());
+		dataCobra_admin.addAll(darNomCobradores());
 		dataModoPago_admin.addAll(darModosPago());
 	}
 
@@ -219,9 +225,10 @@ public class InfoClientesController {
 		btGuardarReciboMod.setDisable(false);
 
 		txInteres_admin.textProperty().addListener(new ChangeListener<String>() {
+			
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {				
+					
 					txInteres_admin.setText("");
 				}
 			}
@@ -318,7 +325,31 @@ public class InfoClientesController {
 				cedulaClienteVip = clvip.getId();
 			}
 		});
+		
+		cobrador_admin.setItems(dataCobra_admin);
+		cobrador_admin.setConverter(new javafx.util.StringConverter<Cobrador>() {
+			@Override
+			public Cobrador fromString(String string) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 
+			@Override
+			public String toString(Cobrador object) {
+				// TODO Auto-generated method stub
+				return object.getNombre();
+			}
+		});
+
+		cobrador_admin.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+				// TODO Auto-generated method stub
+				Cobrador miCobrador = (Cobrador) newValue;
+				cedulaCobrador = miCobrador.getId_cobrador();
+			}
+		});
+		
 		// Init ListView and listen for selection changes
 		listaClientes.setItems(listViewData);
 		listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
@@ -416,6 +447,11 @@ public class InfoClientesController {
 	public ArrayList<Cliente_VIP> darNomClientesVip() {
 		return main.darClientesVip();
 	}
+	
+	private ArrayList<Cobrador> darNomCobradores() {
+		// TODO Auto-generated method stub
+		return main.darNomCobradores();
+	}
 
 	public ArrayList<String> darModosPago() {
 
@@ -504,7 +540,7 @@ public class InfoClientesController {
 				resp = main.guardarCliente(cedulaClienteVip, txCedulaAdmin.getText(), txNombreAdmin.getText(),
 						txApellidoAdmin.getText(), txTelefonoAdmin.getText(), txDireccionAdmin.getText(),
 						txTelFijoAdmin.getText(), txBarrioAdmin.getText(), txTrabajoAdmin.getText(),
-						txTelTrabajoAdmin.getText());
+						txTelTrabajoAdmin.getText(), cedulaCobrador);
 				flagOk = true;
 			} else {
 				// ... user chose CANCEL or closed the dialog

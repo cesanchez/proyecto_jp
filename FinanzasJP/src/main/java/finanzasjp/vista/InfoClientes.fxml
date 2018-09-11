@@ -356,17 +356,17 @@
                                                               </rowConstraints>
                                                                <children>
                                                                   <ComboBox fx:id="pertenece_admin" prefHeight="27.0" prefWidth="146.0" GridPane.columnIndex="1" />
-                                                                  <TextField fx:id="txNombreAdmin" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="txApellidoAdmin" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="txCedulaAdmin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="txTrabajoAdmin" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="txNombreAdmin" prefHeight="27.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="txApellidoAdmin" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="txCedulaAdmin" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="txTrabajoAdmin" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                   <TextField fx:id="txTelefonoAdmin" GridPane.columnIndex="3" />
                                                                   <TextField fx:id="txDireccionAdmin" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                   <TextField fx:id="txTelFijoAdmin" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                                   <TextField fx:id="txBarrioAdmin" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="txTelTrabajoAdmin" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                                   <Button fx:id="btGuardarCliente" mnemonicParsing="false" onAction="#guardarCliente" prefHeight="60.0" prefWidth="156.0" text="Guardar" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                  <Label text="Nombre:" GridPane.rowIndex="1">
+                                                                  <Label text="Nombre:" GridPane.rowIndex="2">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
@@ -374,7 +374,7 @@
                                                                         <Insets left="10.0" />
                                                                      </padding>
                                                                   </Label>
-                                                                  <Label text="* Cédula:" GridPane.rowIndex="3">
+                                                                  <Label text="* Cédula:" GridPane.rowIndex="4">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
@@ -409,7 +409,7 @@
                                                                         <Insets left="10.0" />
                                                                      </padding>
                                                                   </Label>
-                                                                  <Label text="Apellido:" GridPane.rowIndex="2">
+                                                                  <Label text="Apellido:" GridPane.rowIndex="3">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
@@ -434,7 +434,7 @@
                                                                         <Insets left="20.0" />
                                                                      </padding>
                                                                   </Label>
-                                                                  <Label text="Trabajo: " GridPane.rowIndex="4">
+                                                                  <Label text="Trabajo: " GridPane.rowIndex="5">
                                                                      <font>
                                                                         <Font name="System Bold" size="14.0" />
                                                                      </font>
@@ -450,6 +450,15 @@
                                                                         <Insets left="20.0" />
                                                                      </padding>
                                                                   </Label>
+                                                                  <Label text="Cobrador: " GridPane.rowIndex="1">
+                                                                     <font>
+                                                                        <Font name="System Bold" size="14.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="10.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <ComboBox fx:id="cobrador_admin" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets left="6.0" right="6.0" />

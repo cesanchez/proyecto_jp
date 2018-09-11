@@ -30,6 +30,7 @@ public class Cliente {
 	private String telefono_trabajo;
 
 	private Cliente_VIP cliente_vip;
+	private Cobrador id_cobrador;
 	private Set<Recibo> recibos;
 	private Set<Codeudor> id_codeudor;
 
@@ -39,7 +40,7 @@ public class Cliente {
 
 	public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
 			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip,
-			Set<Recibo> recibos, Set<Codeudor> id_codeudor) {
+			Set<Recibo> recibos, Set<Codeudor> id_codeudor, String idCobrador) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -53,10 +54,11 @@ public class Cliente {
 		this.cliente_vip = cliente_vip;
 		this.recibos = recibos;
 		this.id_codeudor = id_codeudor;
+		this.id_cobrador = id_cobrador;
 	}
 
 	public Cliente(String id, String nombre, String apellido, String direccion, String telefono_celular,
-			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip) {
+			String telefono_fijo, String barrio, String trabajo, String telefono_trabajo, Cliente_VIP cliente_vip, Cobrador id_cobrador) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -68,6 +70,7 @@ public class Cliente {
 		this.trabajo = trabajo;
 		this.telefono_trabajo = telefono_trabajo;
 		this.cliente_vip = cliente_vip;
+		this.id_cobrador = id_cobrador;
 
 		this.recibos = new HashSet<Recibo>();
 		this.id_codeudor = new HashSet<Codeudor>();
@@ -207,6 +210,17 @@ public class Cliente {
 	public void setTelefono_trabajo(String telefono_trabajo) {
 		this.telefono_trabajo = telefono_trabajo;
 	}
+	
+	@ManyToOne
+	@JoinColumn(name = "id_cobrador")
+	public Cobrador getId_cobrador() {
+		return id_cobrador;
+	}
+
+	public void setId_cobrador(Cobrador id_cobrador) {
+		this.id_cobrador = id_cobrador;
+	}
+
 
 
 }

@@ -54,13 +54,13 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
-	public static void generarArchivoListaCobro(int dia, String fecha) throws ParseException, IOException {
-		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha);
+	public static void generarArchivoListaCobro(int dia, String fecha, String idCobrador) throws ParseException, IOException {
+		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha, idCobrador);
 		manager.genListadoCsvCobro(cuotas);
 	}
 	
-	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha) throws ParseException {
-		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha);
+	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
+		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
 		return clientes;		
 	}
 	
@@ -72,6 +72,10 @@ public class Main extends Application {
 		
 		int id = Integer.parseInt(id_recibo);
 		manager.desactivarRecibo(id);
+	}
+	
+	public static int darNuevaCuotaRecibo(String id_recibo) {
+		return manager.darNumNuevaCuotaRecibo(Integer.parseInt(id_recibo));
 	}
 	
 	public static void verInfoClientes() throws IOException {
@@ -171,9 +175,9 @@ public class Main extends Application {
 		manager.exit();
 	}
 
-	public static void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo) {
+	public static void guardarPago(double valor, double newValorCuota, int id_cuota, int id_recibo, String fecha) {
 		// TODO Auto-generated method stub
-		manager.guardarPago(valor, newValorCuota, id_cuota, id_recibo);
+		manager.guardarPago(valor, newValorCuota, id_cuota, id_recibo, fecha);
 	}
 
 	public static ArrayList<Cliente_VIP> darClientesVip() {
@@ -182,9 +186,9 @@ public class Main extends Application {
 	}
 
 	public static boolean guardarCliente(String cedCliVip, String ced, String nombre, String apellido, String tel,
-			String dir, String telFijo, String barrio, String trabajo, String telTrabajo) {
+			String dir, String telFijo, String barrio, String trabajo, String telTrabajo, String idCobrador) {
 		
-		return manager.guardarCliente(cedCliVip, ced, nombre, apellido, tel, dir, telFijo, barrio, trabajo, telTrabajo);
+		return manager.guardarCliente(cedCliVip, ced, nombre, apellido, tel, dir, telFijo, barrio, trabajo, telTrabajo, idCobrador);
 		
 	}
 
@@ -387,6 +391,11 @@ public class Main extends Application {
 			String barrio) {
 		// TODO Auto-generated method stub
 		return manager.actualizarCodeudor(idCliente, idCodeudor, nom, telFijo, dir, trabajo, telCelular, telTrabajo, barrio);
+	}
+
+	public static ArrayList<Cobrador> darNomCobradores() {
+		// TODO Auto-generated method stub
+		return manager.darCobradores();
 	}
 
 	

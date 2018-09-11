@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import finanzasjp.modelo.Cliente;
+import finanzasjp.modelo.Cobrador;
 import finanzasjp.modelo.Cuota;
 import finanzasjp.modelo.Dia_Recibo;
 import finanzasjp.modelo.Recibo;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -33,6 +35,11 @@ public class ListadoCuotaController {
 
 	private Main main;
 
+	private String cedulaCobrador = "";
+
+	@FXML
+	private ComboBox cobrador;
+	private ObservableList<Cobrador> dataCobrador = FXCollections.observableArrayList();
 	@FXML
 	private ListView listaClientes;
 
@@ -44,6 +51,8 @@ public class ListadoCuotaController {
 
 	@FXML
 	private DatePicker datePicker;
+	@FXML
+	private DatePicker dteFechaPago;
 
 	@FXML
 	private TextField txCuota;
@@ -106,7 +115,7 @@ public class ListadoCuotaController {
 	}
 
 	public ListadoCuotaController() {
-
+		dataCobrador.addAll(darNomCobradores());
 	}
 
 	public void initialize() {
@@ -121,7 +130,7 @@ public class ListadoCuotaController {
 				}
 			}
 		});
-		
+
 		txValorCuota.textProperty().addListener(new ChangeListener<String>() {
 
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -145,6 +154,29 @@ public class ListadoCuotaController {
 			}
 		});
 
+		cobrador.setItems(dataCobrador);
+		cobrador.setConverter(new javafx.util.StringConverter<Cobrador>() {
+			@Override
+			public Cobrador fromString(String string) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public String toString(Cobrador object) {
+				// TODO Auto-generated method stub
+				return object.getNombre();
+			}
+		});
+
+		cobrador.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+				// TODO Auto-generated method stub
+				Cobrador miCobrador = (Cobrador) newValue;
+				cedulaCobrador = miCobrador.getId_cobrador();
+			}
+		});
 	}
 
 	public void generarArchivoListaCobro() {
@@ -163,11 +195,12 @@ public class ListadoCuotaController {
 				alert.showAndWait();
 
 			} else {
-				main.generarArchivoListaCobro(Integer.parseInt(strDia), strFecha);
+				main.generarArchivoListaCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
 				Alert conf = new Alert(AlertType.INFORMATION);
 				conf.setTitle("Información");
 				conf.setHeaderText(null);
-				conf.setContentText("Se ha generado el archivo ListaDeCobro.xlsx en el escritorio");
+				conf.setContentText("Se ha generado el archivo " + datePicker.getValue().toString() + "_"
+						+ "ListaDeCobro.xlsx en el escritorio");
 				conf.showAndWait();
 			}
 
@@ -177,16 +210,17 @@ public class ListadoCuotaController {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Información");
 			alert.setHeaderText(null);
-			alert.setContentText("Sí tiene el archivo ListaDeCobro.xls abierto, por favor cierrelo para generar uno nuevo");
+			alert.setContentText(
+					"Sí tiene el archivo ListaDeCobro.xls abierto, por favor cierrelo para generar uno nuevo");
 			alert.showAndWait();
-			
+
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 	}
 
 	public void generarListadoClientes() {
@@ -205,7 +239,7 @@ public class ListadoCuotaController {
 
 			} else {
 
-				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha);
+				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
 				listDataCliente.addAll(lClientes);
 				listaClientes.setItems(listDataCliente);
 
@@ -230,6 +264,7 @@ public class ListadoCuotaController {
 
 					public void changed(ObservableValue observable, Object arg1, Object arg2) {
 						// TODO Auto-generated method stub
+						dteFechaPago.setValue(null);
 						listDataCuota.clear();
 						txValorPagado.setDisable(true);
 						txValorCuota.setDisable(true);
@@ -244,7 +279,7 @@ public class ListadoCuotaController {
 						Recibo reciboCl = main.darReciboCliente(cl);
 						txRecibo.setText("" + reciboCl.getId_recibo());
 						txPrestamo.setText("" + reciboCl.getMonto_prestamo());
-						txInteres.setText("" + (reciboCl.getInteres()*100) + " %");
+						txInteres.setText("" + (reciboCl.getInteres() * 100) + " %");
 						txFechaPres.setText("" + reciboCl.getFecha_prestamo());
 						txSaldo.setText("" + reciboCl.getSaldo());
 						boolean moraRec = reciboCl.isMora();
@@ -265,21 +300,21 @@ public class ListadoCuotaController {
 
 						listDataCuota.addAll(darStrCuotas(cl));
 						listaCuotas.setItems(listDataCuota);
-						
+
 						listaCuotas.setCellFactory(new Callback<ListView<Cuota>, ListCell<Cuota>>() {
 
 							public ListCell<Cuota> call(ListView<Cuota> param) {
 								// TODO Auto-generated method stub
-								ListCell<Cuota> cell = new ListCell<Cuota>(){ 
-				                    @Override
-				                    protected void updateItem(Cuota t, boolean bln) {
-				                        super.updateItem(t, bln);
-				                        if (t != null) {
-				                            setText("Cuota # " + t.getId_cuota());
-				                        }
-				                    } 
-				                };                 
-				                return cell;
+								ListCell<Cuota> cell = new ListCell<Cuota>() {
+									@Override
+									protected void updateItem(Cuota t, boolean bln) {
+										super.updateItem(t, bln);
+										if (t != null) {
+											setText("Cuota # " + t.getId_cuota());
+										}
+									}
+								};
+								return cell;
 							}
 						});
 
@@ -288,6 +323,7 @@ public class ListadoCuotaController {
 							public void changed(ObservableValue arg0, Cuota arg1, Cuota arg2) {
 								// TODO Auto-generated method stub
 
+								dteFechaPago.setValue(null);
 								txCuota.setText("");
 								txFechaCobro.setText("");
 								txValorCuota.setText("");
@@ -296,7 +332,7 @@ public class ListadoCuotaController {
 								txValorCuota.setDisable(false);
 
 								if (arg2 != null) {
-									
+
 									String noCuota = arg2.getId_cuota() + "";
 									String strFecha = arg2.getFecha_cobro().toString();
 									txCuota.setText(noCuota);
@@ -309,6 +345,10 @@ public class ListadoCuotaController {
 									txValorPagado.setText("" + cut.getValor_pagado());
 									boolean mora = cut.isMora();
 									txMora.setText(!mora ? "No" : "Sí");
+
+									if (cut.getFecha_pago() != null) {
+										dteFechaPago.setValue(cut.getFecha_pago().toLocalDate());
+									}
 								}
 
 							}
@@ -342,12 +382,30 @@ public class ListadoCuotaController {
 
 	public void guardarPago() {
 
-		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Double.parseDouble(txValorCuota.getText()), Integer.parseInt(txCuota.getText()),
-				Integer.parseInt(txRecibo.getText()));
-		
+		String fechaPago = null;
+
+		if (dteFechaPago.getValue() != null) {
+			fechaPago = dteFechaPago.getValue().toString();
+		}
+
+		main.guardarPago(Double.parseDouble(txValorPagado.getText()), Double.parseDouble(txValorCuota.getText()),
+				Integer.parseInt(txCuota.getText()), Integer.parseInt(txRecibo.getText()), fechaPago);
+
 		double saldo = Double.parseDouble(txSaldo.getText());
 		saldo = saldo - Double.parseDouble(txValorPagado.getText());
-		txSaldo.setText(""+saldo);
+		txSaldo.setText("" + saldo);
+	}
+
+	public void generarNuevaCuota() {
+
+		txCuota.setText("" + main.darNuevaCuotaRecibo(txRecibo.getText()));
+		txValorCuota.setDisable(false);
+		txValorPagado.setDisable(false);
+
+		txValorCuota.setText("");
+		txValorPagado.setText("");
+
+		txFechaCobro.setText(NOW_LOCAL_DATE().toString());
 	}
 
 	public ArrayList<String> darNombreClientes(ArrayList<Cliente> lClientes) {
@@ -362,5 +420,10 @@ public class ListadoCuotaController {
 		String idCliente = cl.getId();
 		ArrayList<Cuota> cuotas = main.darCuotasCliente(idCliente);
 		return cuotas;
+	}
+
+	private ArrayList<Cobrador> darNomCobradores() {
+		// TODO Auto-generated method stub
+		return main.darNomCobradores();
 	}
 }
