@@ -56,11 +56,11 @@ public class Main extends Application {
 	
 	public static void generarArchivoListaCobro(int dia, String fecha, String idCobrador) throws ParseException, IOException {
 		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha, idCobrador);
-		manager.genListadoCsvCobro(cuotas);
+		manager.genListadoCsvCobro(cuotas, fecha);
 	}
 	
-	public static ArrayList<Cliente> darListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
-		ArrayList<Cliente> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
+	public static ArrayList<Cliente_Recibo> darListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
+		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
 		return clientes;		
 	}
 	

@@ -49,9 +49,12 @@ public class InfoClientesController {
 
 	private Cliente miCliente;
 	private String cedulaClienteVip = "";
-	private String cedulaCobrador= "";
+	private String cedulaCobrador = "";
 	private String modoPago = "";
-
+	
+	@FXML
+	private TextField txSearch;
+	
 	@FXML
 	private ListView listaClientes;
 
@@ -225,10 +228,10 @@ public class InfoClientesController {
 		btGuardarReciboMod.setDisable(false);
 
 		txInteres_admin.textProperty().addListener(new ChangeListener<String>() {
-			
+
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {				
-					
+				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+
 					txInteres_admin.setText("");
 				}
 			}
@@ -325,7 +328,7 @@ public class InfoClientesController {
 				cedulaClienteVip = clvip.getId();
 			}
 		});
-		
+
 		cobrador_admin.setItems(dataCobra_admin);
 		cobrador_admin.setConverter(new javafx.util.StringConverter<Cobrador>() {
 			@Override
@@ -349,7 +352,7 @@ public class InfoClientesController {
 				cedulaCobrador = miCobrador.getId_cobrador();
 			}
 		});
-		
+
 		// Init ListView and listen for selection changes
 		listaClientes.setItems(listViewData);
 		listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
@@ -362,7 +365,7 @@ public class InfoClientesController {
 						super.updateItem(t, bln);
 						if (t != null) {
 							String apellido = t.getApellido();
-							if(apellido == null) {
+							if (apellido == null) {
 								apellido = "";
 							}
 							setText(t.getNombre() + " " + apellido);
@@ -438,6 +441,14 @@ public class InfoClientesController {
 				txCedula_mod.setText(cl.getId());
 			}
 		});
+		
+		txSearch.setPromptText("Search");
+		txSearch.textProperty().addListener(new ChangeListener() {
+	      public void changed(ObservableValue observable, Object oldVal,
+	          Object newVal) {
+	        search((String) oldVal, (String) newVal);
+	      }
+	    });
 	}
 
 	public ArrayList<Cliente> darNomClientes() {
@@ -447,7 +458,7 @@ public class InfoClientesController {
 	public ArrayList<Cliente_VIP> darNomClientesVip() {
 		return main.darClientesVip();
 	}
-	
+
 	private ArrayList<Cobrador> darNomCobradores() {
 		// TODO Auto-generated method stub
 		return main.darNomCobradores();
@@ -778,20 +789,21 @@ public class InfoClientesController {
 
 	@FXML
 	private void crearPrestamoClienteExistente() {
-		String val = main.validarReciboActivoCliente(txCedula_mod.getText());
-
-		if (val.equals("")) {
-			// Se habilita el grid del recibo
-			gridRecibo_mod.setDisable(false);
-			lbRecibo_mod.setText(Integer.toString(main.darNumUltRecibo()));
-		} else {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Información");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"El cliente " + txNombre_mod.getText() + " actualmente tiene el siguiente recibo activo: " + val);
-			alert.showAndWait();
-		}
+		// String val = main.validarReciboActivoCliente(txCedula_mod.getText());
+		//
+		// if (val.equals("")) {
+		// Se habilita el grid del recibo
+		gridRecibo_mod.setDisable(false);
+		lbRecibo_mod.setText(Integer.toString(main.darNumUltRecibo()));
+		// } else {
+		// Alert alert = new Alert(AlertType.ERROR);
+		// alert.setTitle("Información");
+		// alert.setHeaderText(null);
+		// alert.setContentText(
+		// "El cliente " + txNombre_mod.getText() + " actualmente tiene el siguiente
+		// recibo activo: " + val);
+		// alert.showAndWait();
+		// }
 	}
 
 	@FXML
@@ -947,5 +959,26 @@ public class InfoClientesController {
 			e.printStackTrace();
 		}
 	}
+	
+	public void search(String oldVal, String newVal) {
+	    if (oldVal != null && (newVal.length() < oldVal.length())) {
+	      listaClientes.setItems(listViewData);
+	    }
+	    String value = newVal.toUpperCase();
+	    ObservableList<Cliente> subentries = FXCollections.observableArrayList();
+	    for (Object entry : listaClientes.getItems()) {
+	      boolean match = false;
+	      Cliente scl = (Cliente) entry;
+	      String entryText = scl.getNombre() + " " + scl.getApellido();
+	      if (entryText.toUpperCase().contains(value)) {
+	        match = true;
+	        //break;
+	      }
+	      if (match) {
+	        subentries.add(scl);
+	      }
+	    }
+	    listaClientes.setItems(subentries);
+	  }
 
 }

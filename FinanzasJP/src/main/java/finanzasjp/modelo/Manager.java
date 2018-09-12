@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -352,22 +353,40 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cliente> darListaClientesCobro(int dia, String fecha, String idCobrador) throws ParseException {
+	public ArrayList<Cliente_Recibo> darListaClientesCobro(int dia, String fecha, String idCobrador) throws ParseException {
 
 		ArrayList<Cliente> listaClientes = new ArrayList<Cliente>();
+		ArrayList<Recibo> recibosCobrar = new ArrayList<Recibo>();
 		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha, idCobrador);
-
-		for (Cuota c : listaCuota) {
+		
+		ArrayList<Cliente_Recibo> clientesRec = new ArrayList<Cliente_Recibo>();
+		
+		for(Cuota c : listaCuota) {
 			Recibo rec = c.getId_recibo();
-			Cliente cl = rec.getId_cliente();
-
-			if (!listaClientes.contains(cl)) {
-				listaClientes.add(cl);
+			
+			if(!recibosCobrar.contains(rec)) {
+				recibosCobrar.add(rec);
 			}
 		}
-		ComparadorCliente com = new ComparadorCliente();
-		listaClientes.sort(com);
-		return listaClientes;
+		
+		for(Recibo r : recibosCobrar) {			
+			Cliente cl = r.getId_cliente();
+			clientesRec.add(new Cliente_Recibo(cl, r));
+		}
+		
+		return clientesRec;
+		
+//		for (Cuota c : listaCuota) {
+//			Recibo rec = c.getId_recibo();
+//			Cliente cl = rec.getId_cliente();
+//
+//			if (!listaClientes.contains(cl)) {
+//				listaClientes.add(cl);
+//			}
+//		}
+//		ComparadorCliente com = new ComparadorCliente();
+//		listaClientes.sort(com);
+//		return listaClientes;
 	}
 
 	public ArrayList<Cliente> darListaClientesMora() {
@@ -388,7 +407,7 @@ public class Manager {
 		return clientesMora;
 	}
 
-	public void genListadoCsvCobro(ArrayList<Cuota> lista) throws IOException {
+	public void genListadoCsvCobro(ArrayList<Cuota> lista, String fecha) throws IOException {
 
 		Workbook workbook = new XSSFWorkbook();
 		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
@@ -454,7 +473,7 @@ public class Manager {
 		}
 
 		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
-		File file = new File(userHomeFolder, "ListaDeCobro.xlsx");
+		File file = new File(userHomeFolder, fecha +  "_ListaDeCobro.xlsx");
 		FileOutputStream fileout = new FileOutputStream(file);
 
 		workbook.write(fileout);

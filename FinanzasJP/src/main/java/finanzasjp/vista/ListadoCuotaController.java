@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import finanzasjp.modelo.Cliente;
+import finanzasjp.modelo.Cliente_Recibo;
 import finanzasjp.modelo.Cobrador;
 import finanzasjp.modelo.Cuota;
 import finanzasjp.modelo.Dia_Recibo;
@@ -45,7 +46,7 @@ public class ListadoCuotaController {
 
 	@FXML
 	private ListView listaCuotas;
-
+	
 	@FXML
 	private TextField txDia;
 
@@ -101,7 +102,7 @@ public class ListadoCuotaController {
 	@FXML
 	private TextField txSaldo;
 
-	private ObservableList<Cliente> listDataCliente = FXCollections.observableArrayList();
+	private ObservableList<Cliente_Recibo> listDataCliente = FXCollections.observableArrayList();
 	private ObservableList<Cuota> listDataCuota = FXCollections.observableArrayList();
 
 	private Cliente cl;
@@ -239,26 +240,43 @@ public class ListadoCuotaController {
 
 			} else {
 
-				ArrayList<Cliente> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
+				ArrayList<Cliente_Recibo> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
 				listDataCliente.addAll(lClientes);
 				listaClientes.setItems(listDataCliente);
+				
+				listaClientes.setCellFactory(new Callback<ListView<Cliente_Recibo>, ListCell<Cliente_Recibo>>() {
 
-				listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
-
-					public ListCell<Cliente> call(ListView<Cliente> param) {
+					public ListCell<Cliente_Recibo> call(ListView<Cliente_Recibo> param) {
 						// TODO Auto-generated method stub
-						ListCell<Cliente> cell = new ListCell<Cliente>() {
+						ListCell<Cliente_Recibo> cell = new ListCell<Cliente_Recibo>() {
 							@Override
-							protected void updateItem(Cliente t, boolean bln) {
+							protected void updateItem(Cliente_Recibo t, boolean bln) {
 								super.updateItem(t, bln);
 								if (t != null) {
-									setText(t.getNombre() + " " + t.getApellido());
+									setText(t.getCliente().getNombre()+ " " + t.getCliente().getApellido());
 								}
 							}
 						};
 						return cell;
 					}
 				});
+
+//				listaClientes.setCellFactory(new Callback<ListView<Cliente>, ListCell<Cliente>>() {
+//
+//					public ListCell<Cliente> call(ListView<Cliente> param) {
+//						// TODO Auto-generated method stub
+//						ListCell<Cliente> cell = new ListCell<Cliente>() {
+//							@Override
+//							protected void updateItem(Cliente t, boolean bln) {
+//								super.updateItem(t, bln);
+//								if (t != null) {
+//									setText(t.getNombre() + " " + t.getApellido());
+//								}
+//							}
+//						};
+//						return cell;
+//					}
+//				});
 
 				listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
@@ -270,13 +288,15 @@ public class ListadoCuotaController {
 						txValorCuota.setDisable(true);
 
 						// Se asigna el cliente seleccionado desde la lista de clientes
-						cl = (Cliente) arg2;
+						Cliente_Recibo cl_rec = (Cliente_Recibo) arg2;
+						cl = (Cliente) cl_rec.getCliente();
 
 						String nombre = cl.getNombre();
 						String ced = cl.getId();
 
 						lbCliente.setText(nombre + " " + cl.getApellido());
-						Recibo reciboCl = main.darReciboCliente(cl);
+						//Recibo reciboCl = main.darReciboCliente(cl);
+						Recibo reciboCl = cl_rec.getRecibo();
 						txRecibo.setText("" + reciboCl.getId_recibo());
 						txPrestamo.setText("" + reciboCl.getMonto_prestamo());
 						txInteres.setText("" + (reciboCl.getInteres() * 100) + " %");
