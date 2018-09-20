@@ -446,7 +446,8 @@ public class Manager {
 			for(Cuota c : rec.getCuotas()) {
 				
 				if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
-					valorTotal += c.getValor();
+					double valorDebe = c.getValor() - c.getValor_pagado();
+					valorTotal += valorDebe;
 					idCuotas += c.getId_cuota() + ";";
 				}
 			}
