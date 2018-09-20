@@ -55,8 +55,11 @@ public class Main extends Application {
 	}
 	
 	public static void generarArchivoListaCobro(int dia, String fecha, String idCobrador) throws ParseException, IOException {
-		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha, idCobrador);
-		manager.genListadoCsvCobro(cuotas, fecha);
+//		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha, idCobrador);
+//		manager.genListadoCsvCobro(cuotas, fecha);
+		
+		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
+		manager.genListadoCsvCobro(clientes, fecha);
 	}
 	
 	public static ArrayList<Cliente_Recibo> darListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
@@ -81,7 +84,7 @@ public class Main extends Application {
 	public static void verInfoClientes() throws IOException {
 		
 		//manager.cargarCuotas();
-		manager.cargarPagos();
+		//manager.cargarPagos();
 		
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
