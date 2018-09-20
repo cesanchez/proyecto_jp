@@ -443,7 +443,7 @@ public class Manager {
 			Recibo rec = c.getId_recibo();
 			Cliente cl = rec.getId_cliente();
 
-			idReCuota = rec.getId_recibo();
+			idReCuota = rec.getId_recibo();						
 			if (numCuota == 1) {
 				idReCuotaAux = idReCuota;
 			}
