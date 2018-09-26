@@ -12,6 +12,7 @@ import java.util.Calendar;
 import finanzasjp.modelo.Cliente;
 import finanzasjp.modelo.Cliente_Recibo;
 import finanzasjp.modelo.Cobrador;
+import finanzasjp.modelo.ComparadorClienteRecibo;
 import finanzasjp.modelo.Cuota;
 import finanzasjp.modelo.Dia_Recibo;
 import finanzasjp.modelo.Recibo;
@@ -241,6 +242,7 @@ public class ListadoCuotaController {
 			} else {
 
 				ArrayList<Cliente_Recibo> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
+				lClientes.sort(new ComparadorClienteRecibo());
 				listDataCliente.addAll(lClientes);
 				listaClientes.setItems(listDataCliente);
 				

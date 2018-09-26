@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -440,23 +441,48 @@ public class Manager {
 		for(Cliente_Recibo clrec : lista) {
 			
 			Recibo rec = clrec.getRecibo();
-			double valorTotal = 0;
-			String idCuotas = "";
-			
-			for(Cuota c : rec.getCuotas()) {
+			double valorTotal = 0;		   
+		    
+		    ArrayList<Cuota> arrCtas = new ArrayList<Cuota>();
+		    arrCtas.addAll(rec.getCuotas());
+		    arrCtas.sort(new ComparadorCuota());
+		    Iterator<Cuota> ite = arrCtas.iterator();
+		    Cuota c = null;	
+		    Cuota myC = null;		
+		    while(ite.hasNext()) {
+		    	c = ite.next();
+		    	int com = c.getFecha_cobro().compareTo(sqlStartDate);
 				
-				if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
+				//if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
+				if(c.isMora() || com <= 0) {
 					double valorDebe = c.getValor() - c.getValor_pagado();
 					valorTotal += valorDebe;
-					idCuotas += c.getId_cuota() + ";";
-				}
+					myC = c;
+				}		
+		    }
+			
+//			for(Cuota c : rec.getCuotas()) {
+//				
+//				int com = c.getFecha_cobro().compareTo(sqlStartDate);
+//				
+//				//if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
+//				if(c.isMora() || com <= 0) {
+//					double valorDebe = c.getValor() - c.getValor_pagado();
+//					valorTotal += valorDebe;
+//				}				
+//			}		
+			
+		    String apellido = clrec.getCliente().getApellido();
+			String nom = clrec.getCliente().getNombre();
+			
+			if(apellido !=null) {
+				nom += " " + apellido;
 			}
 			
-			String nom = clrec.getCliente().getNombre() + " " + clrec.getCliente().getApellido();
 			String tel = clrec.getCliente().getTelefono_celular();
 			Row row = sheet.createRow(numRow);
 			row.createCell(0).setCellValue(nom);
-			row.createCell(1).setCellValue(idCuotas);
+			row.createCell(1).setCellValue(myC.getId_cuota());
 			row.createCell(2).setCellValue(valorTotal);
 			row.createCell(3).setCellValue(tel);		
 			
@@ -853,8 +879,8 @@ public class Manager {
 
 	public double calcularInteresTotal(int miCuotas, double interes, int modo) {
 		double interesTotal = 0;
-		int numMeses = 0;
-
+		//int numMeses = 0;
+		double numMeses = 0;
 		double cuotas = (double) miCuotas;
 
 		switch (modo) {
@@ -864,7 +890,8 @@ public class Manager {
 			break;
 		// 2. Modo de pago Quincenal
 		case 2:
-			numMeses = (int) Math.round(cuotas / 2);
+			//numMeses = (int) Math.round(cuotas / 2);
+			numMeses = cuotas / 2;
 			break;
 		// 3. Modo de pago Semanal
 		case 3:
@@ -1167,10 +1194,50 @@ public class Manager {
 
 	}
 
+	public Cuota[] cuotasArreglo(Set<Cuota> cuotas, String fechaActual) {
+		
+		Cuota[] misCuotas = new Cuota[cuotas.size()];
+		String startDate = fechaActual;
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateI = null;
+		try {
+			dateI = sdf1.parse(startDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		java.sql.Date sqlStartDate = new java.sql.Date(dateI.getTime());
+				
+		int index = 0;
+		for (Cuota c : cuotas) {
+			java.sql.Date fechaCobro = c.getFecha_cobro();
+			if (fechaCobro != null) {
+				int com = fechaCobro.compareTo(sqlStartDate);
+				
+				if (com < 0) {
+					misCuotas[index] = c;
+				}
+			}		
+			index++;
+		}		
+		return misCuotas;
+	}
+	
+	public double acarreoMora(int index, Cuota[] cuotas) {
+		Cuota c = cuotas[index];
+		if(index == 0) {
+			return c.getValor() - c.getValor_pagado(); 
+		}else {
+			return acarreoMora(index--, cuotas) + (c.getValor() - c.getValor_pagado());
+		}		
+	}
+	
 	public boolean actualizarEstadoCuota(String fechaActual) throws ParseException {
 		// TODO Auto-generated method stub
 		boolean re = false;
 		List<Cuota> cuotas = session.createCriteria(Cuota.class).list();
+		ComparadorCuota cmCu = new ComparadorCuota();
+		cuotas.sort(cmCu);
 
 		String startDate = fechaActual;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1186,8 +1253,8 @@ public class Manager {
 				if (com < 0) {
 					double valPagado = c.getValor_pagado();
 					if (valPagado < valor) {
+												
 						c.setMora(true);
-
 						Recibo recibo = c.getId_recibo();
 						recibo.setMora(true);
 
