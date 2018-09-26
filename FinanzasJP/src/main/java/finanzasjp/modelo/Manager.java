@@ -436,8 +436,9 @@ public class Manager {
 		java.util.Date date = sdf1.parse(startDate);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 		
-		int numRow = 1;
+		lista.sort(new ComparadorClienteRecibo());
 		
+		int numRow = 1;		
 		for(Cliente_Recibo clrec : lista) {
 			
 			Recibo rec = clrec.getRecibo();
