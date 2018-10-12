@@ -55,6 +55,8 @@ public class ListadoCuotaController {
 	private DatePicker datePicker;
 	@FXML
 	private DatePicker dteFechaPago;
+	@FXML
+	private DatePicker dteFechaFin;
 
 	@FXML
 	private TextField txCuota;
@@ -188,6 +190,9 @@ public class ListadoCuotaController {
 			LocalDate value = datePicker.getValue();
 			String strFecha = value != null ? value.toString() : null;
 			String strDia = !txDia.getText().equals("") ? txDia.getText() : "0";
+			
+			LocalDate valueFin = dteFechaFin.getValue();
+			String strFechaFin = valueFin != null ? valueFin.toString() : null;
 
 			if (strFecha == null && strDia.equals("0")) {
 				Alert alert = new Alert(AlertType.INFORMATION);
@@ -197,7 +202,7 @@ public class ListadoCuotaController {
 				alert.showAndWait();
 
 			} else {
-				main.generarArchivoListaCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
+				main.generarArchivoListaCobro(Integer.parseInt(strDia), strFecha, strFechaFin, cedulaCobrador);
 				Alert conf = new Alert(AlertType.INFORMATION);
 				conf.setTitle("Información");
 				conf.setHeaderText(null);
@@ -229,6 +234,9 @@ public class ListadoCuotaController {
 		LocalDate value = datePicker.getValue();
 		String strFecha = value != null ? value.toString() : null;
 		String strDia = !txDia.getText().equals("") ? txDia.getText() : "0";
+		
+		LocalDate valueFin = dteFechaFin.getValue();
+		String strFechaFin = valueFin != null ? valueFin.toString() : null;
 
 		try {
 
@@ -241,7 +249,7 @@ public class ListadoCuotaController {
 
 			} else {
 
-				ArrayList<Cliente_Recibo> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, cedulaCobrador);
+				ArrayList<Cliente_Recibo> lClientes = main.darListadoCobro(Integer.parseInt(strDia), strFecha, strFechaFin, cedulaCobrador);
 				lClientes.sort(new ComparadorClienteRecibo());
 				listDataCliente.addAll(lClientes);
 				listaClientes.setItems(listDataCliente);
@@ -255,7 +263,14 @@ public class ListadoCuotaController {
 							protected void updateItem(Cliente_Recibo t, boolean bln) {
 								super.updateItem(t, bln);
 								if (t != null) {
-									setText(t.getCliente().getNombre()+ " " + t.getCliente().getApellido());
+									String nomCl = t.getCliente().getNombre();
+									String apeCli = t.getCliente().getApellido();
+									
+									if(apeCli == null) {
+										apeCli = "";
+									}
+									
+									setText(nomCl + " " + apeCli);
 								}
 							}
 						};

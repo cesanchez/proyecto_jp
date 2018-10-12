@@ -290,7 +290,8 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cuota> generarListadoCobroFecha(String fecha, String idCobrador) throws ParseException {
+	public ArrayList<Cuota> generarListadoCobroFecha(String fecha, String fechaFin, String idCobrador)
+			throws ParseException {
 
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
 
@@ -298,6 +299,13 @@ public class Manager {
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = sdf1.parse(startDate);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+		int diaIni = sqlStartDate.getDate();
+
+		String endDate = fechaFin;
+		SimpleDateFormat sdf1Fin = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date dateFin = sdf1Fin.parse(endDate);
+		java.sql.Date sqlEndDate = new java.sql.Date(dateFin.getTime());
+		int diaFin = sqlEndDate.getDate();
 
 		Cobrador cobrador = (Cobrador) session.get(Cobrador.class, idCobrador);
 
@@ -308,23 +316,29 @@ public class Manager {
 			Set<Recibo> recibos = cl.getRecibos();
 
 			for (Recibo rec : recibos) {
-				
-				if(rec.getId_recibo() == 3102) {
-					System.out.println("este");
-				}
 
 				if (rec.isActivo()) {
 					Set<Cuota> cuotas = rec.getCuotas();
 					for (Cuota cu : cuotas) {
 
 						if (cu.getFecha_cobro() != null) {
-							if (cu.getFecha_cobro().equals(sqlStartDate)) {
+
+							int startCom = cu.getFecha_cobro().compareTo(sqlStartDate);
+							int endCom = cu.getFecha_cobro().compareTo(sqlEndDate);
+							if (startCom >= 0 && endCom <= 0) {
 								listaCuota.add(cu);
 							}
 
+							int diaCobroCuota = cu.getFecha_cobro().getDate();
 							if (cu.isMora()) {
-								listaCuota.add(cu);
+								if (diaCobroCuota >= diaIni && diaCobroCuota <= diaFin) {
+
+									if (!listaCuota.contains(cu)) {
+										listaCuota.add(cu);
+									}
+								}
 							}
+
 						}
 					}
 				}
@@ -334,7 +348,8 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
+	public ArrayList<Cuota> generarListadoCobro(int dia, String fecha, String fechaFin, String idCobrador)
+			throws ParseException {
 
 		// null, fec
 		// dia, null
@@ -342,12 +357,12 @@ public class Manager {
 		ArrayList<Cuota> listaCuota = new ArrayList<Cuota>();
 
 		if (dia == 0 && fecha != null) {
-			listaCuota.addAll(generarListadoCobroFecha(fecha, idCobrador));
+			listaCuota.addAll(generarListadoCobroFecha(fecha, fechaFin, idCobrador));
 		} else if (dia != 0 && fecha == null) {
 			listaCuota.addAll(generarListadoCobroDia(dia, idCobrador));
 		} else if (dia != 0 && fecha != null) {
 			listaCuota.addAll(generarListadoCobroDia(dia, idCobrador));
-			ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha, idCobrador);
+			ArrayList<Cuota> cuotasFecha = generarListadoCobroFecha(fecha, fechaFin, idCobrador);
 
 			for (Cuota c : cuotasFecha) {
 				if (!listaCuota.contains(c)) {
@@ -358,40 +373,30 @@ public class Manager {
 		return listaCuota;
 	}
 
-	public ArrayList<Cliente_Recibo> darListaClientesCobro(int dia, String fecha, String idCobrador) throws ParseException {
+	public ArrayList<Cliente_Recibo> darListaClientesCobro(int dia, String fecha, String fechaFin, String idCobrador)
+			throws ParseException {
 
 		ArrayList<Cliente> listaClientes = new ArrayList<Cliente>();
 		ArrayList<Recibo> recibosCobrar = new ArrayList<Recibo>();
-		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha, idCobrador);
-		
+		ArrayList<Cuota> listaCuota = generarListadoCobro(dia, fecha, fechaFin, idCobrador);
+
 		ArrayList<Cliente_Recibo> clientesRec = new ArrayList<Cliente_Recibo>();
-		
-		for(Cuota c : listaCuota) {
+
+		for (Cuota c : listaCuota) {
 			Recibo rec = c.getId_recibo();
-			
-			if(!recibosCobrar.contains(rec)) {
+
+			if (!recibosCobrar.contains(rec)) {
 				recibosCobrar.add(rec);
 			}
 		}
-		
-		for(Recibo r : recibosCobrar) {			
+
+		for (Recibo r : recibosCobrar) {
 			Cliente cl = r.getId_cliente();
 			clientesRec.add(new Cliente_Recibo(cl, r));
 		}
-		
+
 		return clientesRec;
-		
-//		for (Cuota c : listaCuota) {
-//			Recibo rec = c.getId_recibo();
-//			Cliente cl = rec.getId_cliente();
-//
-//			if (!listaClientes.contains(cl)) {
-//				listaClientes.add(cl);
-//			}
-//		}
-//		ComparadorCliente com = new ComparadorCliente();
-//		listaClientes.sort(com);
-//		return listaClientes;
+
 	}
 
 	public ArrayList<Cliente> darListaClientesMora() {
@@ -411,171 +416,133 @@ public class Manager {
 		}
 		return clientesMora;
 	}
-	
-	public void genListadoCsvCobro(ArrayList<Cliente_Recibo> lista, String fecha) throws IOException, ParseException {
-		
+
+	public void genListadoCsvCobro(ArrayList<Cliente_Recibo> lista, String fecha, String idCobrador) throws IOException, ParseException {
+
 		Workbook workbook = new XSSFWorkbook();
 		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
 		Font headerFont = workbook.createFont();
 		headerFont.setBold(true);
 		headerFont.setFontHeightInPoints((short) 14);
-		headerFont.setColor(IndexedColors.BLACK.getIndex());
+		headerFont.setColor(IndexedColors.RED.getIndex());
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.setFont(headerFont);
 		Row headerRow = sheet.createRow(0);
-		String[] headerValues = { "Nombre", "Id Cuota", "Valor Total", "Teléfono" };
-		
+		String[] headerValues = { "Cliente", "Valor Total", "Teléfono", "Número Cuota"};
+
 		for (int i = 0; i < headerValues.length; i++) {
 			Cell cell = headerRow.createCell(i);
 			cell.setCellValue(headerValues[i]);
 			cell.setCellStyle(headerCellStyle);
 		}
-		
+
 		String startDate = fecha;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = sdf1.parse(startDate);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-		
+
 		lista.sort(new ComparadorClienteRecibo());
-		
-		int numRow = 1;		
-		for(Cliente_Recibo clrec : lista) {
-			
+
+		int numRow = 1;
+		for (Cliente_Recibo clrec : lista) {
+
 			Recibo rec = clrec.getRecibo();
-			double valorTotal = 0;		   
-		    
-		    ArrayList<Cuota> arrCtas = new ArrayList<Cuota>();
-		    arrCtas.addAll(rec.getCuotas());
-		    arrCtas.sort(new ComparadorCuota());
-		    Iterator<Cuota> ite = arrCtas.iterator();
-		    Cuota c = null;	
-		    Cuota myC = null;		
-		    while(ite.hasNext()) {
-		    	c = ite.next();
-		    	int com = c.getFecha_cobro().compareTo(sqlStartDate);
-				
-				//if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
-				if(c.isMora() || com <= 0) {
-					double valorDebe = c.getValor() - c.getValor_pagado();
-					valorTotal += valorDebe;
-					myC = c;
-				}		
-		    }
-			
-//			for(Cuota c : rec.getCuotas()) {
-//				
-//				int com = c.getFecha_cobro().compareTo(sqlStartDate);
-//				
-//				//if(c.isMora() || c.getFecha_cobro().equals(sqlStartDate)) {
-//				if(c.isMora() || com <= 0) {
-//					double valorDebe = c.getValor() - c.getValor_pagado();
-//					valorTotal += valorDebe;
-//				}				
-//			}		
-			
-		    String apellido = clrec.getCliente().getApellido();
+			double valorTotal = 0;
+
+			ArrayList<Cuota> arrCtas = new ArrayList<Cuota>();
+			arrCtas.addAll(rec.getCuotas());
+			arrCtas.sort(new ComparadorCuota());
+			Iterator<Cuota> ite = arrCtas.iterator();
+			Cuota c = null;
+			Cuota myC = null;
+			while (ite.hasNext()) {
+				c = ite.next();
+
+				valorTotal = c.getValor();
+				myC = c;
+
+			}
+
+			String apellido = clrec.getCliente().getApellido();
 			String nom = clrec.getCliente().getNombre();
-			
-			if(apellido !=null) {
+
+			if (apellido != null) {
 				nom += " " + apellido;
 			}
-			
+
 			String tel = clrec.getCliente().getTelefono_celular();
 			Row row = sheet.createRow(numRow);
 			row.createCell(0).setCellValue(nom);
-			row.createCell(1).setCellValue(myC.getId_cuota());
-			row.createCell(2).setCellValue(valorTotal);
-			row.createCell(3).setCellValue(tel);		
-			
+			row.createCell(1).setCellValue(valorTotal);
+			row.createCell(2).setCellValue(tel);
+			row.createCell(3).setCellValue(myC.getId_cuota());		
+
 			numRow++;
 		}
-		
-		
-		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
-		File file = new File(userHomeFolder, fecha +  "_ListaDeCobro.xlsx");
-		FileOutputStream fileout = new FileOutputStream(file);
-
-		workbook.write(fileout);
-		fileout.close();
-		workbook.close();		
-	}
-
-	/*public void genListadoCsvCobro(ArrayList<Cuota> lista, String fecha) throws IOException {
-
-		Workbook workbook = new XSSFWorkbook();
-		org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet();
-		Font headerFont = workbook.createFont();
-		headerFont.setBold(true);
-		headerFont.setFontHeightInPoints((short) 14);
-		headerFont.setColor(IndexedColors.BLACK.getIndex());
-		CellStyle headerCellStyle = workbook.createCellStyle();
-		headerCellStyle.setFont(headerFont);
-		Row headerRow = sheet.createRow(0);
-		String[] headerValues = { "Nombre", "Id Cuota", "Valor Total", "Teléfono" };
-
-		for (int i = 0; i < headerValues.length; i++) {
-			Cell cell = headerRow.createCell(i);
-			cell.setCellValue(headerValues[i]);
-			cell.setCellStyle(headerCellStyle);
-		}	
-
-		String idCuotas = "";
-		double valorTotal = 0;
-		String nom = "";
-		int idReCuota = 0;
-
-		int numRow = 1;
-		int numCuota = 1;
-		int idReCuotaAux = 0;
-		for (Cuota c : lista) {
-		
-			Recibo rec = c.getId_recibo();
-			Cliente cl = rec.getId_cliente();
-<<<<<<< HEAD
-
-			idReCuota = rec.getId_recibo();						
-=======
-			idReCuota = rec.getId_recibo();
-			
-			if(idReCuota == 3180) System.out.println("entro");			
-			
->>>>>>> branch 'master' of https://github.com/cesanchez/proyecto_jp.git
-			if (numCuota == 1) {
-				idReCuotaAux = idReCuota;
-			}
-
-			String tel = cl.getTelefono_celular();
-			nom = cl.getNombre() + " " + cl.getApellido();
-
-			if (idReCuota == idReCuotaAux) {
-				idCuotas += c.getId_cuota() + ";";
-				valorTotal += c.getValor();
-			} else {
-				Row row = sheet.createRow(numRow);
-				row.createCell(0).setCellValue(nom);
-				row.createCell(1).setCellValue(idCuotas);
-				row.createCell(2).setCellValue(valorTotal);
-				row.createCell(3).setCellValue(tel);
-				
-				nom = cl.getNombre() + " " + cl.getApellido();
-				idCuotas = c.getId_cuota() + ";";
-				valorTotal = c.getValor();
-
-				numRow++;
-			}
-
-			idReCuotaAux = idReCuota;
-			numCuota++;
-		}
 
 		String userHomeFolder = System.getProperty("user.home") + "/Desktop";
-		File file = new File(userHomeFolder, fecha +  "_ListaDeCobro.xlsx");
+		File file = new File(userHomeFolder, idCobrador+"_"+ fecha + "_ListaDeCobro.xlsx");
 		FileOutputStream fileout = new FileOutputStream(file);
 
 		workbook.write(fileout);
 		fileout.close();
 		workbook.close();
-	}*/
+	}
+
+	/*
+	 * public void genListadoCsvCobro(ArrayList<Cuota> lista, String fecha) throws
+	 * IOException {
+	 * 
+	 * Workbook workbook = new XSSFWorkbook(); org.apache.poi.ss.usermodel.Sheet
+	 * sheet = workbook.createSheet(); Font headerFont = workbook.createFont();
+	 * headerFont.setBold(true); headerFont.setFontHeightInPoints((short) 14);
+	 * headerFont.setColor(IndexedColors.BLACK.getIndex()); CellStyle
+	 * headerCellStyle = workbook.createCellStyle();
+	 * headerCellStyle.setFont(headerFont); Row headerRow = sheet.createRow(0);
+	 * String[] headerValues = { "Nombre", "Id Cuota", "Valor Total", "Teléfono" };
+	 * 
+	 * for (int i = 0; i < headerValues.length; i++) { Cell cell =
+	 * headerRow.createCell(i); cell.setCellValue(headerValues[i]);
+	 * cell.setCellStyle(headerCellStyle); }
+	 * 
+	 * String idCuotas = ""; double valorTotal = 0; String nom = ""; int idReCuota =
+	 * 0;
+	 * 
+	 * int numRow = 1; int numCuota = 1; int idReCuotaAux = 0; for (Cuota c : lista)
+	 * {
+	 * 
+	 * Recibo rec = c.getId_recibo(); Cliente cl = rec.getId_cliente(); <<<<<<< HEAD
+	 * 
+	 * idReCuota = rec.getId_recibo(); ======= idReCuota = rec.getId_recibo();
+	 * 
+	 * if(idReCuota == 3180) System.out.println("entro");
+	 * 
+	 * >>>>>>> branch 'master' of https://github.com/cesanchez/proyecto_jp.git if
+	 * (numCuota == 1) { idReCuotaAux = idReCuota; }
+	 * 
+	 * String tel = cl.getTelefono_celular(); nom = cl.getNombre() + " " +
+	 * cl.getApellido();
+	 * 
+	 * if (idReCuota == idReCuotaAux) { idCuotas += c.getId_cuota() + ";";
+	 * valorTotal += c.getValor(); } else { Row row = sheet.createRow(numRow);
+	 * row.createCell(0).setCellValue(nom);
+	 * row.createCell(1).setCellValue(idCuotas);
+	 * row.createCell(2).setCellValue(valorTotal);
+	 * row.createCell(3).setCellValue(tel);
+	 * 
+	 * nom = cl.getNombre() + " " + cl.getApellido(); idCuotas = c.getId_cuota() +
+	 * ";"; valorTotal = c.getValor();
+	 * 
+	 * numRow++; }
+	 * 
+	 * idReCuotaAux = idReCuota; numCuota++; }
+	 * 
+	 * String userHomeFolder = System.getProperty("user.home") + "/Desktop"; File
+	 * file = new File(userHomeFolder, fecha + "_ListaDeCobro.xlsx");
+	 * FileOutputStream fileout = new FileOutputStream(file);
+	 * 
+	 * workbook.write(fileout); fileout.close(); workbook.close(); }
+	 */
 
 	public void generarListadoCsvMora() throws IOException {
 
@@ -880,7 +847,7 @@ public class Manager {
 
 	public double calcularInteresTotal(int miCuotas, double interes, int modo) {
 		double interesTotal = 0;
-		//int numMeses = 0;
+		// int numMeses = 0;
 		double numMeses = 0;
 		double cuotas = (double) miCuotas;
 
@@ -891,7 +858,7 @@ public class Manager {
 			break;
 		// 2. Modo de pago Quincenal
 		case 2:
-			//numMeses = (int) Math.round(cuotas / 2);
+			// numMeses = (int) Math.round(cuotas / 2);
 			numMeses = cuotas / 2;
 			break;
 		// 3. Modo de pago Semanal
@@ -949,21 +916,23 @@ public class Manager {
 
 				if (!data[0].equals("NH")) {
 					int idrec = Integer.parseInt(data[0]);
-					double[] pagos = new double[3];
+					double[] pagos = new double[5];
 					pagos[0] = Double.parseDouble(data[1]);
 					pagos[1] = Double.parseDouble(data[2]);
 					pagos[2] = Double.parseDouble(data[3]);
-//					 pagos[3] = Double.parseDouble(data[4]);
-//					 pagos[4] = Double.parseDouble(data[5]);
-//					 pagos[5] = Double.parseDouble(data[6]);
-//					 pagos[6] = Double.parseDouble(data[7]);
-//					 pagos[7] = Double.parseDouble(data[8]);
-//					 pagos[8] = Double.parseDouble(data[9]);
-//					 pagos[9] = Double.parseDouble(data[10]);
-//					 pagos[10] = Double.parseDouble(data[11]);
-//					 pagos[11] = Double.parseDouble(data[12]);
-//					 pagos[12] = Double.parseDouble(data[13]);
-//					 pagos[13] = Double.parseDouble(data[14]);
+					pagos[3] = Double.parseDouble(data[4]);
+					pagos[4] = Double.parseDouble(data[5]);
+					// pagos[5] = Double.parseDouble(data[6]);
+					// pagos[6] = Double.parseDouble(data[7]);
+					// pagos[7] = Double.parseDouble(data[8]);
+					// pagos[8] = Double.parseDouble(data[9]);
+					// pagos[9] = Double.parseDouble(data[10]);
+					// pagos[10] = Double.parseDouble(data[11]);
+					// pagos[11] = Double.parseDouble(data[12]);
+					// pagos[12] = Double.parseDouble(data[13]);
+					// pagos[13] = Double.parseDouble(data[14]);
+					// pagos[14] = Double.parseDouble(data[15]);
+					// pagos[15] = Double.parseDouble(data[16]);
 
 					Recibo miRec = (Recibo) session.get(Recibo.class, idrec);
 
@@ -1196,7 +1165,7 @@ public class Manager {
 	}
 
 	public Cuota[] cuotasArreglo(Set<Cuota> cuotas, String fechaActual) {
-		
+
 		Cuota[] misCuotas = new Cuota[cuotas.size()];
 		String startDate = fechaActual;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1208,31 +1177,31 @@ public class Manager {
 			e.printStackTrace();
 		}
 		java.sql.Date sqlStartDate = new java.sql.Date(dateI.getTime());
-				
+
 		int index = 0;
 		for (Cuota c : cuotas) {
 			java.sql.Date fechaCobro = c.getFecha_cobro();
 			if (fechaCobro != null) {
 				int com = fechaCobro.compareTo(sqlStartDate);
-				
+
 				if (com < 0) {
 					misCuotas[index] = c;
 				}
-			}		
+			}
 			index++;
-		}		
+		}
 		return misCuotas;
 	}
-	
+
 	public double acarreoMora(int index, Cuota[] cuotas) {
 		Cuota c = cuotas[index];
-		if(index == 0) {
-			return c.getValor() - c.getValor_pagado(); 
-		}else {
+		if (index == 0) {
+			return c.getValor() - c.getValor_pagado();
+		} else {
 			return acarreoMora(index--, cuotas) + (c.getValor() - c.getValor_pagado());
-		}		
+		}
 	}
-	
+
 	public boolean actualizarEstadoCuota(String fechaActual) throws ParseException {
 		// TODO Auto-generated method stub
 		boolean re = false;
@@ -1253,14 +1222,19 @@ public class Manager {
 				double valor = c.getValor();
 				if (com < 0) {
 					double valPagado = c.getValor_pagado();
-					if (valPagado < valor) {
-												
-						c.setMora(true);
-						Recibo recibo = c.getId_recibo();
-						recibo.setMora(true);
 
-						session.update(c);
-						session.update(recibo);
+					if (valPagado < valor) {
+
+						double dif = valor - valPagado;
+
+						if (dif > 1000) {
+							c.setMora(true);
+							Recibo recibo = c.getId_recibo();
+							recibo.setMora(true);
+							session.update(c);
+							session.update(recibo);
+						}
+
 					} else {
 						c.setMora(false);
 						session.update(c);

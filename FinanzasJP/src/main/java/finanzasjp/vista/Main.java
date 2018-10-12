@@ -54,16 +54,16 @@ public class Main extends Application {
 		return manager.darDiasRecibo(recibo);		
 	}
 	
-	public static void generarArchivoListaCobro(int dia, String fecha, String idCobrador) throws ParseException, IOException {
+	public static void generarArchivoListaCobro(int dia, String fecha, String fechaFin, String idCobrador) throws ParseException, IOException {
 //		ArrayList<Cuota> cuotas = manager.generarListadoCobro(dia, fecha, idCobrador);
 //		manager.genListadoCsvCobro(cuotas, fecha);
 		
-		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
-		manager.genListadoCsvCobro(clientes, fecha);
+		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, fechaFin, idCobrador);
+		manager.genListadoCsvCobro(clientes, fecha, idCobrador);
 	}
 	
-	public static ArrayList<Cliente_Recibo> darListadoCobro(int dia, String fecha, String idCobrador) throws ParseException {
-		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, idCobrador);
+	public static ArrayList<Cliente_Recibo> darListadoCobro(int dia, String fecha, String fechaFin, String idCobrador) throws ParseException {
+		ArrayList<Cliente_Recibo> clientes = manager.darListaClientesCobro(dia, fecha, fechaFin, idCobrador);
 		return clientes;		
 	}
 	
@@ -83,8 +83,8 @@ public class Main extends Application {
 	
 	public static void verInfoClientes() throws IOException {
 		
-		//manager.cargarCuotas();
-		//manager.cargarPagos();
+//		manager.cargarCuotas();
+//		manager.cargarPagos();
 		
 		FXMLLoader loader =  new FXMLLoader();
 		loader.setLocation(Main.class.getResource("InfoClientes.fxml"));
