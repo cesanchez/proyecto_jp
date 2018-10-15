@@ -116,10 +116,13 @@ public class InfoClientesController {
 	@FXML
 	private ComboBox modoPago_admin;
 	@FXML
+	private ComboBox diaSem_admin;
+	@FXML
 	private ComboBox modoPago_mod;
 
 	@FXML
 	private TextField txDias_admin;
+	
 	@FXML
 	private Button btGuardarCliente;
 	@FXML
@@ -133,6 +136,7 @@ public class InfoClientesController {
 	private ObservableList<Cliente_VIP> dataPert_admin = FXCollections.observableArrayList();
 	private ObservableList<Cobrador> dataCobra_admin = FXCollections.observableArrayList();
 	private ObservableList<String> dataModoPago_admin = FXCollections.observableArrayList();
+	private ObservableList<String> dataDiaSemana_admin = FXCollections.observableArrayList();
 
 	// Admin nuevo cliente
 	@FXML
@@ -220,6 +224,20 @@ public class InfoClientesController {
 		dataPert_admin.addAll(darNomClientesVip());
 		dataCobra_admin.addAll(darNomCobradores());
 		dataModoPago_admin.addAll(darModosPago());
+		dataDiaSemana_admin.addAll(darDiasSemana());
+	}
+
+	private ArrayList<String> darDiasSemana() {
+		// TODO Auto-generated method stub
+		ArrayList<String> dias = new ArrayList<String>();
+		dias.add("LUN");
+		dias.add("MAR");
+		dias.add("MIE");
+		dias.add("JUE");
+		dias.add("VIE");
+		dias.add("SAB");
+		dias.add("DOM");
+		return dias;
 	}
 
 	public void initialize() {

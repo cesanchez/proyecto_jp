@@ -1121,7 +1121,19 @@ public class Manager {
 					break;
 
 				// semanal
-				case 3:
+				case 3:					
+					int dayS = fecha.getDate();
+					int monthS = fecha.getMonth();
+					int yearS = fecha.getYear();
+					fechaProx = new Date(yearS, monthS, dayS);
+					
+					int dayPre = fecha.getDay();
+					
+					java.util.Date proxiSDate = (java.util.Date) fechaProx;
+					proxiSDate.setDate(dayS + (7 * i));
+					//long proxiS_Time = proxiSDate.getTime();
+					
+					break;
 
 				default:
 					break;
