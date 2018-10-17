@@ -51,6 +51,7 @@ public class InfoClientesController {
 	private String cedulaClienteVip = "";
 	private String cedulaCobrador = "";
 	private String modoPago = "";
+	private String diaSemana = "";
 	
 	@FXML
 	private TextField txSearch;
@@ -287,7 +288,10 @@ public class InfoClientesController {
 
 		tooltip.setText("Agregue los días separados por coma (ej: 5, 20)");
 		txDias_admin.setTooltip(tooltip);
-
+		
+		diaSem_admin.setItems(dataDiaSemana_admin);
+		//diaSem_admin.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<T>() {});
+		
 		modoPago_admin.setItems(dataModoPago_admin);
 		modoPago_admin.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 
@@ -393,6 +397,8 @@ public class InfoClientesController {
 				return cell;
 			}
 		});
+		
+		
 
 		listaClientes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 

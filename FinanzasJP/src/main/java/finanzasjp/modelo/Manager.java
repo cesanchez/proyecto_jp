@@ -1010,6 +1010,7 @@ public class Manager {
 
 	}
 
+		
 	public boolean generarCuotas(double valorPrestamo, double miInteres, int modo, int numCuotas, int idRecibo) {
 
 		double interes = miInteres / 100;
@@ -1121,18 +1122,11 @@ public class Manager {
 					break;
 
 				// semanal
-				case 3:					
-					int dayS = fecha.getDate();
-					int monthS = fecha.getMonth();
-					int yearS = fecha.getYear();
-					fechaProx = new Date(yearS, monthS, dayS);
-					
-					int dayPre = fecha.getDay();
-					
-					java.util.Date proxiSDate = (java.util.Date) fechaProx;
-					proxiSDate.setDate(dayS + (7 * i));
-					//long proxiS_Time = proxiSDate.getTime();
-					
+				case 3:										
+					Calendar c = Calendar.getInstance();
+					c.setTime(fecha);					
+					c.add(Calendar.DATE, 7);  // number of days to add
+					fechaProx = (Date) c.getTime();
 					break;
 
 				default:
@@ -1155,6 +1149,7 @@ public class Manager {
 		res = true;
 		return res;
 	}
+
 
 	public boolean guardarFechaCuota(String fecha, int idRecibo, int idCuota, double valorPagar) throws ParseException {
 		// TODO Auto-generated method stub
